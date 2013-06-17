@@ -2,7 +2,7 @@ HelloEmber::Application.routes.draw do
 
   root :to => 'application#index'
 #  match "/*path" => "application#index"
-  match 'stocks' => "stock#index"
+  match 'stocks' => "stocks#index"
 
 end
 

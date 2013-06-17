@@ -7692,6 +7692,13 @@ DS.Adapter = Ember.Object.extend(DS._Mappable, {
 
     store.didUpdateAll(type);
 
+	console.log('didFindAll') ;
+	console.log('loader: ', loader) ;
+	console.log('payload: ', payload) ;
+	console.log('type: ', type) ;
+	console.log('serializer.extractMany(loader, payload, type);') ;
+
+
     serializer.extractMany(loader, payload, type);
   },
 
