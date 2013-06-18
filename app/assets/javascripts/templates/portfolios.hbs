@@ -1,0 +1,9 @@
+<br>
+{{#each portfolio in controller}}
+  {{portfolio.name}} | {{portfolio.stocks.length}} stocks<br>
+		{{#each stock in portfolio.stocks}}
+		  {{stock.quantity}} shares of {{stock.symbol}} <br>
+		{{/each}}
+{{/each}}
+<br>
+<br>

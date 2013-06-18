@@ -2,4 +2,5 @@
 
 HelloEmber.Router.map ()->
    @resource('stocks')
+   @resource('portfolios')
 

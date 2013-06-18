@@ -4,7 +4,9 @@ HelloEmber.Adapter = DS.RESTAdapter.extend({
 
 });
 
-HelloEmber.Adapter.map('HelloEmber.Stock');
+HelloEmber.Adapter.map('HelloEmber.Portfolio', {
+  stocks: {embedded: 'always'}
+});
 
 HelloEmber.Store = DS.Store.extend({
   revision: 13,

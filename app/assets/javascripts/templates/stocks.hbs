@@ -1,6 +1,5 @@
 <br>
 {{#each stock in controller}}
-  {{stock.symbol}}
+  {{stock.quantity}} shares of {{stock.symbol}} purchased at ${{stock.purchase_price}}<br>
 {{/each}}
 <br>
-{{test}}

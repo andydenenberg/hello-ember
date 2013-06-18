@@ -22,7 +22,7 @@
 
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
-  count: 987,
+
   ready: function() {
     console.log('HelloEmber ready!');
   }
