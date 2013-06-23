@@ -6,7 +6,9 @@ HelloEmber.Router.map(function() {
 	this.route('delete', { path: '/:stock_id/delete' });
     this.resource('stock', {path: ':stock_id'});
   });
-  this.resource('portfolios');
+  this.resource('portfolios', function() {
+	this.route('new');
+  });
 
 });
 

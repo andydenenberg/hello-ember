@@ -21,14 +21,18 @@ class StocksController < ApplicationController
   def create
     stock = Stock.new
     if update_stock(stock)
-      
-      puts stock.inspect
-      
       render json: stock, status: :created
     else
       render json: stock.errors, status: :unprocessable_entity
     end
   end
+  
+  def destroy
+    stock = Stock.find(params[:id])
+    stock.destroy
+    render json: nil, status: :ok
+  end
+  
 
   private
 

@@ -14,8 +14,6 @@ HelloEmber.StocksController = Em.ArrayController.extend({
 
   add_stock: function() {
 	var portfolio = HelloEmber.Portfolio.find(1) ;
-	var stocks = portfolio.get('stocks');
-//	alert(stocks) ;
 	
     this.transaction = this.get('store').transaction();
     this.transaction.createRecord(HelloEmber.Stock, {symbol: 'CSCO', quantity: 100, purchase_price: 12.67, portfolio: portfolio } );
@@ -29,7 +27,6 @@ HelloEmber.StocksController = Em.ArrayController.extend({
   },
 
   delete_stock: function(stock) {
-	console.log('---', stock) ;
 	stock.deleteRecord() ;
 	this.store.commit();
   }

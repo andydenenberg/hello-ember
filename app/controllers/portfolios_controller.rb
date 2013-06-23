@@ -18,6 +18,22 @@ class PortfoliosController < ApplicationController
       end
     end
 
+    def create
+      portfolio = Portfolio.new
+      if update_portfolio(portfolio)
+        render json: portfolio, status: :created
+      else
+        render json: portfolio.errors, status: :unprocessable_entity
+      end
+    end
+    
+    def destroy
+      portfolio = Portfolio.find(params[:id])
+      portfolio.stocks.each { |stock| stock.delete }
+      portfolio.destroy
+      render json: nil, status: :ok
+    end
+
 
     private
 

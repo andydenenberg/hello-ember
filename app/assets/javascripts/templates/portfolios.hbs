@@ -1,8 +1,32 @@
 <br>
+
 {{#each portfolio in controller}}
-  {{portfolio.name}} has {{portfolio.stocks.length}} stocks<br>
+  {{portfolio.name}}(id:{{portfolio.id}}) has {{portfolio.stocks.length}} stocks 
+	<button {{action delete_portfolio portfolio}}>Delete</button>
+<br>
+<table border=1>
+	<tr>
+		<th>Symbol</th>
+		<th>Shares</id>
+		<th>Purchase Price</th>
+	</tr>
 		{{#each stock in portfolio.stocks}}
-		  {{stock.quantity}} shares of {{#linkTo stocks.edit stock}}{{stock.symbol}}{{/linkTo}} <br>
-		{{/each}}<hr>
+	<tr>
+		<td>{{#linkTo stocks.edit stock}}{{stock.symbol}}{{/linkTo}}</td>
+		<td>{{stock.quantity}} shares</td>
+		<td>{{stock.purchase_price}}</td>
+	</tr>
+		{{/each}}
+</table>
+<br>
+
 {{/each}}
 <br>
+<br>
+
+{{#linkTo portfolios.new}}New Portfolio{{/linkTo}}
+
+<br>
+<br>
+{{outlet}}
+
