@@ -2075,6 +2075,9 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
     @param {Object} data optional data (see above)
   */
   didSaveRecord: function(record, data) {
+	
+	console.log('record&data', record, data) ;
+	
     if (data) {
       this.updateId(record, data);
       this.updateRecordData(record, data);
@@ -2665,6 +2668,10 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
   recordBelongsToDidChange: function(dirtySet, child, relationship) {
     var adapter = this.adapterForType(child.constructor);
 
+console.log("dirtySet",dirtySet) ;
+console.log('child',child) ;
+console.log('relationship',relationship) ;
+
     if (adapter.dirtyRecordsForBelongsToChange) {
       adapter.dirtyRecordsForBelongsToChange(dirtySet, child, relationship);
     }
@@ -3024,6 +3031,11 @@ var DirtyState = DS.State.extend({
     enter: function(manager) {
       var record = get(manager, 'record');
 
+	
+	console.log('inFlight', record) ;
+	
+	
+
       record.becameInFlight();
     },
 
@@ -3037,6 +3049,9 @@ var DirtyState = DS.State.extend({
     didCommit: function(manager) {
       var dirtyType = get(this, 'dirtyType'),
           record = get(manager, 'record');
+		
+		console.log('didCommit', record) ;
+
 
       record.withTransaction(function(t) {
         t.remove(record);
@@ -7460,6 +7475,8 @@ DS.Adapter = Ember.Object.extend(DS._Mappable, {
     @param {any} payload
   */
   didCreateRecord: function(store, type, record, payload) {
+	
+	console.log('didCreateRecord', record) ;
     store.didSaveRecord(record);
 
     if (payload) {
@@ -8591,6 +8608,9 @@ DS.RESTAdapter = DS.Adapter.extend({
     return this.ajax(this.buildURL(root), "POST", {
       data: data
     }).then(function(json){
+	
+	  console.log('createRecord', json) ;
+    
       adapter.didCreateRecord(store, type, record, json);
     }, function(xhr) {
       adapter.didError(store, type, record, xhr);

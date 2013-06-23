@@ -1,5 +1,15 @@
+<h3>{{count}} Stocks</h3>
+
+{{#each stock in with_ids}}
+ID:{{stock.id}} |  {{stock.quantity}} shares of {{#linkTo stocks.edit stock}}{{stock.symbol}}{{/linkTo}} that belongs to <b>{{stock.portfolio.name}}</b> ({{stock.state}})
+
+<button {{action delete_stock stock}}>Delete</button>
+
 <br>
-{{#each stock in controller}}
-  {{stock.quantity}} shares of {{stock.symbol}} purchased at ${{stock.purchase_price}}<br>
+
 {{/each}}
 <br>
+<button {{action add_stock stock}}>Add Stock</button>
+
+
+{{outlet}}
