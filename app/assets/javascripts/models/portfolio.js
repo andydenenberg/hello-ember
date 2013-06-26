@@ -7,4 +7,12 @@ HelloEmber.Portfolio  = DS.Model.extend({
 	return state
    }.property('isDirty').cacheable(),
 
+  portfolio_value: function() {
+	cost = 0 ;
+	this.get('stocks').forEach(function(stock){
+			cost += stock.get('quantity') * stock.get('purchase_price') ;				
+		});
+	return cost
+ 	}.property('stocks.@each').cacheable(),
+
 });

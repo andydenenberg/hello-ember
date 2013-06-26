@@ -1,5 +1,6 @@
 HelloEmber.StocksController = Em.ArrayController.extend({
-  	
+  activeStockId: null,
+
   with_ids: function(){        
     return this.content.filter(function(stock) {
 	  return stock.get('id') != null;
@@ -15,9 +16,21 @@ HelloEmber.StocksController = Em.ArrayController.extend({
     this.transaction = null;	
   },
 
+  total_value: function() {
+	var total = 0 ;
+//	contacts.then(function(contacts){
+			this.content.forEach(function(stock){
+				total += stock.get('position_cost') ;			
+			});
+//	});	
+	return total // Ember.inspect( this.count )
+	}.property('content.@each.position_cost'),
+
   delete_stock: function(stock) {
-	stock.deleteRecord() ;
-	this.store.commit();
+    if (window.confirm("Are you sure you want to delete this stock?")) {
+		stock.deleteRecord() ;
+		this.store.commit();
+	}
   }
 
 });

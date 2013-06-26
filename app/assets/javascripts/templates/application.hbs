@@ -1,9 +1,18 @@
-<div class="container">
-  <div class="row">
-	<div class='span10'>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container-fluid">
+      <div class="brand">			
+			{{#linkTo "portfolios"}}Portfolios{{/linkTo}} |
+			{{#linkTo "stocks"}}Stocks{{/linkTo}} |
+			<a href='/'>Exit</a>			
+	  </div>	
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="main">
+  <div class="row-fluid">
 
-		{{outlet}}
+    {{outlet}}
 
-		</div>
-	</div>
+  </div>
 </div>

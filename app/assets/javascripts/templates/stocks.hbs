@@ -1,44 +1,41 @@
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <a class="brand" href="#">Ember belongsTo/hasMany</a>
-    <ul class="nav">
-      <li class='active'>{{#linkTo stocks}}Stocks{{/linkTo}}</li>
-      <li>{{#linkTo portfolios}}Portfolios{{/linkTo}}</li>
+<div class="span3">
+  <div class="well">
+    <ul class="nav nav-list">
+      <li class="nav-header">All Stocks ( {{with_ids.length}} )</li>
+      {{#each stock in with_ids}}
+        {{view HelloEmber.StockInListView contentBinding="stock"}}
+      {{/each}}
     </ul>
   </div>
 </div>
+
+<div class="span7">
 	
-<h3>{{with_ids.length}} Stocks {{#linkTo stocks.new class='btn btn-mini btn-success' }}New Stock{{/linkTo}}
-</h3>
+<p class="box">Stocks {{#linkTo "stocks.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Add Stock{{/linkTo}}</p>
 
 {{outlet}}
 
 {{#if controller.with_ids}}
-	<table class='table table-condensed table-striped table-bordered'>
-		<tr>
-			<th>id</th>
-			<th>Symbol</th>
-			<th>Quantity</th>
-			<th>Purchase Price</th>
-			<th>Portfolio</th>
-			<th>State</th>
-			<th></th>
-		</tr>
+
+		<table class='table table-condensed table-striped table-bordered'>
+			{{partial "stock_table_header"}}
 		{{#each stock in with_ids}}
-		<tr>
-			<td>{{stock.id}}</td>
-			<td>{{#linkTo stocks.edit stock}}{{stock.symbol}}{{/linkTo}}</td>
-			<td>{{stock.quantity}}</td>
-			<td>{{stock.purchase_price}}</td>
-			<td>{{stock.portfolio.name}}</td>
-			<td>{{stock.state}}</td>
-			<td>{{#linkTo stocks.edit stock class='btn btn-mini'}}Edit{{/linkTo}}
-				<button {{action delete_stock stock}} class='btn btn-mini btn-warning'>Delete</button>
-			</td>
-		</tr>
-	{{/each}}
-	</table>
+			{{partial "stock"}}
+    	{{/each}}
+	<tr>
+	<td></td>
+	<td></td>
+	<th style='text-align:right;'>Total</th>
+	<td style='text-align:right;'>${{decimal total_value}}</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	</tr>
+
+		</table>
+
 {{/if}}
 
+</div>
 

@@ -3,14 +3,16 @@ HelloEmber.Stock  = DS.Model.extend({
   quantity: DS.attr('number'),
   purchase_price: DS.attr('number'),
   portfolio: DS.belongsTo('HelloEmber.Portfolio'),
-
-//  pid: function() {
-//	return this.get('portfolio').id
-//  }.property('portfolio'),
+  created_date: DS.attr('string'), // javascript ready from rails serializer
 
   state: function() {	
 	state = this.get("stateManager.currentState.name") ;
 	return state
    }.property('isDirty').cacheable(),
+
+  position_cost: function() {
+	return this.get('quantity') * this.get('purchase_price')
+  }.property('quantity', 'purchase_price'),
+
 
 });
