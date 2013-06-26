@@ -1,0 +1,133 @@
+@import "twitter/bootstrap";
+
+p.box{
+	font-size: 24.5px;
+    height:40px;
+    line-height:40px; /* here it is! */
+    width:400px;
+    padding:0px 
+}
+
+.sort {
+  font-weight: bold;
+  line-height: 20px;
+  color: #000000;
+  text-shadow: 0 1px 0 #ffffff;
+  opacity: 0.9;
+  filter: alpha(opacity=20);
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+
+}
+
+/* Bootstrap code examples
+-------------------------------------------------- */
+
+/* Base class */
+.bs-docs-example {
+  position: relative;
+  margin: 15px 0;
+  padding: 39px 19px 14px;
+  *padding-top: 19px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+/* Echo out a label for the example */
+.bs-docs-example:after {
+  content: "Stock";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #9da0a4;
+  -webkit-border-radius: 4px 0 4px 0;
+     -moz-border-radius: 4px 0 4px 0;
+          border-radius: 4px 0 4px 0;
+}
+
+/* Remove spacing between an example and it's code */
+.bs-docs-example + .prettyprint {
+  margin-top: -20px;
+  padding-top: 15px;
+}
+
+/* Tweak examples
+------------------------- */
+.bs-docs-example > p:last-child {
+  margin-bottom: 0;
+}
+.bs-docs-example .table,
+.bs-docs-example .progress,
+.bs-docs-example .well,
+.bs-docs-example .alert,
+.bs-docs-example .hero-unit,
+.bs-docs-example .pagination,
+.bs-docs-example .navbar,
+.bs-docs-example > .nav,
+.bs-docs-example blockquote {
+  margin-bottom: 5px;
+}
+.bs-docs-example .pagination {
+  margin-top: 0;
+}
+
+.navbar {
+  .brand .active {
+	  font-size:18pt;
+	  color: black;
+  }
+}
+
+.navbar {
+  .brand a {
+    &:hover {
+	  font-size:18pt;
+      text-decoration: none;
+    }
+  }
+}
+
+#main {
+  margin-top: 60px;
+
+  .contact-details {
+    h2 img {
+      margin-right: 15px;
+      width: 80px;
+      height: 80px;
+    }
+
+    dl.dl-horizontal {
+      dt {
+        width: 80px;
+        margin-bottom: 8px;
+      }
+      dd {
+        margin-left: 95px;
+        margin-bottom: 8px;
+      }
+    }
+  }
+
+  form {
+    .phone-number {
+      margin-bottom: 8px;
+      white-space: nowrap;
+
+      input[type="text"] {
+        width: 105px;
+      }
+    }
+  }
+}
