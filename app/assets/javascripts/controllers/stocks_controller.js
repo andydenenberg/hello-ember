@@ -1,29 +1,18 @@
 HelloEmber.StocksController = Em.ArrayController.extend({
   	
   with_ids: function(){        
-  return this.content.filter(function(stock) {
-//	alert(stock) ;
+    return this.content.filter(function(stock) {
 	  return stock.get('id') != null;
 	});
-	}.property("content.@each.stock").cacheable(),
-
-  count: function() {	
-  	return this.get('with_ids').get('length') ;
-  }.property('content.@each.stock'),
-
+  }.property("content.@each.stock").cacheable(),
 
   add_stock: function() {
-	var portfolio = HelloEmber.Portfolio.find(1) ;
-	
+	// method for testing - not used in program 
+	var portfolio = HelloEmber.Portfolio.find(1) ;	
     this.transaction = this.get('store').transaction();
     this.transaction.createRecord(HelloEmber.Stock, {symbol: 'CSCO', quantity: 100, purchase_price: 12.67, portfolio: portfolio } );
-
     this.transaction.commit();
-    this.transaction = null;
-
-//	record = this.get('store').createRecord(HelloEmber.Stock, {symbol: 'CSCO', quantity: 100, purchase_price: 12.67 })
-//	this.store.commit();
-	
+    this.transaction = null;	
   },
 
   delete_stock: function(stock) {

@@ -1,8 +1,6 @@
 
-
-
 <form {{action save on="submit"}} class="form-horizontal">
-  <legend>Edit Stock</legend>
+  <legend>New Stock</legend>
 
 <div class="control-group">
   <label class="control-label" for="Symbol">Symbol</label>
@@ -26,19 +24,13 @@
 <div class="control-group">
   <label class="control-label" for="Contact">Belongs to</label>
   <div class="controls">
-
-{{portfolio}}<br>
-
 	{{view Ember.Select
      contentBinding="all_ports"
      optionValuePath="content.id"
      optionLabelPath="content.name"
-	   selectionBinding="portfolio" }}
-
+	 selectionBinding="current_user_portfolio" }}
   </div>
-
 </div>
-
 
   <div class="form-actions">
     <button {{action save}} class="btn btn-mini btn-info">Save</button>

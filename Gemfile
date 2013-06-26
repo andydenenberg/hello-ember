@@ -14,6 +14,7 @@ gem 'handlebars-source', '1.0.0.rc4' # or the version you need
 gem 'active_model_serializers'
 gem 'strong_parameters'
 
+gem 'anjlab-bootstrap-rails', '>= 2.1', :require => 'bootstrap-rails'
 
 # Gems used only for assets and not required
 # in production environments by default.

@@ -4,9 +4,9 @@ HelloEmber.Stock  = DS.Model.extend({
   purchase_price: DS.attr('number'),
   portfolio: DS.belongsTo('HelloEmber.Portfolio'),
 
-  pid: function() {
-	return this.get('portfolio').id
-  }.property('portfolio'),
+//  pid: function() {
+//	return this.get('portfolio').id
+//  }.property('portfolio'),
 
   state: function() {	
 	state = this.get("stateManager.currentState.name") ;

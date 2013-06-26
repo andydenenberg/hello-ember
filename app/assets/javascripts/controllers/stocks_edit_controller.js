@@ -1,22 +1,23 @@
-HelloEmber.StocksEditController = Em.ObjectController.extend({
-  	needs: ["stocks"],
-//	stocksBinding: "controllers.stocks",
-  save: function() {	
-	var portfolio_id = this.get('content').get('pid') ;
-	var portfolio = HelloEmber.Portfolio.find(portfolio_id) ;
+HelloEmber.StocksEditController = Em.ObjectController.extend({	
+//  needs: 'portfolios',
+  all_ports: null,
 
+  cancel: function() {
+    // rollback the local transaction if it hasn't already been cleared
+    if (this.transaction) {
+      this.transaction.rollback();
+      this.transaction = null;
+    }
+	this.transitionToRoute('stocks');
+  },
+  
+  save: function() {	
+	var portfolio = this.get('portfolio') ;
 	var stock = this.get('content') ;	
 	stock.set('portfolio', portfolio );
 	portfolio.get('stocks').createRecord(stock.get('data.attributes'));
 	
-	var StocksController = this.get('controllers.stocks');    
-	console.log('-');
-	console.log('stocks:', StocksController.get('count'));
-	console.log('-');
-	
 	stock.deleteRecord() ;
-	
-//	console.log('after', stock.toJSON())				
     this.store.commit();
   	return this.transitionToRoute('stocks' );
   }

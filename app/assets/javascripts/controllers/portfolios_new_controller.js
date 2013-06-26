@@ -17,6 +17,15 @@ HelloEmber.PortfoliosNewController = Ember.ObjectController.extend({
     
   },
 
+  cancel: function() {
+    // rollback the local transaction if it hasn't already been cleared
+    if (this.transaction) {
+      this.transaction.rollback();
+      this.transaction = null;
+    }
+	this.transitionToRoute('portfolios');
+  },
+
   delete_portfolio: function(portfolio) {
 
 	portfolio.get('stocks').forEach(function(stock) {

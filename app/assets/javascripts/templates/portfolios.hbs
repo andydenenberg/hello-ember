@@ -1,10 +1,27 @@
-<br>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" href="#">Ember belongsTo/hasMany</a>
+    <ul class="nav">
+      <li>{{#linkTo stocks}}Stocks{{/linkTo}}</li>
+      <li class='active'>{{#linkTo portfolios}}Portfolios{{/linkTo}}</li>
+    </ul>
+  </div>
+</div>
+
+<h3>{{content.length}} Portfolios {{#linkTo portfolios.new class='btn btn-mini btn-success' }}New Portfolio{{/linkTo}}</h3>
+
+
+{{outlet}}
 
 {{#each portfolio in controller}}
-  {{portfolio.name}}(id:{{portfolio.id}}) has {{portfolio.stocks.length}} stocks 
-	<button {{action delete_portfolio portfolio}}>Delete</button>
-<br>
-<table border=1>
+<table class='table table-condensed table-bordered table-striped'>
+	<tr>
+		<th colspan=3 >{{portfolio.name}} ({{portfolio.state}})
+			<button {{action delete_portfolio portfolio }} class='btn btn-mini'>Delete</button>
+		</th>
+	</tr>
+ {{#if portfolio.stocks }}
 	<tr>
 		<th>Symbol</th>
 		<th>Shares</id>
@@ -17,16 +34,11 @@
 		<td>{{stock.purchase_price}}</td>
 	</tr>
 		{{/each}}
+ {{/if}}
 </table>
-<br>
 
 {{/each}}
-<br>
-<br>
 
-{{#linkTo portfolios.new}}New Portfolio{{/linkTo}}
 
-<br>
-<br>
-{{outlet}}
+
 
