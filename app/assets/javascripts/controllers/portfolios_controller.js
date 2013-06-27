@@ -33,11 +33,13 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 
   
   delete_portfolio: function(portfolio) {
-	portfolio.get('stocks').forEach(function(stock) {
-		stock.deleteRecord() ;
-	});
-	portfolio.deleteRecord() ;
-	this.store.commit();
+    if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
+		portfolio.get('stocks').forEach(function(stock) {
+			stock.deleteRecord() ;
+		});
+		portfolio.deleteRecord() ;
+		this.store.commit();
+	}
   }
 	
 });

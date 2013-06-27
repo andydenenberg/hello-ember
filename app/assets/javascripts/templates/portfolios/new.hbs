@@ -1,7 +1,10 @@
-<br>
-Portfolio Name:<br>
-{{view Ember.TextField valueBinding="name" }}
+<form {{action save on="submit"}} class="form-horizontal">
+  <legend>New Portfolio</legend>
 
-<button {{action save}} class='btn btn-mini btn-success'>Save</button>
-<button {{action cancel}} class='btn btn-mini'>Cancel</button>
+  {{partial "portfolio_fields"}}
 
+  <div class="form-actions">
+	<button  class="btn btn-mini btn-primary" type='submit'>Create</button>
+    <button class="btn btn-mini" {{action cancel}}>Cancel</button>
+  </div>
+</form>

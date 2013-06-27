@@ -1,0 +1,25 @@
+<form class="form-horizontal">
+  <legend>Edit Stock</legend>
+
+<div class="control-group">
+<dl class="dl-horizontal">
+	<dt>Symbol</dt>
+	<dd><b>{{symbol}}</b></dd>
+    <dt>Acquired:</dt>
+    <dd>{{created_date}}</dd>
+    <dt>Quantity:</dt>
+    <dd>{{decimal quantity}}</dd>
+    <dt>Price:</dt>
+    <dd>${{purchase_price}}</dd>
+    <dt>Cost:</dt>
+    <dd>${{decimal position_cost}}</dd>			
+    <dt>Belongs to:</dt>
+    <dd>{{portfolio.name}}</dd>			
+</dl>
+</div>
+
+  <div class="form-actions">
+	{{#linkTo "stocks.edit" content class="btn btn-mini btn-success"}}Edit{{/linkTo}}
+	<button {{action cancel}} class='btn btn-mini'>Show All Stocks</button>
+  </div>
+</form>

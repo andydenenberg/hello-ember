@@ -1,0 +1,37 @@
+
+<dl class="dl-horizontal">
+    <dt>Name:</dt>
+    <dd>{{name}}</dd>
+</dl>
+
+  {{#if stocks.length}}
+    <dt>Stocks</dt>
+    <dd>
+		<table class='table table-condensed table-striped table-bordered'>
+		{{partial "stock_table_header"}}
+      {{#each stock in stocks}}
+		{{partial "stock"}}
+      {{/each}}
+	<tr>
+	<td></td>
+	<td></td>
+	<th style='text-align:right;'>Total</th>
+	<td style='text-align:right;'>${{decimal portfolio_value}}</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	</tr>
+
+		</table>
+    </dd>
+  {{/if}}
+
+
+
+
+<div class="well well-small">
+  <a class="btn btn-mini btn-success" {{action startEditing}}>Edit</a>
+  <a class="btn btn-mini btn-danger" {{action destroyRecord}}>Remove</a> | 
+  {{#linkTo "portfolio" class="btn btn-mini"}}Show All Portfolios{{/linkTo}}
+</div>

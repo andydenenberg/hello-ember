@@ -11,34 +11,44 @@
 </div>
 
 <div class="span8">
-	<h3> Portfolios {{#linkTo portfolios.new class='btn btn-mini btn-success' }}New Portfolio{{/linkTo}}</h3>
+
+<div id="flash" class="alert alert-success">
+    <span></span>
+</div>
+
+<p class="box">Portfolios {{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Add Portfolio{{/linkTo}}</p>
 
 	{{outlet}}
 	
-	{{#each portfolio in controller}}
-
-	
-	{{#if portfolio.stocks}}
-			<table class='table table-condensed table-striped table-bordered'>
-			{{partial "stock_table_header"}}
-	      {{#each stock in portfolio.stocks}}
-			{{partial "stock"}}
-	      {{/each}}
+	{{#if controller.display_list}}
+		<table class="table table-condensed table-bordered table-striped">
 		<tr>
-		<td></td>
-		<td></td>
-		<th style='text-align:right;'>Total</th>
-		<td style='text-align:right;'>${{decimal portfolio.portfolio_value}}</td>
-		<td></td>
-		<td></td>
-		<td></td>
+			<th>Full Name</th>
+			<th>ID</th>
+			<th>Email</th>
+			<th># of Stocks</th>
+			<th>Total Value of Stocks
+			<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
+
+			</th>
+			<th>Controls</th>
 		</tr>
-
-		</table>
-
-  {{/if}}
-	{{/each}}
-	
+	  {{#each portfolio in controller}}
+		<tr>
+	    {{view HelloEmber.PortfolioInMainView contentBinding="contact"}}
+		</tr>
+	  {{/each}}
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td style='text-align:right;'>Total: ${{decimal total_value}}</td>
+			<td></td>
+		</tr>
+	  </table>
+	{{/if}}
+		
 </div>
 
 

@@ -13,10 +13,14 @@ HelloEmber.StocksNewController = Ember.ObjectController.extend({
   },
 
   save: function() {
+	var symbol = this.get('content').get('symbol').toUpperCase() ;
+	this.get('content').set('symbol',symbol);
+	
 	var portfolio = this.get('current_user_portfolio') ;
 	this.get('content').set('portfolio', portfolio) ;
     this.transaction.commit();
     this.transaction = null;
+	flash_message('Stock was successfully created.', 'success') ;	
 	this.transitionToRoute('stocks');
   },
 

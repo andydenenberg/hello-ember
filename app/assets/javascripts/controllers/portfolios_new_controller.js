@@ -13,6 +13,7 @@ HelloEmber.PortfoliosNewController = Ember.ObjectController.extend({
   save: function() {
     this.transaction.commit();
     this.transaction = null;
+	flash_message('Portfolio was successfully created.', 'success') ;	
 	this.transitionToRoute('portfolios');
     
   },

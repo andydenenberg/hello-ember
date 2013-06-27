@@ -29,3 +29,12 @@ HelloEmber = Ember.Application.create({
 });
 
 //= require_tree .
+
+function flash_message(message,severity) {
+	$("#flash").attr("class","alert alert-" + severity);			
+	$("#flash span").text(message)
+	.show().parent().fadeIn()
+	.delay(2000).fadeOut('slow', function() { 
+	    $("#flash span").text('') 
+	});	
+};

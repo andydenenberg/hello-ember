@@ -8,6 +8,12 @@ HelloEmber.StocksNewRoute = Ember.Route.extend({
   setupController: function(controller, model) {
 	controller.set('all_ports', HelloEmber.Portfolio.find() );
 	controller.createNew();
-	}
+    this.controllerFor('stocks').set('activeStockId', 'new_stock_no_id_yet');
+  },
+
+  deactivate: function() {
+    // un-highlight the active contact (perhaps temporarily)
+    this.controllerFor('stocks').set('activeStockId', null);
+  }
 
 });

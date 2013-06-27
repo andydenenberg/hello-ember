@@ -8,7 +8,7 @@ HelloEmber.StocksEditController = Em.ObjectController.extend({
       this.transaction.rollback();
       this.transaction = null;
     }
-	this.transitionToRoute('stocks');
+	this.transitionToRoute('stock', this.content);
   },
   
   save: function() {	
@@ -19,6 +19,7 @@ HelloEmber.StocksEditController = Em.ObjectController.extend({
 	
 	stock.deleteRecord() ;
     this.store.commit();
+	flash_message('Stock record was successfully update.', 'success') ;	
   	return this.transitionToRoute('stocks' );
   }
 

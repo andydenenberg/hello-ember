@@ -19,12 +19,12 @@ HelloEmber.StocksController = Em.ArrayController.extend({
   total_value: function() {
 	var total = 0 ;
 //	contacts.then(function(contacts){
-			this.content.forEach(function(stock){
+			this.get('with_ids').forEach(function(stock){
 				total += stock.get('position_cost') ;			
 			});
 //	});	
 	return total // Ember.inspect( this.count )
-	}.property('content.@each.position_cost'),
+	}.property(),
 
   delete_stock: function(stock) {
     if (window.confirm("Are you sure you want to delete this stock?")) {
