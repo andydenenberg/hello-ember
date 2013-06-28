@@ -24,7 +24,7 @@ HelloEmber.StocksController = Em.ArrayController.extend({
 			});
 //	});	
 	return total // Ember.inspect( this.count )
-	}.property(),
+	}.property('with_ids.@each.position_cost'),
 
   delete_stock: function(stock) {
     if (window.confirm("Are you sure you want to delete this stock?")) {

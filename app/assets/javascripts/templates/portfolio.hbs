@@ -1,8 +1,4 @@
-
-<dl class="dl-horizontal">
-    <dt>Name:</dt>
-    <dd>{{name}}</dd>
-</dl>
+<h2>{{name}}</h2>
 
   {{#if stocks.length}}
     <dt>Stocks</dt>
@@ -20,18 +16,14 @@
 	<td></td>
 	<td></td>
 	<td></td>
-	<td></td>
 	</tr>
 
 		</table>
     </dd>
   {{/if}}
 
-
-
-
 <div class="well well-small">
   <a class="btn btn-mini btn-success" {{action startEditing}}>Edit</a>
-  <a class="btn btn-mini btn-danger" {{action destroyRecord}}>Remove</a> | 
-  {{#linkTo "portfolio" class="btn btn-mini"}}Show All Portfolios{{/linkTo}}
+  <a class="btn btn-mini btn-danger" {{action destroy}}>Remove</a> | 
+  <button {{action cancel}} class='btn btn-mini'>Show All Portfolios</button>
 </div>

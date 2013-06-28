@@ -7,12 +7,13 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
   }.property(),
 
   display_list: function() {
+	// hide portfolio listing if one is selected of if list is blank
 	return (this.activePortfolioId === null) && (this.content.get('length') > 0) 
   }.property('activePortfolioId','content.@each'),
 
-	  sortProperties: ['portfolio_value'],
-	  sortAscending: true,
-	  activeContactId: null,
+  sortProperties: ['portfolio_value'],
+  sortAscending: true,
+  activeContactId: null,
 
   sort: function() {
 	direction = this.get('sortAscending') ;

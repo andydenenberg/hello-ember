@@ -10,13 +10,16 @@
   </div>
 </div>
 
-<div class="span8">
+<div class="span9">
 
 <div id="flash" class="alert alert-success">
     <span></span>
 </div>
 
-<p class="box">Portfolios {{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Add Portfolio{{/linkTo}}</p>
+{{#if controller.activePortfolioId}}
+{{else}}
+	<p class="box">Portfolios {{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Add Portfolio{{/linkTo}}</p>
+{{/if}}
 
 	{{outlet}}
 	
@@ -25,7 +28,6 @@
 		<tr>
 			<th>Full Name</th>
 			<th>ID</th>
-			<th>Email</th>
 			<th># of Stocks</th>
 			<th>Total Value of Stocks
 			<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
@@ -35,11 +37,10 @@
 		</tr>
 	  {{#each portfolio in controller}}
 		<tr>
-	    {{view HelloEmber.PortfolioInMainView contentBinding="contact"}}
+	    {{view HelloEmber.PortfolioInMainView contentBinding="portfolio"}}
 		</tr>
 	  {{/each}}
 		<tr>
-			<td></td>
 			<td></td>
 			<td></td>
 			<td></td>

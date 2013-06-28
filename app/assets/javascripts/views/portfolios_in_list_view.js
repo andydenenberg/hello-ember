@@ -4,6 +4,6 @@ HelloEmber.PortfolioInListView = Em.View.extend({
   classNameBindings: 'isActive:active',
 
   isActive: function() {
-    return this.get('content.id') === this.get('controller.activeContactId');
-  }.property('controller.activeContactId')
+    return this.get('content.id') === this.get('controller.activePortfolioId');
+  }.property('controller.activePortfolioId')
 });
