@@ -27,14 +27,16 @@
 {{else}}
 	{{#if controller.with_ids}}
 		<table class='table table-condensed table-striped table-bordered'>
-			{{partial "stock_table_header"}}
+			{{partial "partials/stock_table_header"}}
 		{{#each stock in with_ids}}
-			{{partial "stock"}}
+			{{partial "partials/stock"}}
 		  	{{/each}}
 			<tr>
 			<td></td>
 			<td></td>
 			<th style='text-align:right;'>Total</th>
+			<td style='text-align:right;'>${{decimal total_cost}}</td>
+			<td></td>
 			<td style='text-align:right;'>${{decimal total_value}}</td>
 			<td></td>
 			<td></td>
@@ -45,4 +47,3 @@
 {{/if}}
 
 </div>
-

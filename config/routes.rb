@@ -5,7 +5,12 @@ HelloEmber::Application.routes.draw do
 #  match 'stocks' => "stocks#index"
 #  match 'portfolios' => "portfolios#index"
   
-  resources :stocks
+  resources :stocks do
+    member do
+      get 'current_price'
+    end
+  end
+    
   resources :portfolios
 
 

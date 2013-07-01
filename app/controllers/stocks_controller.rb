@@ -4,6 +4,16 @@ class StocksController < ApplicationController
     render json: Stock.all
   end
   
+  def current_price
+    puts Price.update_counter
+    Price.inc_counter
+#    puts status = Thread.list.find { |thread| thread[:name] == 'UpdateThread' }.inspect.split(' ')
+#    puts "#{status[0][2..-1]} => Status: #{status[1][0..-2].capitalize}"
+    
+    stock = Stock.find(params[:id])
+    render json: { 'symbol' => stock.symbol, 'price' => Price.price(stock.symbol) }
+  end
+
   def show
     stock = Stock.find(params[:id])
     render json: stock

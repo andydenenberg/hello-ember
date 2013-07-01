@@ -1,6 +1,11 @@
 HelloEmber.PortfolioController = Em.ObjectController.extend({
   	needs: ['portfolios'],
 
+	refresh_timer: function(){
+	  // do something
+	  return this.get('clock') ;
+	 }.property("clock.second").cacheable(),
+
 	cancel: function() {
 		this.transitionToRoute('portfolios');
   	},

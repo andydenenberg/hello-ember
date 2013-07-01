@@ -22,6 +22,7 @@
 
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
+  update_delay: 10000,
 
   ready: function() {
     console.log('HelloEmber ready!');
@@ -38,3 +39,55 @@ function flash_message(message,severity) {
 	    $("#flash span").text('') 
 	});	
 };
+
+HelloEmber.Clock = Ember.Object.extend({
+  second: null,
+  minute: null,
+  hour:   null,
+
+  init: function() {
+    this.tick();
+  },
+
+  get_latest_price: function() {
+	stocks = HelloEmber.Stock.find() ;	
+   stocks.forEach(function(stock){			
+   	$.ajax({  
+ 		url: "/stocks/" + stock.get('id') + "/current_price/",  
+ 		dataType: "json",  
+ 		success: function(data) { 		
+    		//stock.set('latest_price', stock.get('latest_price') + 10 );
+   		console.log('updating', data.price) ;
+   		stock.set('latest_price', data.price );
+   		}  
+   	});			
+   });
+  },
+
+  tick: function() {
+    var now = new Date()
+
+	this.get_latest_price() ;
+
+    this.setProperties({	
+      second: now.getSeconds(),
+      minute: now.getMinutes(),
+      hour:   now.getHours()
+    });
+
+    var self = this;
+    setTimeout(function(){ self.tick(); }, HelloEmber.update_delay)
+  }
+});
+
+Ember.Application.initializer({
+  name: "clock",
+  initialize: function(container, application) {
+    container.optionsForType('clock', { singleton: true });
+    container.register('clock:main', application.Clock);
+    container.typeInjection('controller', 'clock', 'clock:main');
+  }
+});
+
+// don't break ObjectController
+Ember.ControllerMixin.reopen({ clock: null });

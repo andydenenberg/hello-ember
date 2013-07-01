@@ -5,7 +5,7 @@ HelloEmber.StocksRoute = Ember.Route.extend({
   },
 
   setupController: function(controller, model) {
-	controller.set('model', model ) ;	
+	controller.set('model', model ) ;
   },
 
 
