@@ -19,26 +19,24 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def self.add(symbol,price)
-      @@stocks[symbol.upcase] = price
+    def self.add(symbol,price,time,change)
+      @@stocks[symbol.upcase] = [ price, time, change ]
     end  
 
     def self.price(symbol)
-      puts symbol
-      if price = @@stocks[symbol.upcase]
-        puts "found: #{price}"
-        return price
+      if values = @@stocks[symbol.upcase]
+        return values
       else
         price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
-        self.add(symbol.upcase, price)
-        puts "not found: #{price}"
-        
-        return price
+        time = MarketBeat.last_trade_time_real_time(symbol.upcase)
+        change = MarketBeat.change_real_time(symbol.upcase)
+        self.add(symbol.upcase, price, time, change)
+        return price, time, change
       end
     end  
 
-    def self.update_price(symbol,price)
-      valid_price?(price) ? ( @@stocks[symbol.upcase] = price ) : nil
+    def self.update_price(symbol,price,time,change)
+      valid_price?(price) ? ( @@stocks[symbol.upcase] = [price, time,change] ) : nil
     end
 
     def self.valid_price?(price)
@@ -46,8 +44,12 @@ class ApplicationController < ActionController::Base
     end
 
     def self.refresh_prices
-      @@stocks.each do |symbol,price|
-        update_price(symbol, MarketBeat.last_trade_real_time(symbol).to_f )
+      @@stocks.each do |symbol,price,time,change|
+        update_price(symbol, 
+          MarketBeat.last_trade_real_time(symbol.upcase).to_f,
+          MarketBeat.last_trade_time_real_time(symbol.upcase),
+          MarketBeat.change_real_time(symbol.upcase)
+          )
       end
     end
 

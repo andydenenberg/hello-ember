@@ -5,6 +5,8 @@ HelloEmber.Stock  = DS.Model.extend({
   portfolio: DS.belongsTo('HelloEmber.Portfolio'),
   created_date: DS.attr('string'), // javascript ready from rails serializer
   latest_price: null,
+  latest_time: null,
+  daily_change: null,
 
   state: function() {	
 	state = this.get("stateManager.currentState.name") ;

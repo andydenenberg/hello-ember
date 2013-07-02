@@ -1,4 +1,6 @@
 HelloEmber.Portfolio  = DS.Model.extend({
+  sample: 100,
+  cash: DS.attr('number'),
   name: DS.attr('string'),
   stocks: DS.hasMany('HelloEmber.Stock'),
 
@@ -12,6 +14,14 @@ HelloEmber.Portfolio  = DS.Model.extend({
 	this.get('stocks').forEach(function(stock){
 			cost += stock.get('position_value') ;
 			//cost += stock.get('quantity') * stock.get('latest_price') ;				
+		});
+	return cost
+ 	}.property('stocks.@each.position_value').cacheable(),
+
+  portfolio_daily: function() {
+	cost = 0 ;
+	this.get('stocks').forEach(function(stock){
+			cost += stock.get('quantity') * stock.get('daily_change') ;				
 		});
 	return cost
  	}.property('stocks.@each.position_value').cacheable(),

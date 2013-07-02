@@ -11,7 +11,8 @@ class StocksController < ApplicationController
 #    puts "#{status[0][2..-1]} => Status: #{status[1][0..-2].capitalize}"
     
     stock = Stock.find(params[:id])
-    render json: { 'symbol' => stock.symbol, 'price' => Price.price(stock.symbol) }
+    resp = Price.price(stock.symbol)
+    render json: { 'symbol' => stock.symbol, 'price' => resp[0], 'time' => resp[1], 'change' => resp[2] }
   end
 
   def show

@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require twitter/bootstrap
 //= require handlebars
 //= require ember
 //= require ember-data
@@ -47,18 +48,24 @@ HelloEmber.Clock = Ember.Object.extend({
 
   init: function() {
     this.tick();
+	
   },
 
   get_latest_price: function() {
-	stocks = HelloEmber.Stock.find() ;	
+	stocks = HelloEmber.Stock.find().filter(function(stock) {
+	  return stock.get('id') != null;
+	});
+//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;	
    stocks.forEach(function(stock){			
    	$.ajax({  
  		url: "/stocks/" + stock.get('id') + "/current_price/",  
  		dataType: "json",  
  		success: function(data) { 		
     		//stock.set('latest_price', stock.get('latest_price') + 10 );
-   		console.log('updating', data.price) ;
+   		console.log('updating', data.symbol, data.price, data.change) ;
    		stock.set('latest_price', data.price );
+   		stock.set('latest_time', data.time );
+   		stock.set('daily_change', data.change );
    		}  
    	});			
    });

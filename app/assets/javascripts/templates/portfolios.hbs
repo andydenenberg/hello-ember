@@ -27,12 +27,12 @@
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
 			<th>Full Name</th>
-			<th>ID</th>
 			<th># of Stocks</th>
 			<th>Total Value of Stocks
 			<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
-
 			</th>
+			<th>Daily Change</th>
+			<th>Cash</th>
 			<th>Controls</th>
 		</tr>
 	  {{#each portfolio in controller}}
@@ -43,13 +43,13 @@
 		<tr>
 			<td></td>
 			<td></td>
-			<td></td>
 			<td style='text-align:right;'>Total: ${{decimal total_value}}</td>
+			<td style='text-align:right;'>Total: ${{decimal total_daily}}</td>
+			<td></td>
 			<td></td>
 		</tr>
 	  </table>
 	{{/if}}
 		
 </div>
-
 

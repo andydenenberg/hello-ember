@@ -38,7 +38,7 @@ class PortfoliosController < ApplicationController
     private
 
       def permitted_params
-        params.require(:portfolio).permit(:name, :id, stocks: [:id, :symbol, :quantity, :purchase_price, :portfolio_id] )
+        params.require(:portfolio).permit(:name, :cash, :id, stocks: [:id, :symbol, :quantity, :purchase_price, :portfolio_id] )
       end
 
         def update_portfolio(portfolio)

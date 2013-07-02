@@ -2,7 +2,7 @@ HelloEmber.PortfoliosNewController = Ember.ObjectController.extend({
 
   createNew: function() {
     this.transaction = this.get('store').transaction();
-    var new_one = this.transaction.createRecord(HelloEmber.Portfolio, {} );
+    var new_one = this.transaction.createRecord(HelloEmber.Portfolio, { 'cash' : 100000 } );
 	this.set('content', new_one) ;
 
 //    this.transaction = this.get('store').transaction();
@@ -14,8 +14,7 @@ HelloEmber.PortfoliosNewController = Ember.ObjectController.extend({
     this.transaction.commit();
     this.transaction = null;
 	flash_message('Portfolio was successfully created.', 'success') ;	
-	this.transitionToRoute('portfolios');
-    
+	this.transitionToRoute('portfolios');    
   },
 
   cancel: function() {
