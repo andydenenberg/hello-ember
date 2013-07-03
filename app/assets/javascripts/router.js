@@ -1,5 +1,6 @@
 
 HelloEmber.Router.map(function() {
+  this.resource('system');
   this.resource('stocks', function() {
 	this.route('new');
 	this.route('edit', { path: '/:stock_id/edit' });

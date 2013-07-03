@@ -1,7 +1,7 @@
 <tr>
 <td>{{#linkTo "stock" stock}} {{stock.symbol}} {{/linkTo}}
 </td>
-<td style='text-align:right;'> {{decimal stock.quantity}} </td>
+<td style='text-align:right;'> {{stock.quantity}} </td>
 <td style='text-align:right;'> ${{decimal stock.purchase_price}} </td>
 <td style='text-align:right;'> ${{decimal stock.position_cost}} </td>
 <td style='text-align:right;'> <a href='#' class='popoverButton'>{{stock.latest_price}}</a> | {{stock.latest_time}}

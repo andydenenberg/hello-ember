@@ -24,6 +24,7 @@
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
   update_delay: 10000,
+  update_auto: true,
 
   ready: function() {
     console.log('HelloEmber ready!');
@@ -52,29 +53,33 @@ HelloEmber.Clock = Ember.Object.extend({
   },
 
   get_latest_price: function() {
-	stocks = HelloEmber.Stock.find().filter(function(stock) {
-	  return stock.get('id') != null;
-	});
-//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;	
-   stocks.forEach(function(stock){			
-   	$.ajax({  
- 		url: "/stocks/" + stock.get('id') + "/current_price/",  
- 		dataType: "json",  
- 		success: function(data) { 		
-    		//stock.set('latest_price', stock.get('latest_price') + 10 );
-   		console.log('updating', data.symbol, data.price, data.change) ;
-   		stock.set('latest_price', data.price );
-   		stock.set('latest_time', data.time );
-   		stock.set('daily_change', data.change );
-   		}  
-   	});			
-   });
+	if (HelloEmber.update_auto) {
+			stocks = HelloEmber.Stock.find().filter(function(stock) {
+			  return stock.get('id') != null;
+			});
+		//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;	
+		   stocks.forEach(function(stock){			
+		   	$.ajax({  
+		 		url: "/stocks/" + stock.get('id') + "/current_price/",  
+		 		dataType: "json",  
+		 		success: function(data) { 		
+		    		//stock.set('latest_price', stock.get('latest_price') + 10 );
+		   		console.log('updating', data.symbol, data.price, data.change) ;
+		   		stock.set('latest_price', data.price );
+		   		stock.set('latest_time', data.time );
+		   		stock.set('daily_change', data.change );
+		   		}  
+		   	});			
+		   });	
+		return stocks.length	
+	}
   },
 
   tick: function() {
     var now = new Date()
 
-	this.get_latest_price() ;
+	var poll = this.get_latest_price() ;
+	console.log('Polled: ', poll) ;
 
     this.setProperties({	
       second: now.getSeconds(),

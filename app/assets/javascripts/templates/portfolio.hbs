@@ -1,21 +1,26 @@
-<p class="box">{{name}} value ${{decimal portfolio_value}} cash ${{decimal cash}}</p>
+{{#if controller.isEditing}}
+  {{render "PortfolioEdit"}}
+{{else}}
 
-  {{#if display_list}}
-    <dd>
-		<table class='table table-condensed table-striped table-bordered'>
-		{{partial "partials/stock_table_header"}}
-	      {{#each stock in stocks}}
-			{{partial "partials/stock"}}
-	      {{/each}}
-		</table>
-    </dd>
-  {{else}}
-	<p class="box">None</p>
-	
-  {{/if}}
+	<p class="box">{{name}}</p>
+	  {{#if display_list}}
+	    <dd>
+			<table class='table table-condensed table-striped table-bordered'>
+			{{partial "partials/stock_table_header"}}
+		      {{#each stock in stocks}}
+				{{partial "partials/stock"}}
+		      {{/each}}
+			</table>
+	    </dd>
+	  {{else}}
+		<p class="box">No Positions</p>	
+	  {{/if}}
+	 value ${{decimal portfolio_value}} cash ${{decimal cash}}
 
-<div class="well well-small">
-  <a class="btn btn-mini btn-success" {{action startEditing}}>Edit</a>
-  <a class="btn btn-mini btn-danger" {{action destroy}}>Remove</a> | 
-  <button {{action cancel}} class='btn btn-mini'>Show All Portfolios</button>
-</div>
+	<div class="well well-small">
+	  <a class="btn btn-mini btn-success" {{action startEditing}}>Edit</a>
+	  <a class="btn btn-mini btn-danger" {{action destroy}}>Remove</a> | 
+	  <button {{action cancel}} class='btn btn-mini'>Show All Portfolios</button>
+	</div>
+
+{{/if}}

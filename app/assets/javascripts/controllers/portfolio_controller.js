@@ -1,5 +1,20 @@
 HelloEmber.PortfolioController = Em.ObjectController.extend({
-  	needs: ['portfolios'],
+  	needs: ['Portfolios'],
+	  isEditing: false,
+	  needs: ['PortfolioEdit'],
+
+	  startEditing: function() {
+	    var portfolioEditController = this.get('controllers.PortfolioEdit');
+	    portfolioEditController.set('content', this.get('content'));
+	    portfolioEditController.startEditing();
+	    this.set('isEditing', true);
+	  },
+
+	  stopEditing: function() {
+	    var portfolioEditController = this.get('controllers.PortfolioEdit');
+	    portfolioEditController.stopEditing();
+	    this.set('isEditing', false);
+	  },
 
 	refresh_timer: function(){
 	  // do something

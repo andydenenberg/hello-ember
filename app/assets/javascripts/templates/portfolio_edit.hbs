@@ -1,0 +1,38 @@
+<form {{action save on="submit"}} class="form-horizontal">
+  <legend>Edit Portfolio</span></legend>
+
+	<div class="control-group">
+	  <label class="control-label">Name</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="name" placeholder="Name" required="true"}}
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label" >Cash</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="cash" placeholder="Cash" required="true"}}
+	  </div>
+	</div>
+
+
+	<div class="control-group">
+	  <label class="control-label">Stocks</label><br>
+	  <div class="controls">
+	  {{#each stocks}}
+	    <div class="phone-number">
+	      Symbol: {{view Ember.TextField valueBinding="symbol" placeholder="Symbol"}}
+	      Shares: {{view Ember.TextField valueBinding="quantity" placeholder="Quantity"}}
+	      Purchase Price: {{view Ember.TextField valueBinding="purchase_price" placeholder="Purchase Price"}}
+
+	      <a class="btn btn-mini" {{action removeStock this}}><i class="icon-minus-sign"></i> Remove</a>
+	    </div>
+	  {{/each}}
+	  <a class="btn btn-mini" {{action addStock}}><i class="icon-plus-sign"></i> Add a Stock</a>
+	  </div>
+	</div>
+
+  <div class="form-actions">
+	<button  class="btn btn-mini btn-primary" type='submit'>Update</button>
+    <button class="btn btn-mini" {{action cancel}}>Cancel</button>
+  </div>
+</form>

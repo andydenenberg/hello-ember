@@ -1,0 +1,19 @@
+<h3>The System Page</h3>
+
+<div class="control-group">
+  <label class="control-label" >Update Delay</label>
+  <div class="controls">
+	<div class="input-append">
+		{{view Ember.TextField valueBinding="HelloEmber.update_delay" class='span5' required="true" }}
+		<span class="add-on">Milliseconds</span>
+	</div>
+  </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" >Automatic Update</label>
+  <div class="controls">
+		{{view Ember.Checkbox checkedBinding="HelloEmber.update_auto" }}
+	</div>
+  </div>
+</div>
