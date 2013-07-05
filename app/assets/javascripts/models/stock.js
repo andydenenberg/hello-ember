@@ -21,5 +21,12 @@ HelloEmber.Stock  = DS.Model.extend({
 	return this.get('quantity') * this.get('latest_price')
   }.property('quantity', 'latest_price').cacheable(),
 
+  days_held: function() {
+	var date1 = new Date( this.get('created_date') );
+	var date2 = new Date( ) ;
+	var diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24)); 	
+	return diffDays
+  }.property().cacheable()
+
 
 });

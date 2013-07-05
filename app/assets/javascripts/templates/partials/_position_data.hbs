@@ -1,20 +1,8 @@
 <tr>
-<td>{{#linkTo "stock" stock}} {{stock.symbol}} {{/linkTo}}
-</td>
+<td>{{#linkTo "stock" stock}} {{stock.symbol}} {{/linkTo}}</td>
 <td style='text-align:right;'> {{stock.quantity}} </td>
 <td style='text-align:right;'> ${{decimal stock.purchase_price}} </td>
 <td style='text-align:right;'> ${{decimal stock.position_cost}} </td>
-<td style='text-align:right;'> <a href='#' class='popoverButton'>{{stock.latest_price}}</a> | {{stock.latest_time}}
-
-
-
-<div {{bindAttr id="stock.id"}} style="display:none" >
-    {{stock.latest_price}}    
-</div>
-
-{{view HelloEmber.PopoverView templateName="popover-content" parentSelector=".popoverButton" contentSelector="#popover-content" }}
-
-</td>
 <td style='text-align:right;'> ${{decimal stock.position_value}} </td>
 <td style='text-align:center;'>{{stock.created_date}}</td>
 <td> {{stock.portfolio.name}}</td>
@@ -23,9 +11,4 @@
 	({{stock.state}})
 </td>
 </tr>
-
-
-<script>
-$('.popover-with-html').popover({ html : true });
-</script>
 

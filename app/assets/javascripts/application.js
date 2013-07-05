@@ -24,13 +24,21 @@
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
   update_delay: 10000,
-  update_auto: true,
+  update_auto: false,
 
   ready: function() {
     console.log('HelloEmber ready!');
-  }
+  },
+
 });
 
+HelloEmber.ApplicationController = Ember.ObjectController.extend({
+  toggle_update_auto: function() {
+	update_auto = HelloEmber.get('update_auto') ;
+	update_auto = update_auto ? false : true ;
+	HelloEmber.set('update_auto', update_auto) ;		
+  }
+})
 //= require_tree .
 
 function flash_message(message,severity) {

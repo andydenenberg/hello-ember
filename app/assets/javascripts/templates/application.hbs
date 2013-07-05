@@ -4,22 +4,19 @@
       <div class="brand">			
 			{{#linkTo "portfolios"}}Portfolios{{/linkTo}} |
 			{{#linkTo "stocks"}}Stocks{{/linkTo}} |
+			{{#linkTo "system"}}System{{/linkTo}} |
 			<a href='/'>Exit</a>			
 	  </div>
 	
-		<ul class="nav pull-right">
-	          <li id="fat-menu" class="dropdown">
-	            <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">System <b class="caret"></b></a>
-	            <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-				  <li>{{#linkTo 'system'}}System{{/linkTo}}</li>
-	              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-	              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-	              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-	              <li role="presentation" class="divider"></li>
-	              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-	            </ul>
-	          </li>
-	    </ul>
+	
+	  <ul class="nav pull-right">
+		<div class="btn-group">
+			{{#linkTo "system" class='btn'}}System{{/linkTo}}
+			<button {{action toggle_update_auto}} {{bindAttr class="view.toggle_update_class"}}>
+			{{auto_update HelloEmber.update_auto}}</button>
+		</div>
+	  </ul>
+	
 		
     </div>
   </div>

@@ -25,6 +25,14 @@ HelloEmber.StocksController = Em.ArrayController.extend({
 	return total // Ember.inspect( this.count )
 	}.property('with_ids.@each.position_value'),
 
+  total_change: function() {
+	var total = 0 ;
+			this.get('with_ids').forEach(function(stock){
+				total += stock.get('daily_change') * stock.get('quantity');			
+			});
+	return total // Ember.inspect( this.count )
+	}.property('with_ids.@each.daily_change'),
+
 // methods
   add_stock: function() {
 	// method for testing - not used in program 

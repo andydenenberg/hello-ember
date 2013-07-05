@@ -1,0 +1,10 @@
+<p>{{#if controller.with_ids}}
+	<table class='table table-condensed table-striped table-bordered'>
+		{{partial "partials/position_header"}}
+	{{#each stock in with_ids}}
+		{{partial "partials/position_data"}}
+	{{/each}}
+		{{partial "partials/position_totals"}}
+	</table>
+{{/if}}
+</p>

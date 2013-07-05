@@ -1,0 +1,7 @@
+<table class='table table-condensed table-striped table-bordered'>
+	{{partial "partials/gain_loss_header"}}	
+		{{#each stock in with_ids}}
+			{{partial "partials/gain_loss_data"}}	
+		{{/each}}
+	{{partial "partials/gain_loss_totals"}}	
+</table>

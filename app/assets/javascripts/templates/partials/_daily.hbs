@@ -1,0 +1,11 @@
+<table class='table table-condensed table-striped table-bordered'>
+	{{partial "partials/daily_header"}}
+		{{#each stock in with_ids}}
+			{{partial "partials/daily_data"}}
+		{{/each}}
+	{{partial "partials/daily_totals"}}
+</table>
+
+
+
+

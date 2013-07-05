@@ -1,0 +1,10 @@
+<tr>
+	<td>{{#linkTo "stock" stock}} {{stock.symbol}} {{/linkTo}}</td>
+	<td style='text-align:right;'> {{integer stock.quantity}} </td>
+	<td style='text-align:right;'> ${{decimal stock.purchase_price}} </td>
+	<td style='text-align:right;'> ${{decimal stock.position_cost}} </td>
+	<td style='text-align:right;'> ${{decimal stock.position_value}} </td>
+	<td style='text-align:right;'> ${{subtract stock.position_value stock.position_cost}} </td>
+	<td style='text-align:right;'> {{stock.days_held}} </td>
+	<td> {{stock.portfolio.name}}</td>
+</tr>

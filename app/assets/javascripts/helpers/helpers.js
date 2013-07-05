@@ -2,9 +2,28 @@ function numberWithCommas(n) {
     var parts=n.toString().split(".");
     return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
 }
+
+Ember.Handlebars.registerBoundHelper("add", function(lvalue, rvalue) {
+	if (lvalue != null && rvalue != null) { return numberWithCommas( (parseFloat(lvalue) + parseFloat(rvalue)).toFixed(2)) }
+	else { return 0 }
+});
+
+Ember.Handlebars.registerBoundHelper("subtract", function(lvalue, rvalue) {
+	if (lvalue != null && rvalue != null) { return numberWithCommas( (parseFloat(lvalue) - parseFloat(rvalue)).toFixed(2)) }
+	else { return 0 }
+});
 	
-Ember.Handlebars.registerBoundHelper('decimal', function(contact) {
-  return numberWithCommas(Number(contact).toFixed(2))
+Ember.Handlebars.registerBoundHelper("mult", function(lvalue, rvalue) {
+	if (lvalue != null && rvalue != null) { return numberWithCommas( (parseFloat(lvalue) * parseFloat(rvalue)).toFixed(2)) }
+	else { return 0 }
+});
+
+Ember.Handlebars.registerBoundHelper('decimal', function(number) {
+  return numberWithCommas(Number(number).toFixed(2)) ;
+});
+
+Ember.Handlebars.registerBoundHelper('integer', function(number) {
+  return numberWithCommas(Number(number).toFixed(0)) ;
 });
 
 Ember.Handlebars.registerBoundHelper('sort_arrow', function(value, options) {
@@ -30,15 +49,13 @@ Handlebars.registerHelper('mailto', function(field) {
   }
 });
 
-// {{colorize_route App.current_path}}
-Ember.Handlebars.registerBoundHelper('colorize_route', function(value, options) {
-	color = 'label-info' ;
-	flag = '' ;
-	if (value == 'contacts.contact') { 
-		color = 'label-success';
-	    flag = '<img src="assets/flash_flag.gif"></img>' 
-	}
-  var escaped = Handlebars.Utils.escapeExpression(value);
-  return new Handlebars.SafeString('<span class="label ' + color + '">' + escaped + '</span>' + flag );
+Ember.Handlebars.registerBoundHelper('auto_update', function(value, options) {
+	
+		flag = '<i class="icon-off"></i> Idle' 
+		if (value) {
+			flag = '<i class="icon-repeat"></i> Updating' 
+		}
+	    
+  return new Handlebars.SafeString(flag );
 });
 

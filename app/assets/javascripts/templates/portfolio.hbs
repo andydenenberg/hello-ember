@@ -2,25 +2,57 @@
   {{render "PortfolioEdit"}}
 {{else}}
 
-	<p class="box">{{name}}</p>
-	  {{#if display_list}}
-	    <dd>
-			<table class='table table-condensed table-striped table-bordered'>
-			{{partial "partials/stock_table_header"}}
-		      {{#each stock in stocks}}
-				{{partial "partials/stock"}}
-		      {{/each}}
-			</table>
-	    </dd>
-	  {{else}}
-		<p class="box">No Positions</p>	
-	  {{/if}}
-	 value ${{decimal portfolio_value}} cash ${{decimal cash}}
+<p class="box">{{name}}</p>
+    <dd>
+			
+	    <ul id="myTab" class="nav nav-tabs">
+	      <li class="active"><a href="#daily" data-toggle="tab">Daily</a></li>
+	      <li class=""><a href="#gain_loss" data-toggle="tab">Gain/Loss</a></li>
+	      <li class=""><a href="#position" data-toggle="tab">Position</a></li>
+	    </ul>
+	    <div id="myTabContent" class="tab-content">
+	      <div class="tab-pane active fade in" id="daily">
 
-	<div class="well well-small">
-	  <a class="btn btn-mini btn-success" {{action startEditing}}>Edit</a>
-	  <a class="btn btn-mini btn-danger" {{action destroy}}>Remove</a> | 
-	  <button {{action cancel}} class='btn btn-mini'>Show All Portfolios</button>
-	</div>
+			<table class='table table-condensed table-striped table-bordered'>
+				{{partial "partials/daily_header"}}
+					{{#each stock in stocks}}
+						{{partial "partials/daily_data"}}
+					{{/each}}
+				{{partial "partials/daily_totals"}}
+			</table>
+
+	      </div>
+	      <div class="tab-pane fade" id="gain_loss">
+
+			<table class='table table-condensed table-striped table-bordered'>
+				{{partial "partials/gain_loss_header"}}	
+					{{#each stock in stocks}}
+						{{partial "partials/gain_loss_data"}}	
+					{{/each}}
+				{{partial "partials/gain_loss_totals"}}	
+			</table>
+
+	      </div>
+	      <div class="tab-pane fade" id="position">
+
+			<table class='table table-condensed table-striped table-bordered'>
+				{{partial "partials/position_header"}}
+			{{#each stock in stocks}}
+				{{partial "partials/position_data"}}
+			{{/each}}
+				{{partial "partials/position_totals"}}
+			</table>
+
+		</p>
+	      </div>
+	    </div>
+		    
+	    </dd>
+
+<div class="well well-small">
+  <a class="btn btn-mini btn-success" {{action startEditing}}>Edit</a>
+  <a class="btn btn-mini btn-danger" {{action destroy}}>Remove</a> | 
+  <button {{action cancel}} class='btn btn-mini'>Show All Portfolios</button>
+</div>
 
 {{/if}}
