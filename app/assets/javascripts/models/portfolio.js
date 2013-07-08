@@ -30,5 +30,8 @@ HelloEmber.Portfolio  = DS.Model.extend({
 	return this.get('stocks').get('length') > 0
   }.property('stocks.@each'),
 
+	didLoad: function() {
+    console.log('portfolio:didLoad model:', this.toJSON());
+  },
 
 });

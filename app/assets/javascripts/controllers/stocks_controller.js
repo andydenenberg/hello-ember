@@ -1,6 +1,11 @@
 HelloEmber.StocksController = Em.ArrayController.extend({
   activeStockId: null,
 
+  display_list: function() {
+	// hide stocks listing if one is selected of if list is blank
+	return (this.activeStockId === null) && (this.content.get('length') > 0) 	
+  }.property('activeStockId','content.@each'),
+
   with_ids: function(){        
     return this.content.filter(function(stock) {
 	  return stock.get('id') != null;

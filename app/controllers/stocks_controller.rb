@@ -4,6 +4,15 @@ class StocksController < ApplicationController
     render json: Stock.all
   end
   
+  def quote
+    symbol = params[:symbol]
+    
+    price = MarketBeat.last_trade_real_time(symbol).to_f
+    time = MarketBeat.last_trade_time_real_time(symbol)
+    change = MarketBeat.change_real_time(symbol)
+    render json: { 'symbol' => symbol, 'price' => price, 'time' => time, 'change' => change }  
+  end
+  
   def current_price
     puts Price.update_counter
     Price.inc_counter

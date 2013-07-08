@@ -9,6 +9,10 @@ HelloEmber::Application.routes.draw do
     member do
       get 'current_price'
     end
+    
+    collection do
+      get 'quote'
+    end
   end
     
   resources :portfolios

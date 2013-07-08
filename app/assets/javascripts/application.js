@@ -50,6 +50,18 @@ function flash_message(message,severity) {
 	});	
 };
 
+
+function current_quote(symbol, controller) {
+	$.ajax({  
+ 		url: "/stocks/quote?symbol=" + symbol,  
+ 		dataType: "json",  
+ 		success: function(data) { 
+		controller.set('new_stock_price', data.price) ;
+		controller.set('new_stock_price_change', 'Daily Change: $' + data.change + ' at ' + data.time ); 
+   		}  
+   	});				
+}
+
 HelloEmber.Clock = Ember.Object.extend({
   second: null,
   minute: null,
@@ -57,7 +69,6 @@ HelloEmber.Clock = Ember.Object.extend({
 
   init: function() {
     this.tick();
-	
   },
 
   get_latest_price: function() {
@@ -66,7 +77,7 @@ HelloEmber.Clock = Ember.Object.extend({
 			  return stock.get('id') != null;
 			});
 		//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;	
-		   stocks.forEach(function(stock){			
+		   stocks.forEach(function(stock){	
 		   	$.ajax({  
 		 		url: "/stocks/" + stock.get('id') + "/current_price/",  
 		 		dataType: "json",  

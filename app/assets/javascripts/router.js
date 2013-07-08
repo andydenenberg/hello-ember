@@ -9,6 +9,7 @@ HelloEmber.Router.map(function() {
   });
   this.resource('portfolios', function() {
 	this.route('new');
+	this.route('position', { path: '/:portfolio_id/position' } );
 	this.route('edit', { path: '/:portfolio_id/edit' });
 //	this.route('delete', { path: '/:portfolio_id/delete' });
     this.resource('portfolio', {path: ':portfolio_id'});

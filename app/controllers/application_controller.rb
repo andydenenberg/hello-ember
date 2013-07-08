@@ -3,8 +3,16 @@ class ApplicationController < ActionController::Base
 
   class Price
     # Repository of latest prices of stocks
+    
     @@stocks = { }
     @@update_counter = 0
+    
+    def self.list_all_stocks
+      @@stocks.each do |stock|
+        puts "#{stock[0]} => #{stock[1]}"
+      end
+      
+    end
 
     def self.update_counter
       @@update_counter
@@ -14,6 +22,11 @@ class ApplicationController < ActionController::Base
       if @@update_counter > 10
         @@update_counter = 0
         refresh_prices
+        
+        puts '@@stocks'
+        self.list_all_stocks
+        puts ' '
+        
       else
         @@update_counter += 1
       end

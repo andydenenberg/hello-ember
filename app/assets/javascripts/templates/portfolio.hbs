@@ -3,8 +3,9 @@
 {{else}}
 
 <p class="box">{{name}}</p>
-    <dd>
-			
+<p> {{#linkTo 'portfolios.position' content class='btn btn-mini btn-success'}} New Position {{/linkTo}}</p>
+
+    <dd>			
 	    <ul id="myTab" class="nav nav-tabs">
 	      <li class="active"><a href="#daily" data-toggle="tab">Daily</a></li>
 	      <li class=""><a href="#gain_loss" data-toggle="tab">Gain/Loss</a></li>
