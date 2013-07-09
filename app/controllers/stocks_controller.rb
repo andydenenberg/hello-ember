@@ -57,8 +57,7 @@ class StocksController < ApplicationController
   private
 
     def permitted_params
-      params.require(:stock).permit(:symbol,
-                                      :quantity, :purchase_price, :portfolio_id, :id )
+      params.require(:stock).permit(:symbol, :quantity, :purchase_price, :portfolio_id, :id, :purchase_date )
     end
 
     def update_stock(stock)

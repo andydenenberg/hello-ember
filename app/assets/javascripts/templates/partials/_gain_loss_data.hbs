@@ -5,6 +5,6 @@
 	<td style='text-align:right;'> ${{decimal stock.position_cost}} </td>
 	<td style='text-align:right;'> ${{decimal stock.position_value}} </td>
 	<td style='text-align:right;'> ${{subtract stock.position_value stock.position_cost}} </td>
-	<td style='text-align:right;'> {{stock.days_held}} </td>
-	<td> {{stock.portfolio.name}}</td>
+	<td style='text-align:right;'> {{integer stock.days_held}} </td>
+	<td style='text-align:right;'> {{stock.purchase_date}}</td>
 </tr>

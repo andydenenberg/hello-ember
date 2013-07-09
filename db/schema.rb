@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130702145025) do
+ActiveRecord::Schema.define(:version => 20130709194409) do
 
   create_table "portfolios", :force => true do |t|
     t.string   "name"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20130702145025) do
     t.datetime "created_at",                                    :null => false
     t.datetime "updated_at",                                    :null => false
     t.integer  "portfolio_id"
+    t.string   "purchase_date"
   end
 
 end

@@ -11,7 +11,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 
   display_list: function() {
 	// hide portfolio listing if one is selected of if list is blank
-	return (this.activePortfolioId === null) && (this.content.get('length') > 0) 	
+	return (this.activePortfolioId == null) && (this.content.get('length') > 0) 	
   }.property('activePortfolioId','content.@each'),
 
   sort: function() {
@@ -46,7 +46,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 			});
 	return total
 	}.property('content.@each.cash'),
-
+	
   delete_portfolio: function(portfolio) {
     if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
 		portfolio.get('stocks').forEach(function(stock) {
@@ -55,6 +55,6 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 		portfolio.deleteRecord() ;
 		this.store.commit();
 	}
-  }
+  },
 	
 });

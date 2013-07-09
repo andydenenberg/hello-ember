@@ -3,7 +3,9 @@
 		{{#each stock in with_ids}}
 			{{partial "partials/daily_data"}}
 		{{/each}}
-	{{partial "partials/daily_totals"}}
+	{{#if cash}}
+		{{partial "partials/daily_totals"}}
+	{{/if}}
 </table>
 
 

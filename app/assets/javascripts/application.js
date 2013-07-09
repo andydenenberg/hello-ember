@@ -24,7 +24,7 @@
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
   update_delay: 10000,
-  update_auto: false,
+  update_auto: true,
 
   ready: function() {
     console.log('HelloEmber ready!');

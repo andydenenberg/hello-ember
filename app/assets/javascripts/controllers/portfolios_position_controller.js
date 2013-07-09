@@ -29,18 +29,24 @@ HelloEmber.PortfoliosPositionController = Em.ObjectController.extend({
 			var portfolio = this.get('content');
 		    var transaction = portfolio.get('store').transaction();
 		    transaction.add(portfolio);
+			var purchase_date = new Date();
+			    var curr_date =  '' + purchase_date.getDate();
+				if (curr_date.length < 2) { curr_date = '0' + curr_date } ;
+			    var curr_month = '' + (purchase_date.getMonth() + 1) ; //Months are zero based
+				if (curr_month.length < 2) { curr_month = '0' + curr_month } ;
+			    var curr_year = purchase_date.getFullYear();
+			    var pdate = curr_month + '/' + curr_date + "/" + curr_year ;
 			var position = transaction.createRecord(HelloEmber.Stock, 
 				{ 'symbol' : this.get('new_stock_symbol'),
 				  'quantity' : this.get('new_stock_quantity'),
 				  'purchase_price' : this.get('new_stock_price'),
+				  'purchase_date' : pdate,
 				  'portfolio' : portfolio 
 				});
 			var cash = portfolio.get('cash') - Number(this.get('new_stock_quantity') * this.get('new_stock_price') ) ;
-			alert(cash) ;
 			portfolio.set('cash', cash ) ;
 			this.transaction = transaction ;
-			
-			
+						
 		    this.transaction.commit();
 		    this.transaction = null;
 			flash_message('Position was successfully created.', 'success') ;	

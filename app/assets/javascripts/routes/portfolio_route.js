@@ -3,7 +3,7 @@ HelloEmber.PortfolioRoute = Ember.Route.extend({
   setupController: function(controller, model) {
 	this.controller.set('content', model ) ;
     // highlight this portfolio as active
-    this.controllerFor('portfolios').set('activePortfolioId', model.get('id'));
+    this.controllerFor('portfolios').set('activePortfolioId', model.get('id'));		
   },
 
   deactivate: function() {

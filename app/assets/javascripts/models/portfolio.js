@@ -15,7 +15,7 @@ HelloEmber.Portfolio  = DS.Model.extend({
 			cost += stock.get('position_value') ;
 			//cost += stock.get('quantity') * stock.get('latest_price') ;				
 		});
-	return cost
+	return cost + this.get('cash')
  	}.property('stocks.@each.position_value').cacheable(),
 
   portfolio_daily: function() {

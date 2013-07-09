@@ -18,7 +18,7 @@
 
 {{#if controller.activePortfolioId}}
 {{else}}
-	<p class="box">Portfolios {{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Add Portfolio{{/linkTo}}</p>
+	<p class="box">Portfolios {{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Portfolio{{/linkTo}}</p>
 {{/if}}
 
 	{{outlet}}
@@ -27,12 +27,12 @@
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
 			<th>Full Name</th>
-			<th># of Stocks</th>
-			<th>Total Value of Stocks
+			<th style='text-align:right;'>Cash</th>
+			<th style='text-align:right;'>Stocks</th>
+			<th style='text-align:right;'>Total Value
 			<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
 			</th>
-			<th>Daily Change</th>
-			<th>Cash</th>
+			<th style='text-align:right;'>Daily Change</th>
 			<th>Controls</th>
 		</tr>
 	  {{#each portfolio in controller}}
@@ -41,11 +41,14 @@
 		</tr>
 	  {{/each}}
 		<tr>
-			<td></td>
-			<td style='text-align:right;'>Totals: </td>
+			<td colspan=7></td>
+		</tr>
+		<tr>
+			<th style='text-align:right;'>Totals: </th>
+			<td style='text-align:right;'>${{decimal total_cash}}</td>
+			<td style='text-align:right;'>${{subtract total_stocks total_cash}}</td>			
 			<td style='text-align:right;'>${{decimal total_stocks}}</td>
 			<td style='text-align:right;'>${{decimal total_daily}}</td>
-			<td style='text-align:right;'>${{decimal total_cash}}</td>
 			<td></td>
 		</tr>
 	  </table>

@@ -1,9 +1,17 @@
 HelloEmber.PortfolioController = Em.ObjectController.extend({
+	isEditing: false,
+	needs: ['PortfolioEdit'],
+	
+//	sortProperties: ['???'],
+//    sortAscending: false,
+//
+// need to find a way to sort stocks.. sortProperties works with content..
 
-//  display_stocks: function() {
-//	alert(this.get('stocks').get('length') > 0 ) ;
-//	return this.get('stocks').get('length') > 0 
-//  }.property('stocks'),
+//  	sort: function() {
+//		direction = this.get('sortAscending') ;
+//		if (direction == true) { this.set('sortAscending', false) ;	}
+//		else { this.set('sortAscending', true) ; };    
+//	  },
 	
   	total_cost: function() {
 	var total = 0 ;
@@ -29,10 +37,6 @@ HelloEmber.PortfolioController = Em.ObjectController.extend({
 	return total 
 	}.property('stocks.@each.daily_change'),
   
-  	needs: ['Portfolios'],
-	  isEditing: false,
-	  needs: ['PortfolioEdit'],
-
 	  startEditing: function() {
 	    var portfolioEditController = this.get('controllers.PortfolioEdit');
 	    portfolioEditController.set('content', this.get('content'));
@@ -55,10 +59,15 @@ HelloEmber.PortfolioController = Em.ObjectController.extend({
 		this.transitionToRoute('portfolios');
   	},
 
-	destroy: function() {
-	    var PortfoliosController = this.get('controllers.portfolios');	
-	    PortfoliosController.delete_portfolio(this.get('content'));
-		this.transitionToRoute('portfolios');
+	destroy: function(portfolio) {
+	    if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
+			portfolio.get('stocks').forEach(function(stock) {
+				stock.deleteRecord() ;
+			});
+			portfolio.deleteRecord() ;
+			this.store.commit();
+	        this.transitionToRoute('portfolios');
+		}
 	}
 
 });

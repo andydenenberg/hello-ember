@@ -3,5 +3,7 @@
 		{{#each stock in with_ids}}
 			{{partial "partials/gain_loss_data"}}	
 		{{/each}}
-	{{partial "partials/gain_loss_totals"}}	
+	{{#if cash}}
+		{{partial "partials/gain_loss_totals"}}	
+	{{/if}}
 </table>

@@ -3,7 +3,8 @@ HelloEmber.Stock  = DS.Model.extend({
   quantity: DS.attr('number'),
   purchase_price: DS.attr('number'),
   portfolio: DS.belongsTo('HelloEmber.Portfolio'),
-  created_date: DS.attr('string'), // javascript ready from rails serializer
+//  created_date: DS.attr('string'), // javascript ready from rails serializer
+  purchase_date: DS.attr('string'), 
   latest_price: null,
   latest_time: null,
   daily_change: null,
@@ -22,7 +23,7 @@ HelloEmber.Stock  = DS.Model.extend({
   }.property('quantity', 'latest_price').cacheable(),
 
   days_held: function() {
-	var date1 = new Date( this.get('created_date') );
+	var date1 = new Date( this.get('purchase_date') );
 	var date2 = new Date( ) ;
 	var diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24)); 	
 	return diffDays

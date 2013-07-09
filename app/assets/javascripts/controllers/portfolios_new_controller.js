@@ -1,20 +1,27 @@
 HelloEmber.PortfoliosNewController = Ember.ObjectController.extend({
+  needs: ['Portfolios'],
 
   createNew: function() {
     this.transaction = this.get('store').transaction();
     var new_one = this.transaction.createRecord(HelloEmber.Portfolio, { 'cash' : 100000 } );
 	this.set('content', new_one) ;
-
-//    this.transaction = this.get('store').transaction();
-//    this.set('content', this.transaction.createRecord(HelloEmber.Portfolio, {} ));
-
   },
 
+  RecordHasID: function() {
+//	this.transitionToRoute('portfolios');    
+//	this.transitionToRoute('portfolio', this.content);    
+// this.get('content').reload();
+	},
+
   save: function() {
+	console.log('content', this.content.toJSON() ) ;
     this.transaction.commit();
-    this.transaction = null;
-	flash_message('Portfolio was successfully created.', 'success') ;	
-	this.transitionToRoute('portfolios');    
+	flash_message('Portfolio was successfully created.', 'success') ;
+	this.transaction = null;
+//	this.content.addObserver('id', this, 'RecordHasID');
+//this.transitionToRoute('system');    
+this.transitionToRoute('portfolios.position', this.content);    
+    
   },
 
   cancel: function() {
