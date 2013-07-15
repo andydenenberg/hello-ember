@@ -16,7 +16,14 @@ HelloEmber.StocksEditController = Em.ObjectController.extend({
 	var stock = this.get('content') ;	
 	stock.set('portfolio', portfolio );
 //	console.log('data attributes', stock.get('data.attributes')) ;
-	portfolio.get('stocks').createRecord({ 'symbol': stock.get('symbol'), 'quantity': stock.get('quantity'), 'purchase_price': stock.get('purchase_price'), 'purchase_date': stock.get('purchase_date') });
+	portfolio.get('stocks').createRecord({ 
+	 'symbol': stock.get('symbol'),
+	 'quantity': stock.get('quantity'),
+	 'purchase_price': stock.get('purchase_price'),
+	 'purchase_date': stock.get('purchase_date'),
+	 'stock_option': stock.get('stock_option'),
+	 'strike' : stock.get('strike'),
+	 'expiration_date' : stock.get('expiration_date') });
 	
 	stock.deleteRecord() ;
     this.store.commit();

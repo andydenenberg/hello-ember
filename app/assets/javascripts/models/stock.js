@@ -1,13 +1,32 @@
 HelloEmber.Stock  = DS.Model.extend({
   symbol: DS.attr('string'),
   quantity: DS.attr('number'),
+
   purchase_price: DS.attr('number'),
   portfolio: DS.belongsTo('HelloEmber.Portfolio'),
-//  created_date: DS.attr('string'), // javascript ready from rails serializer
+
   purchase_date: DS.attr('string'), 
+  strike: DS.attr('number'),
+  expiration_date: DS.attr('string'),
+  stock_option: DS.attr('string'),
+
+  stock_or_option: function() {
+  	return this.get('stock_option') == 'Stock' ;
+  }.property('stock_option').cacheable(),
+
+  value_quantity: function() {
+	value = this.get('quantity')
+	if (this.get('stock_option') != 'Stock') { value = value * 100 }
+	return value
+  }.property('quantity').cacheable(),
+
   latest_price: null,
   latest_time: null,
   daily_change: null,
+
+  bid: null,
+  ask: null,
+  previous_close: null,
 
   state: function() {	
 	state = this.get("stateManager.currentState.name") ;
@@ -15,12 +34,16 @@ HelloEmber.Stock  = DS.Model.extend({
   }.property('isDirty').cacheable(),
 
   position_cost: function() {
-	return this.get('quantity') * this.get('purchase_price')
-  }.property('quantity', 'purchase_price').cacheable(),
+	value = this.get('value_quantity') * this.get('purchase_price')
+	if (this.get('stock_option') == 1) { value = value * 100 }
+	return value 
+  }.property('value_quantity', 'purchase_price').cacheable(),
 
   position_value: function() {
-	return this.get('quantity') * this.get('latest_price')
-  }.property('quantity', 'latest_price').cacheable(),
+	value = this.get('value_quantity') * this.get('latest_price')
+	if (this.get('stock_option') == 1) { value = value * 100 }
+	return value
+  }.property('value_quantity', 'latest_price').cacheable(),
 
   days_held: function() {
 	var date1 = new Date( this.get('purchase_date') );

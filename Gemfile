@@ -17,6 +17,8 @@ gem 'strong_parameters'
 gem 'anjlab-bootstrap-rails', '>= 2.1', :require => 'bootstrap-rails'
 
 gem 'market_beat'
+gem 'mechanize'
+gem 'nokogiri'
  
 # Gems used only for assets and not required
 # in production environments by default.

@@ -29,13 +29,17 @@ HelloEmber.PortfolioController = Em.ObjectController.extend({
 	return total 
 	}.property('stocks.@each.position_value'),
 
-  	total_change: function() {
-	var total = 0 ;
-			this.get('stocks').forEach(function(stock){
-				total += stock.get('daily_change') * stock.get('quantity');			
-			});
-	return total 
-	}.property('stocks.@each.daily_change'),
+//  redundent - now in model
+//
+//  	total_change: function() {
+//	var total = 0 ;
+//			this.get('stocks').forEach(function(stock){
+//				summ = stock.get('daily_change') * stock.get('quantity') ;				
+//				if (!stock.get('stock_or_option')) { summ = summ * 100 } ;
+//				total += summ ;			
+//			});
+//	return total 
+//	}.property('stocks.@each.daily_change'),
   
 	  startEditing: function() {
 	    var portfolioEditController = this.get('controllers.PortfolioEdit');

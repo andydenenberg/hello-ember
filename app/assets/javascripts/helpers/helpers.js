@@ -18,6 +18,11 @@ Ember.Handlebars.registerBoundHelper("mult", function(lvalue, rvalue) {
 	else { return 0 }
 });
 
+Ember.Handlebars.registerBoundHelper("mult_100", function(lvalue, rvalue) {
+	if (lvalue != null && rvalue != null) { return numberWithCommas( (100 * parseFloat(lvalue) * parseFloat(rvalue)).toFixed(2)) }
+	else { return 0 }
+});
+
 Ember.Handlebars.registerBoundHelper('decimal', function(number) {
   return numberWithCommas(Number(number).toFixed(2)) ;
 });

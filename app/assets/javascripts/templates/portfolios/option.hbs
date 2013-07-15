@@ -1,0 +1,64 @@
+
+<form {{action save on="submit"}} class="form-horizontal">
+  <legend><span class="label label-info">New Option Position</span> in {{content.name}}</legend>
+
+	<div class="control-group">
+	  <label class="control-label" >Available Cash</label>
+	  <div class="controls">
+		<div class="input-prepend input-append">
+		  <span class="add-on">$</span>
+		{{view Ember.TextField class='input-small uneditable-input span2' valueBinding="cash" placeholder="Cash" required="true"}}
+			<span class="add-on"></span>
+		</div>
+	  </div>
+	</div>
+
+	<div class="control-group">
+	  <label class="control-label">Symbol</label>
+	  <div class="controls">	
+		<div class="input-append">
+		{{view Ember.TextField class='span5' valueBinding="new_stock_symbol" placeholder="Symbol" required="true"}}
+			<button {{action get_price}} class="btn">Get Price</button>
+			</div>
+	  </div>
+	</div>
+	
+	<div class="control-group">
+	  <label class="control-label" >Price</label>
+	  <div class="controls">
+		<div class="input-prepend input-append">
+		  	<span class="add-on">$</span>
+			{{view Ember.TextField class='span5' valueBinding="new_stock_price" placeholder="Price" required="true"}}
+			<span class="add-on">{{new_stock_price_change}}</span>
+		</div>
+	  </div>
+	</div>
+
+	<div class="control-group">
+	  <label class="control-label" >Quantity</label>
+	  <div class="controls">
+		<div class="input-prepend input-append">
+			<span class="add-on"></span>
+			{{view Ember.TextField class='span5' valueBinding="new_stock_quantity" placeholder="Quantity" required="true"}}
+			<span class="add-on">{{max_quantity}}</span>
+		</div>
+	  </div>
+	</div>
+
+	<div class="control-group">
+	  <label class="control-label" >Total Cost</label>
+	  <div class="controls">
+		<div class="input-prepend input-append">
+		  <span class="add-on">$</span>
+		{{view Ember.TextField class='span5' valueBinding="new_stock_total_cost" placeholder="Total Cost" required="true"}}
+			<span class="add-on"></span>
+		</div>
+	  </div>
+	</div>
+
+  <div class="form-actions">
+    <button {{action purchase}} class="btn btn-mini btn-primary">Save</button>
+	<button {{action cancel}} class='btn btn-mini'>Cancel</button>
+  </div>
+
+</form>

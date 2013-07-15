@@ -1,5 +1,5 @@
 <form class="form-horizontal">
-  <legend>Edit Stock</legend>
+  <legend>Stock</legend>
 
 <div class="control-group">
 <dl class="dl-horizontal">
@@ -7,6 +7,8 @@
 	<dd><b>{{symbol}}</b></dd>
     <dt>Acquired:</dt>
     <dd>{{purchase_date}}</dd>
+    <dt>Days Held:</dt>
+    <dd>{{days_held}}</dd>
     <dt>Quantity:</dt>
     <dd>{{decimal quantity}}</dd>
     <dt>Price:</dt>
@@ -14,7 +16,16 @@
     <dt>Cost:</dt>
     <dd>${{decimal position_cost}}</dd>			
     <dt>Belongs to:</dt>
-    <dd>{{portfolio.name}}</dd>			
+    <dd>{{portfolio.name}} Portfolio</dd>
+{{#if stock_or_option}}
+{{else}}
+	<h5>Option</h5>
+	<dt>Type:</dt>
+	<dd>{{stock_option}}</dd>			
+	<dt>Strike:</dt>
+	<dd>{{strike}}</dd>
+{{/if}}	
+		
 </dl>
 </div>
 

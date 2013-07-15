@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130709194409) do
+ActiveRecord::Schema.define(:version => 20130714011436) do
 
   create_table "portfolios", :force => true do |t|
     t.string   "name"
@@ -23,12 +23,15 @@ ActiveRecord::Schema.define(:version => 20130709194409) do
 
   create_table "stocks", :force => true do |t|
     t.string   "symbol"
-    t.decimal  "quantity",       :precision => 10, :scale => 0
-    t.decimal  "purchase_price", :precision => 10, :scale => 0
-    t.datetime "created_at",                                    :null => false
-    t.datetime "updated_at",                                    :null => false
+    t.decimal  "quantity",        :precision => 10, :scale => 0
+    t.decimal  "purchase_price",  :precision => 10, :scale => 2
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
     t.integer  "portfolio_id"
     t.string   "purchase_date"
+    t.decimal  "strike",          :precision => 10, :scale => 0
+    t.string   "expiration_date"
+    t.string   "stock_option"
   end
 
 end

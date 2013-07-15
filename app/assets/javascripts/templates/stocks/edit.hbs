@@ -1,43 +1,70 @@
-
 <form {{action save on="submit"}} class="form-horizontal">
   <legend>Edit Stock</legend>
 
-<div class="control-group">
-  <label class="control-label" for="Symbol">Symbol</label>
-  <div class="controls">
-    {{view Ember.TextField valueBinding="symbol" id="symbol" placeholder="Symbol" required="true"}}
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label" for="Quantity">Quantity</label>
-  <div class="controls">
-    {{view Ember.TextField valueBinding="quantity" id="quantity" placeholder="Quantity" required="true"}}
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label" for="Purchase Price">Purchase Price</label>
-  <div class="controls">
-    {{view Ember.TextField valueBinding="purchase_price" id="purchase_price" placeholder="Purchase Price" required="true" }}
-  </div>
-</div>
+	<div class="control-group">
+	  <label class="control-label">Symbol</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="symbol" id="symbol" placeholder="Symbol" class='span3' }}
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label">Quantity</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="quantity" id="quantity" placeholder="Quantity" class='span3' }}
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label">Purchase Price</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="purchase_price" id="purchase_price" placeholder="Purchase Price" class='span3'  }}
+	  </div>
+	</div>
 
-<div class="control-group">
-  <label class="control-label" for="date">Purchase Date</label>
-  <div class="controls">
-    {{view Ember.TextField valueBinding="purchase_date"  }}
-  </div>
-</div>
+	<div class="control-group">
+	  <label class="control-label">Purchase Date</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="purchase_date"  class='span3'  }}
+	  </div>
+	</div>
+  
 
-<div class="control-group">
-  <label class="control-label" for="Contact">Belongs to</label>
-  <div class="controls">
-	{{view Ember.Select
-     contentBinding="all_ports"
-     optionValuePath="content.id"
-     optionLabelPath="content.name"
-	 selectionBinding="portfolio" }}
-  </div>
-</div>
+	<div class="control-group">
+	  <label class="control-label">Belongs to</label>
+	  <div class="controls">
+		{{view Ember.Select
+	     contentBinding="all_ports"
+	     optionValuePath="content.id"
+	     optionLabelPath="content.name"
+		 selectionBinding="portfolio"
+		 class='span3'  }}
+	  </div>
+	</div>
+
+	<div class="control-group">
+	  <label class="control-label">Security Type</label>
+	  <div class="controls">
+		{{view Ember.Select
+	     contentBinding= "HelloEmber.security_type"
+		 valueBinding="stock_option"
+		 class='span3'  }}
+	  </div>
+	</div>
+	
+{{#if stock_or_option}}
+{{else}}
+	<div class="control-group">
+	  <label class="control-label">Strike Price</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="strike" class='span3'  }}
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label class="control-label">Expiration Date</label>
+	  <div class="controls">
+	    {{view Ember.TextField valueBinding="expiration_date" class='span3'  }}
+	  </div>
+	</div>
+{{/if}}
 
   <div class="form-actions">
     <button {{action save}} class="btn btn-mini btn-info">Save</button>

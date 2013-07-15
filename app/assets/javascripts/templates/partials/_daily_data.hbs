@@ -1,8 +1,9 @@
 <tr>
 	<td>{{#linkTo "stock" stock}} {{stock.symbol}} {{/linkTo}}</td>
+	<td>{{stock.stock_option}} {{stock.previous_close}} {{stock.bid}} {{stock.ask}}</td>
 	<td style='text-align:right;'> {{integer stock.quantity }} </td>
 	<td style='text-align:right;'> ${{stock.latest_price}} ({{stock.daily_change}})</td>
 	<td style='text-align:right;'> ${{decimal stock.position_value}} </td>
-	<td style='text-align:right;'> ${{mult stock.quantity stock.daily_change}}</td>
+	<td style='text-align:right;'>${{mult stock.value_quantity stock.daily_change}}</td>
 	<td style='text-align:right;'> {{stock.latest_time}}</td>
 </tr>

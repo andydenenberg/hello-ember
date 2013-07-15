@@ -18,13 +18,24 @@ HelloEmber.Portfolio  = DS.Model.extend({
 	return cost + this.get('cash')
  	}.property('stocks.@each.position_value').cacheable(),
 
-  portfolio_daily: function() {
-	cost = 0 ;
-	this.get('stocks').forEach(function(stock){
-			cost += stock.get('quantity') * stock.get('daily_change') ;				
-		});
-	return cost
- 	}.property('stocks.@each.position_value').cacheable(),
+// portfolio_daily: function() {
+//   cost = 0 ;
+//   this.get('stocks').forEach(function(stock){
+//   		cost += stock.get('quantity') * stock.get('daily_change') ;				
+//   	});
+//   return cost
+//	}.property('stocks.@each.position_value').cacheable(),
+
+  	portfolio_daily: function() {
+	var total = 0 ;
+			this.get('stocks').forEach(function(stock){
+				summ = stock.get('daily_change') * stock.get('quantity') ;				
+				if (!stock.get('stock_or_option')) { summ = summ * 100 } ;
+				total += summ ;			
+			});
+	return total 
+	}.property('stocks.@each.daily_change'),
+
 
   display_list: function() {
 	return this.get('stocks').get('length') > 0

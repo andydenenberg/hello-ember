@@ -1,4 +1,4 @@
-HelloEmber.PortfoliosPositionController = Em.ObjectController.extend({	
+HelloEmber.PortfoliosOptionController = Em.ObjectController.extend({	
 	new_stock_symbol: null,
 	new_stock_price: null,
 	new_stock_price_change: null,

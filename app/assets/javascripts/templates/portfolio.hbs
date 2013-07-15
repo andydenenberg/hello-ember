@@ -3,6 +3,10 @@
 {{else}}
 
 <p class="box">{{name}}</p>
+<p>
+	{{#linkTo "portfolios.position" content  class="btn btn-mini" }}<i class="icon-plus-sign"></i> New Stock Position{{/linkTo}}
+	{{#linkTo "portfolios.option" content  class="btn btn-mini" }}<i class="icon-plus-sign"></i> New Option Position{{/linkTo}}
+</p>
 
     <dd>			
 	    <ul id="myTab" class="nav nav-tabs">
@@ -34,7 +38,6 @@
 
 	      </div>
 	      <div class="tab-pane fade" id="position">
-	{{#linkTo "portfolios.position" content  class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Position{{/linkTo}}<br><br>
 
 			<table class='table table-condensed table-striped table-bordered'>
 				{{partial "partials/position_header"}}

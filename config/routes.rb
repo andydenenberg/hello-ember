@@ -11,7 +11,8 @@ HelloEmber::Application.routes.draw do
     end
     
     collection do
-      get 'quote'
+      get 'stock_price'
+      get 'option_price'
     end
   end
     

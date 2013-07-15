@@ -1,27 +1,34 @@
 class StocksController < ApplicationController
 
+  require 'options'
+  
   def index
     render json: Stock.all
   end
   
-  def quote
-    symbol = params[:symbol]
-    
-    price = MarketBeat.last_trade_real_time(symbol).to_f
-    time = MarketBeat.last_trade_time_real_time(symbol)
-    change = MarketBeat.change_real_time(symbol)
-    render json: { 'symbol' => symbol, 'price' => price, 'time' => time, 'change' => change }  
+  def option_price
+    render json: Options.option_price( params[:symbol],params[:strike],params[:expiration] )   # { 'resp' => strike + symbol + expiration }
+  end
+  
+  def stock_price
+    symbol = params[:symbol]    
+    resp = Options.stock_price(symbol)
+    render json: { 'symbol' => symbol, 'price' => resp[0], 'time' => resp[1], 'change' => resp[2] }
   end
   
   def current_price
-    puts Price.update_counter
-    Price.inc_counter
-#    puts status = Thread.list.find { |thread| thread[:name] == 'UpdateThread' }.inspect.split(' ')
-#    puts "#{status[0][2..-1]} => Status: #{status[1][0..-2].capitalize}"
-    
-    stock = Stock.find(params[:id])
-    resp = Price.price(stock.symbol)
-    render json: { 'symbol' => stock.symbol, 'price' => resp[0], 'time' => resp[1], 'change' => resp[2] }
+    puts Options.update_counter
+    Options.inc_counter
+
+    security = Stock.find(params[:id])
+
+    if security.stock_option == 'Stock'
+      resp = Options.local_stock_price(security.symbol)
+      render json: { 'symbol' => security.symbol, 'price' => resp[1], 'time' => resp[0], 'change' => resp[2] }
+    else
+      resp = Options.local_option_price(security.symbol, security.stock_option, security.strike, security.expiration_date )
+      render json: { 'symbol' => security.symbol, 'time' => resp[0], 'bid' => resp[1], 'ask' => resp[2], 'previous_close' => resp[3] }
+    end
   end
 
   def show
@@ -57,7 +64,7 @@ class StocksController < ApplicationController
   private
 
     def permitted_params
-      params.require(:stock).permit(:symbol, :quantity, :purchase_price, :portfolio_id, :id, :purchase_date )
+      params.require(:stock).permit(:symbol, :quantity, :purchase_price, :portfolio_id, :id, :purchase_date, :stock_option, :strike, :expiration_date )
     end
 
     def update_stock(stock)

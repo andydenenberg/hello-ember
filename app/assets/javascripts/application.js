@@ -41,6 +41,8 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 })
 //= require_tree .
 
+HelloEmber.security_type = ["Stock", "Call Option", "Put Option"];
+
 function flash_message(message,severity) {
 	$("#flash").attr("class","alert alert-" + severity);			
 	$("#flash span").text(message)
@@ -51,9 +53,20 @@ function flash_message(message,severity) {
 };
 
 
+function current_option(symbol, expiration, strike, controller) {
+	$.ajax({  
+ 		url: "/stocks/option_price?symbol=" + symbol + '&expiration=' + expiration + '&strike=' + strike,  
+ 		dataType: "json",  
+ 		success: function(data) { 
+		controller.set('new_stock_price', data.price) ;
+		controller.set('new_stock_price_change', 'Daily Change: $' + data.change + ' at ' + data.time ); 
+   		}  
+   	});				
+}
+
 function current_quote(symbol, controller) {
 	$.ajax({  
- 		url: "/stocks/quote?symbol=" + symbol,  
+ 		url: "/stocks/stock_price?symbol=" + symbol,  
  		dataType: "json",  
  		success: function(data) { 
 		controller.set('new_stock_price', data.price) ;
@@ -73,22 +86,47 @@ HelloEmber.Clock = Ember.Object.extend({
 
   get_latest_price: function() {
 	if (HelloEmber.update_auto) {
-			stocks = HelloEmber.Stock.find().filter(function(stock) {
-			  return stock.get('id') != null;
+		    options = HelloEmber.Stock.find().filter(function(stock) {
+					return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
 			});
-		//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;	
+			stocks = HelloEmber.Stock.find().filter(function(stock) {
+					return (stock.get('stock_option') == 'Stock' && stock.get('id') != null );
+			});
+		//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;			
 		   stocks.forEach(function(stock){	
-		   	$.ajax({  
-		 		url: "/stocks/" + stock.get('id') + "/current_price/",  
-		 		dataType: "json",  
-		 		success: function(data) { 		
-		    		//stock.set('latest_price', stock.get('latest_price') + 10 );
-		   		console.log('updating', data.symbol, data.price, data.change) ;
-		   		stock.set('latest_price', data.price );
-		   		stock.set('latest_time', data.time );
-		   		stock.set('daily_change', data.change );
-		   		}  
-		   	});			
+			   	$.ajax({  
+			 		url: "/stocks/" + stock.get('id') + "/current_price/",  
+			 		dataType: "json",  
+			 		success: function(data) { 		
+			    		//stock.set('latest_price', stock.get('latest_price') + 10 );
+				   		console.log('updating', data.symbol, data.price, data.change) ;
+				   		stock.set('latest_price', data.price );
+				   		stock.set('latest_time', data.time );
+				   		stock.set('daily_change', data.change );
+			   			}  
+			   	});			
+		   });	
+
+		   options.forEach(function(option){	
+			   	$.ajax({  
+			 		url: "/stocks/" + option.get('id') + "/current_price/",  
+//			 		url: "/stocks/option_price?expiration=" + option.get('expiration_date') + "&symbol=" + option.get('symbol') + "&strike=" + option.get('strike'),  
+	//				stocks/option_price?expiration=01/18/2014&symbol=AAPL&strike=485
+			 		dataType: "json",  
+			 		success: function(data) { 		
+				   		console.log('updating', option.get('symbol'), data.bid, data.ask, data.previous_close) ;
+						quantity = option.get('quantity') ;
+						
+						option.set('bid', data.bid ) ;
+						option.set('ask', data.ask ) ;
+						option.set('previous_close', data.previous_close ) ;
+						option.set('latest_time', data.time );
+				   								
+						if (quantity < 0) { option.set('latest_price', data.ask ) }
+						else { option.set('latest_price', data.bid ) }
+						option.set('daily_change', numberWithCommas(Number(option.get('latest_price') - data.previous_close).toFixed(2)) );
+				   		}  
+			   	});			
 		   });	
 		return stocks.length	
 	}
