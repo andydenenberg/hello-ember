@@ -10,7 +10,7 @@
 		<div class="btn-group">
 			{{#linkTo "system" class='btn'}}System{{/linkTo}}
 			<button {{action toggle_update_auto}} {{bindAttr class="view.toggle_update_class"}}>
-			{{auto_update HelloEmber.update_auto}}</button>
+			{{auto_update HelloEmber.update_auto}} {{HelloEmber.refresh_count}} | {{HelloEmber.update_count}}</button>
 		</div>
 	  </ul>
 	

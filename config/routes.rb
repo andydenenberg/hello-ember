@@ -11,6 +11,7 @@ HelloEmber::Application.routes.draw do
     end
     
     collection do
+      get 'update_prices'
       get 'stock_price'
       get 'option_price'
     end

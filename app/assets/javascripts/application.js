@@ -23,8 +23,11 @@
 
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
-  update_delay: 10000,
-  update_auto: true,
+  update_delay: 6,  // every 60 seconds
+  update_auto: false,
+  update_count: 0,
+  refresh_delay: 30,  // every 5 minutes
+  refresh_count: 0,
 
   ready: function() {
     console.log('HelloEmber ready!');
@@ -99,7 +102,7 @@ HelloEmber.Clock = Ember.Object.extend({
 			 		dataType: "json",  
 			 		success: function(data) { 		
 			    		//stock.set('latest_price', stock.get('latest_price') + 10 );
-				   		console.log('updating', data.symbol, data.price, data.change) ;
+				   		console.log('updating stock:', stock.get('id'), data.symbol, data.price, data.change) ;
 				   		stock.set('latest_price', data.price );
 				   		stock.set('latest_time', data.time );
 				   		stock.set('daily_change', data.change );
@@ -114,7 +117,7 @@ HelloEmber.Clock = Ember.Object.extend({
 	//				stocks/option_price?expiration=01/18/2014&symbol=AAPL&strike=485
 			 		dataType: "json",  
 			 		success: function(data) { 		
-				   		console.log('updating', option.get('symbol'), data.bid, data.ask, data.previous_close) ;
+				   		console.log('updating opton:', option.get('id'), option.get('symbol'), data.bid, data.ask, data.previous_close) ;
 						quantity = option.get('quantity') ;
 						
 						option.set('bid', data.bid ) ;
@@ -127,7 +130,7 @@ HelloEmber.Clock = Ember.Object.extend({
 						option.set('daily_change', numberWithCommas(Number(option.get('latest_price') - data.previous_close).toFixed(2)) );
 				   		}  
 			   	});			
-		   });	
+		   });
 		return stocks.length	
 	}
   },
@@ -135,8 +138,29 @@ HelloEmber.Clock = Ember.Object.extend({
   tick: function() {
     var now = new Date()
 
-	var poll = this.get_latest_price() ;
-	console.log('Polled: ', poll) ;
+//  if updating, block the timer from firing again
+
+	HelloEmber.set('update_count', HelloEmber.update_count + 1) ;
+	if (HelloEmber.update_count > HelloEmber.update_delay -1 ) {
+		HelloEmber.set('update_count', 0 ) ;
+				var poll = this.get_latest_price() ;
+	}
+	
+	HelloEmber.set('refresh_count', HelloEmber.refresh_count + 1 ) ;
+	if (HelloEmber.refresh_count > HelloEmber.refresh_delay -1 ) {
+		HelloEmber.set('refresh_count', 0 );
+
+		$.ajax({  
+	 		url: "/stocks/update_prices",  
+	 		dataType: "json",  
+	 		success: function(data) { 		
+		   		console.log('Prices refreshed:', data.duration, ' seconds ', data.count, 'updated') ;
+	   			}  
+	   	});			
+
+	}
+	console.log('Refresh Count: ', HelloEmber.refresh_count * 10, ' | Update Count: ', HelloEmber.update_count * 10) ;
+   	
 
     this.setProperties({	
       second: now.getSeconds(),
@@ -145,7 +169,7 @@ HelloEmber.Clock = Ember.Object.extend({
     });
 
     var self = this;
-    setTimeout(function(){ self.tick(); }, HelloEmber.update_delay)
+    setTimeout(function(){ self.tick(); }, 10000)
   }
 });
 

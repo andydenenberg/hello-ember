@@ -16,14 +16,21 @@ class StocksController < ApplicationController
     render json: { 'symbol' => symbol, 'price' => resp[0], 'time' => resp[1], 'change' => resp[2] }
   end
   
+  def update_prices
+    start = Time.now
+    update = Options.refresh_all
+    duration = Time.now - start
+    render json: { 'duration' => duration, 'count' => update }
+  end
+  
   def current_price
-    puts Options.update_counter
-    Options.inc_counter
-
+#    Options.refresh_prices
+    
     security = Stock.find(params[:id])
+    realtime = true # params[:realtime]
 
     if security.stock_option == 'Stock'
-      resp = Options.local_stock_price(security.symbol)
+      resp = Options.local_stock_price(security.symbol,realtime)
       render json: { 'symbol' => security.symbol, 'price' => resp[1], 'time' => resp[0], 'change' => resp[2] }
     else
       resp = Options.local_option_price(security.symbol, security.stock_option, security.strike, security.expiration_date )

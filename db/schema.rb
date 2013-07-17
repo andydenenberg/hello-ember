@@ -11,27 +11,29 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130714011436) do
+ActiveRecord::Schema.define(:version => 20130618004742) do
 
   create_table "portfolios", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
-    t.decimal  "cash",       :precision => 10, :scale => 0
+    t.integer  "portfolio_id"
+    t.decimal  "cash",         :precision => 10, :scale => 2
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
   end
 
   create_table "stocks", :force => true do |t|
     t.string   "symbol"
-    t.decimal  "quantity",        :precision => 10, :scale => 0
-    t.decimal  "purchase_price",  :precision => 10, :scale => 2
-    t.datetime "created_at",                                     :null => false
-    t.datetime "updated_at",                                     :null => false
+    t.string   "name"
     t.integer  "portfolio_id"
+    t.decimal  "quantity",        :precision => 10, :scale => 2
+    t.decimal  "purchase_price",  :precision => 10, :scale => 2
     t.string   "purchase_date"
-    t.decimal  "strike",          :precision => 10, :scale => 0
+    t.decimal  "strike",          :precision => 10, :scale => 2
     t.string   "expiration_date"
     t.string   "stock_option"
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
   end
 
 end
