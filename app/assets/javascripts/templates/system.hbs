@@ -1,20 +1,36 @@
 <h3>The System Page</h3>
 
+<form class="form-inline">
 <div class="control-group">
-  <label class="control-label" >Update Delay</label>
-  <div class="controls">
+  	<label class="control-label" >Enable</label>
+	<label class="checkbox">
+    {{view Ember.Checkbox checkedBinding="HelloEmber.cache_auto" }}
+  	</label>
+	<label class="control-label" >Cache Update Delay is</label>
 	<div class="input-append">
-		{{view Ember.TextField valueBinding="HelloEmber.update_delay" class='span5' required="true" }}
-		<span class="add-on">Milliseconds</span>
+  	{{view Ember.TextField valueBinding="HelloEmber.cache_delay" class='input-mini' }}
+		<span class="add-on"> seconds</span>
 	</div>
-  </div>
 </div>
 
 <div class="control-group">
-  <label class="control-label" >Automatic Update</label>
-  <div class="controls">
-		{{view Ember.Checkbox checkedBinding="HelloEmber.update_auto" }}
+  	<label class="control-label" >Enable</label>
+	<label class="checkbox">
+    {{view Ember.Checkbox checkedBinding="HelloEmber.repo_auto" }}
+  	</label>
+	<label class="control-label" >Repository Update Delay is</label>
+	<div class="input-append">
+  	{{view Ember.TextField valueBinding="HelloEmber.repo_delay" class='input-mini' }}
+		<span class="add-on"> seconds</span>
 	</div>
-  </div>
 </div>
 
+<div class="control-group">
+  	<label class="control-label" >Enable</label>
+	<label class="checkbox">
+    {{view Ember.Checkbox checkedBinding="HelloEmber.real_time" }}
+  	</label>
+	<label class="control-label" >Real-Time Quotes</label>
+</div>
+
+</form>

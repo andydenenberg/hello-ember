@@ -54,13 +54,4 @@ Handlebars.registerHelper('mailto', function(field) {
   }
 });
 
-Ember.Handlebars.registerBoundHelper('auto_update', function(value, options) {
-	
-		flag = '<i class="icon-off"></i> Idle' 
-		if (value) {
-			flag = '<i class="icon-repeat"></i> Updating' 
-		}
-	    
-  return new Handlebars.SafeString(flag );
-});
 

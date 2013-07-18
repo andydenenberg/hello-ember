@@ -90,9 +90,8 @@ module Options
     price.to_s.match(/^[-+]?[0-9]*\.?[0-9]+$/)
   end
   
-  def self.refresh_all
+  def self.refresh_all(realtime)
     @@securities.each_with_index do |sec, index|
-         realtime = true
          after = refresh_price(index,realtime)
          puts index
     end  

@@ -17,8 +17,9 @@ class StocksController < ApplicationController
   end
   
   def update_prices
+    realtime = params[:realtime]
     start = Time.now
-    update = Options.refresh_all
+    update = Options.refresh_all(realtime)
     duration = Time.now - start
     render json: { 'duration' => duration, 'count' => update }
   end
@@ -27,7 +28,7 @@ class StocksController < ApplicationController
 #    Options.refresh_prices
     
     security = Stock.find(params[:id])
-    realtime = true # params[:realtime]
+    realtime = params[:realtime]
 
     if security.stock_option == 'Stock'
       resp = Options.local_stock_price(security.symbol,realtime)
