@@ -1,44 +1,37 @@
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container-fluid">
-      <div class="brand">			
-			{{#linkTo "portfolios"}}Portfolios{{/linkTo}} |
-	  </div>
-	
-	
-	  <ul class="nav pull-right">
-			{{#linkTo "system" class='btn'}}System{{/linkTo}}
-		<div class="btn-group">
-			
-			<button {{action toggle_cache_auto}} 
-					{{bindAttr class="view.toggle_cache_auto_class"}}>
-					{{text_cache_auto HelloEmber.cache_auto}} 
-						{{#if HelloEmber.cache_auto}}
-							{{HelloEmber.cache_count}}
-						{{/if}}
-			</button>
-			<button {{action cache_update}} class='btn'><i class="icon-forward"></i></button>
-			
-		</div>
 
-		<div class="btn-group">
-			
-			<button {{action toggle_repo_auto}}
-			 		{{bindAttr class="view.toggle_repo_auto_class"}}>
-					{{text_repo_auto HelloEmber.repo_auto}}
-						{{#if HelloEmber.repo_auto}}
-					 		{{HelloEmber.repo_count}}
-					 	{{/if}}
-			</button>
-			<button {{action repo_update}} class='btn'><i class="icon-forward"></i></button>
-		</div>
-	  </ul>
-	
-		
-    </div>
-  </div>
-
+		{{#if HelloEmber.logged_in_state }}
+			<div class="brand">	{{#linkTo "portfolios"}}Portfolios{{/linkTo}}</div>
+			<ul class="nav pull-right">
+				{{#linkTo 'login' classNameBindings="view.login_button_class"}}<i class="icon-user"></i> 
+				{{HelloEmber.logged_in_user}}{{/linkTo}}
+				{{#linkTo "system" class='btn'}}System{{/linkTo}}
+				<div class="btn-group">			
+					<button {{action toggle_cache_auto}} 
+							{{bindAttr class="view.toggle_cache_auto_class"}}>
+							{{text_cache_auto HelloEmber.cache_auto}} 
+								{{#if HelloEmber.cache_auto}} {{HelloEmber.cache_count}}
+								{{/if}}
+					</button>
+					<button {{action cache_update}} class='btn'><i class="icon-forward"></i></button>			
+				</div>
+				<div class="btn-group">			
+					<button {{action toggle_repo_auto}}
+					 		{{bindAttr class="view.toggle_repo_auto_class"}}>
+							{{text_repo_auto HelloEmber.repo_auto}}
+								{{#if HelloEmber.repo_auto}} {{HelloEmber.repo_count}}
+							 	{{/if}}
+					</button>
+					<button {{action repo_update}} class='btn'><i class="icon-forward"></i></button>
+				</div>		
+			  </ul>
+		{{/if}}
+    </div> <!--- <div class="container-fluid"> --->
+  </div> <!--- <div class="navbar-inner"> --->
 </div>
+
 <div class="container-fluid" id="main">
   <div class="row-fluid">
 

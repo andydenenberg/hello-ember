@@ -1,0 +1,72 @@
+<style type="text/css">
+
+  /* Main marketing message and sign up button */
+  .centered {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+.form-signin {
+  max-width: 250px;
+  padding: 10px 19px 19px;
+  margin: 0 auto 20px;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+     -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+          box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin input[type="text"],
+.form-signin input[type="email"],
+.form-signin input[type="password"] {
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
+}
+
+
+</style>
+
+<div id="flash" class="alert alert-warning">
+    <span></span>
+</div>
+
+
+{{#if HelloEmber.logged_in_state}}
+
+    <div class="centered">
+      <h3>Welcome to Nvestr</h3>
+      <h4>Profile Information</h4>
+	  <p>Contact: {{contact.fullName}}</p>
+      <p>Email: {{contact.email}}</p>
+
+      <h4>Portfolio Information</h4>
+      <p>Total Value: ${{decimal contact.portfolio_value}}</p>
+		<p>Number of Stocks: {{contact.stocks.length}}
+
+<br><br>
+	 <button {{action "Logout"}}  class="btn btn-warning">
+		    <i class="icon-off"></i> Logout</button>
+
+    </div>
+
+{{else}}
+
+<div class="form-signin">
+	<h3>Please login</h3>
+	<hr /><br />
+	<label>Username: </label>{{view Ember.TextField valueBinding="username" }}<br />
+	<label>Password: </label>{{view Ember.TextField valueBinding="password" type="password" action="Login"}}<br />
+  
+	<br /><button {{action "Login"}} class='btn btn-success'>Login</button>
+</div>
+
+{{/if}}
+
+<div style="margin:0;padding:0;display:inline">

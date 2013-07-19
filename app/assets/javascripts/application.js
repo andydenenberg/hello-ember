@@ -23,6 +23,7 @@
 
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
+  logged_in_state: false,
   cache_delay: 60,  // every 60 seconds
   cache_count: 60,
   cache_auto: false,

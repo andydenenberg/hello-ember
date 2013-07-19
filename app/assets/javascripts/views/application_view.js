@@ -1,4 +1,12 @@
 HelloEmber.ApplicationView = Em.View.extend({
+	login_button_class: function(){ 
+		var btn = 'btn btn-success'
+		if ( HelloEmber.logged_in_state ) {
+		btn = 'btn'	
+		}
+	    return btn
+	}.property('HelloEmber.logged_in_state').cacheable(),
+
 	toggle_cache_auto_class: function(){ 
 		var btn = 'btn btn-success'
 		if ( !HelloEmber.cache_auto ) {

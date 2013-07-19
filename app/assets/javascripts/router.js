@@ -1,5 +1,7 @@
 
 HelloEmber.Router.map(function() {
+  this.route("login");
+//  this.route("login", { path: "/login" });
   this.resource('system');
   this.resource('stocks', function() {
 	this.route('new');
