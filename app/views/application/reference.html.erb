@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Template &middot; Bootstrap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 60px;
+      }
+
+      /* Custom container */
+      .container {
+        margin: 0 auto;
+        max-width: 1000px;
+      }
+      .container > hr {
+        margin: 60px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 80px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 100px;
+        line-height: 1;
+      }
+      .jumbotron .lead {
+        font-size: 24px;
+        line-height: 1.25;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+
+
+      /* Customize the navbar links to be fill the entire space of the .navbar */
+      .navbar .navbar-inner {
+        padding: 0;
+      }
+      .navbar .nav {
+        margin: 0;
+        display: table;
+        width: 100%;
+      }
+      .navbar .nav li {
+        display: table-cell;
+        width: 1%;
+        float: none;
+      }
+      .navbar .nav li a {
+        font-weight: bold;
+        text-align: center;
+        border-left: 1px solid rgba(255,255,255,.75);
+        border-right: 1px solid rgba(0,0,0,.1);
+      }
+      .navbar .nav li:first-child a {
+        border-left: 0;
+        border-radius: 3px 0 0 3px;
+      }
+      .navbar .nav li:last-child a {
+        border-right: 0;
+        border-radius: 0 3px 3px 0;
+      }
+    </style>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <div class="masthead">
+        <h3 class="muted">The Many Faces of Ember</h3>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="container">
+              <ul class="nav">
+                <li><%= link_to 'Home', '/' %></li>
+                <li class="active"><%= link_to 'References', reference_path %></li>
+                <li><a href="#">Projects</a></li>
+              </ul>
+            </div>
+          </div>
+        </div><!-- /.navbar -->
+      </div>
+
+
+      <!-- Example row of columns -->
+      <div class="row-fluid">
+        <div class="span6">
+			<%= link_to 'http://twbrandt.github.io/2013/02/22/Ember-Data-Quick-Start-Guide', 'http://twbrandt.github.io/2013/02/22/Ember-Data-Quick-Start-Guide' %><br>
+			<%= link_to 'http://pivotallabs.com/playing-with-ember-js-and-devise',
+			 'http://pivotallabs.com/playing-with-ember-js-and-devise' %><br>
+			<%= link_to 'https://github.com/ebryn/ember-model', 'https://github.com/ebryn/ember-model' %><br>
+	
+			The latest Ember builds including Ember-Data
+			<%= link_to 'builds.ember.com', 'http://builds.emberjs.com/' %><br>
+			Great new Book on Ember
+			<%= link_to 'Ember in Action', 'http://www.manning.com/skeie/' %><br>
+			Interesting, example on secure Ember login
+			<%= link_to 'Embercasts', 'http://www.embercasts.com/' %><br>
+			The simplest way to build amazing mobile apps
+			<%= link_to 'Embercasts', 'https://trigger.io/' %><br>
+			Smart Ember Developer
+			<%= link_to 'Luke Melia', 'http://www.lukemelia.com/' %><br>
+			Plunker is an online community for creating, collaborating on and sharing your web development ideas.
+			<%= link_to 'Plunkr', 'http://plnkr.co/' %><br>
+			
+        </div>
+      </div>
+
+
+      <div class="footer">
+        <p>&copy; Company 2013</p>
+      </div>
+
+    </div> <!-- /container -->
+
+  </body>
+</html>
