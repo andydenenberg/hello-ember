@@ -1,5 +1,6 @@
 
 HelloEmber.Router.map(function() {
+  this.route("about");
   this.route("login");
 //  this.route("login", { path: "/login" });
   this.resource('system');

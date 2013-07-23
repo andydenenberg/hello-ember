@@ -11,4 +11,6 @@ HelloEmber.PortfolioRoute = Ember.Route.extend({
 
     // un-highlight the active contact (perhaps temporarily)
     this.controllerFor('portfolios').set('activePortfolioId', null);
-  }});
+  }
+
+});

@@ -1,35 +1,51 @@
-HelloEmber.LoginController = Ember.ObjectController.extend({
-	username: '',
-    password: '',
+HelloEmber.LoginController = Ember.Controller.extend({
 
-    Logout: function() {
-		flash_message('See ya the soon', 'info') ;	
-		// clear fields for next login
-		this.set('username', '');
-		this.set('password', '');
-		HelloEmber.set('logged_in_user', null );
-        HelloEmber.set('logged_in_state', false) ;
-    },
-      
-    Login: function() {
-      // Normally this would go to the server. Simulate that.
-//      if(this.get('username') === App.USERNAME &&
-//         this.get('password') === App.PASSWORD) {
-      if(this.get('username') === 'andy' &&
-         this.get('password') === 'xxx') {
-        HelloEmber.set('logged_in_state', true) ;
-		HelloEmber.set('logged_in_user', this.get('username') );
-		
-		// clear fields for next login
-//        this.set('username', '');
-//        this.set('password', '');
+  reset: function() {
+    this.setProperties({
+      username: "",
+      password: "",
+      errorMessage: ""
+    });
+  },
 
-//		this.transitionToRoute('contacts.index');
+  login_token: localStorage.login_token, // initialize from memory during page refresh
+  tokenChanged: function() {
+	if (this.login_token == null) { 
+		HelloEmber.set('logged_in_state', false );
+		delete localStorage.logged_in_state; } // local storage can only store text, handlebars need boolean
+	else { 
+		HelloEmber.set('logged_in_state', true)
+		localStorage.logged_in_state = true;  }
+    localStorage.login_token = this.get('login_token');
+  }.observes('login_token'),
 
-      } else {	
-		flash_message('Error: Invalid username or password.', 'info') ;	
-        HelloEmber.set('logged_in_state', false) ;
+  logout: function() {
+		this.set('login_token', null);
+  },
+
+  login: function() {
+
+    var self = this, data = this.getProperties('username', 'password');
+    // Clear out any error messages.
+    this.set('errorMessage', null);
+
+    $.post('/auth.json', data).then(function(response) {
+
+      self.set('errorMessage', response.message);
+      if (response.success) {
+//        alert('Login succeeded!');
+        self.set('login_token', response.token);
+
+        var attemptedTransition = self.get('attemptedTransition');
+        if (attemptedTransition) {
+          attemptedTransition.retry();
+          self.set('attemptedTransition', null);
+        } else {
+          // Redirect to 'portfolios' by default.
+          self.transitionToRoute('portfolios');
+        }
       }
+    });
+  }
+});
 
-    }
-});    

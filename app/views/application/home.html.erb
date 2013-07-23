@@ -19,13 +19,10 @@
         margin: 0 auto;
         max-width: 1000px;
       }
-      .container > hr {
-        margin: 60px 0;
-      }
 
       /* Main marketing message and sign up button */
       .jumbotron {
-        margin: 80px 0;
+        margin: 10px 0;
         text-align: center;
       }
       .jumbotron h1 {
@@ -103,8 +100,8 @@
           <div class="navbar-inner">
             <div class="container">
               <ul class="nav">
-                <li><%= link_to 'Home', '/' %></li>
-                <li class="active"><%= link_to 'References', reference_path %></li>
+                <li class="active"><a href="#">Home</a></li>
+                <li><%= link_to 'References', reference_path %></li>
                 <li><a href="#">Projects</a></li>
               </ul>
             </div>
@@ -112,37 +109,46 @@
         </div><!-- /.navbar -->
       </div>
 
+      <!-- Jumbotron -->
+      <div class="jumbotron">
+        <p>This site was created to show the many ways to implement Ember.  All the examples follow the same use case which is a Stock Portfolio management system.  Each example is a little different than the next, but they all share data and are connected to same backend rails server.</p>
+      </div>
 
       <!-- Example row of columns -->
       <div class="row-fluid">
-        <div class="span6">
-			<br>
-			Setup-a-high-volume-site-on-heroku-for-
-			<%= link_to 'free/', 'http://collectiveidea.com/blog/archives/2012/11/26/setup-a-high-volume-site-on-heroku-for-free/' %>
-			<br><br>
-			Using a auth token in http header to 
-			<%= link_to 'authentication-in-ember-js', 'http://log.simplabs.com/post/53016599611/authentication-in-ember-js'%><br>
-			<%= link_to 'http://twbrandt.github.io/2013/02/22/Ember-Data-Quick-Start-Guide', 'http://twbrandt.github.io/2013/02/22/Ember-Data-Quick-Start-Guide' %><br>
-			<%= link_to 'http://pivotallabs.com/playing-with-ember-js-and-devise',
-			 'http://pivotallabs.com/playing-with-ember-js-and-devise' %><br>
-			<%= link_to 'https://github.com/ebryn/ember-model', 'https://github.com/ebryn/ember-model' %><br>
-	
-			The latest Ember builds including Ember-Data
-			<%= link_to 'builds.ember.com', 'http://builds.emberjs.com/' %><br>
-			Great new Book on Ember
-			<%= link_to 'Ember in Action', 'http://www.manning.com/skeie/' %><br>
-			Interesting, example on secure Ember login
-			<%= link_to 'Embercasts', 'http://www.embercasts.com/' %><br>
-			The simplest way to build amazing mobile apps
-			<%= link_to 'Embercasts', 'https://trigger.io/' %><br>
-			Smart Ember Developer
-			<%= link_to 'Luke Melia', 'http://www.lukemelia.com/' %><br>
-			Plunker is an online community for creating, collaborating on and sharing your web development ideas.
-			<%= link_to 'Plunkr', 'http://plnkr.co/' %><br>
-			
+        <div class="span4">
+          <h3>Embedded Rails Version</h3>
+          <p>This version was modeled after DGeb's (<%= link_to 'Ember-Data-Example', 'https://github.com/dgeb/ember_data_example', :target => '_blank' %>) which is a great starting point for learning Ember-Rails. This app uses two patterns for showing and editing persistent objects.</p>
+		<ul>
+			<li>Using the Router to switch paths between show, edit and delete</li>
+			<li>Stationary in one path, but using flags to display different modes of show, edit and delete</li>
+		</ul>
+          <p><%= link_to 'Portfolio (Ember-Rails)', '/index', :class => "btn"  %></p>
         </div>
+        <div class="span4">
+          <h3>SPA Version</h3>
+          <p>Single Page Application version modeled from Joachim Skeie (<%= link_to 'Notebook Example', 'https://github.com/joachimhs/Ember.js-in-Action-Source/tree/master/chapter1', :target => '_blank' %>) from his upcoming book "Ember in Action"</p>
+		<ul>
+			<li>Uses modal popovers for data interaction</li>
+			<li>Ember templates are compiled from Javascript files</li>
+		</ul>
+		  <p><%= link_to 'Portfolio (SPA)', '/notebook.html', :class => "btn" %></p>          
+       </div>
+       <div class="span4">
+         <h3>Un-embedded Version</h3>
+         <p>Similar to ERV, but this version runs independent without the support of Ember-Rails Gem.  All the assets are configured and loaded from the public directory.</p>
+		<ul>
+			<li>One large monolithic HTML file that contains all the templates</li>
+		</ul>
+         <p><%= link_to 'Independent Version', '/independent.html', :class => "btn" %></p>
+          <h3>Mobile Version</h3>
+          <p><%= link_to 'Mobile Verson', '/mobile.html' %></p>
+          <p><a class="btn" href="/mobile.html">Mobile &raquo;</a></p>
+       </div>
       </div>
 
+
+      <hr>
 
       <div class="footer">
         <p>&copy; Company 2013</p>

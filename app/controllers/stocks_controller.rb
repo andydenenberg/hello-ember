@@ -1,5 +1,7 @@
 class StocksController < ApplicationController
-
+  before_filter :restrict_access
+  # need to move to application controlller and except the auth.json
+  
   require 'options'
   
   def index
@@ -71,6 +73,11 @@ class StocksController < ApplicationController
 
   private
 
+    def restrict_access
+  #      puts request.headers['token']
+      head :unauthorized unless request.headers['token'] == '1234'
+    end
+  
     def permitted_params
       params.require(:stock).permit(:symbol, :quantity, :purchase_price, :portfolio_id, :id, :purchase_date, :stock_option, :strike, :expiration_date )
     end

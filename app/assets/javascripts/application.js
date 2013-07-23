@@ -18,12 +18,14 @@
 //= require ember-data
 //= require_self
 //= require hello_ember
+//= require_tree .
 
 // for more details see: http://emberjs.com/guides/application/
 
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
-  logged_in_state: false,
+  logged_in_state: localStorage.logged_in_state,
+
   cache_delay: 60,  // every 60 seconds
   cache_count: 60,
   cache_auto: false,
@@ -61,7 +63,6 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
   }
 
 })
-//= require_tree .
 
 HelloEmber.security_type = ["Stock", "Call Option", "Put Option"];
 
@@ -202,3 +203,8 @@ Ember.Application.initializer({
 
 // don't break ObjectController
 Ember.ControllerMixin.reopen({ clock: null });
+
+// Defer App readiness until it should be advanced for either
+// testing or production.
+HelloEmber.deferReadiness();
+

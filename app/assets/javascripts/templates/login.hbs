@@ -37,7 +37,6 @@
     <span></span>
 </div>
 
-
 {{#if HelloEmber.logged_in_state}}
 
     <div class="centered">
@@ -48,13 +47,21 @@
 
       <h4>Portfolio Information</h4>
       <p>Total Value: ${{decimal contact.portfolio_value}}</p>
-		<p>Number of Stocks: {{contact.stocks.length}}
+	  <p>Number of Stocks: {{contact.stocks.length}}
 
-<br><br>
-	 <button {{action "Logout"}}  class="btn btn-warning">
+	<br><br>
+	 <button {{action "logout"}}  class="btn btn-warning">
 		    <i class="icon-off"></i> Logout</button>
 
     </div>
+
+Change the cache refresh logic to use this?<br>
+in Portfolio Controller<br>
+<code>	refresh_timer: function(){
+	  // do something
+	  return this.get('clock') ;
+	 }.property("clock.second").cacheable(),
+</code>
 
 {{else}}
 
@@ -62,9 +69,9 @@
 	<h3>Please login</h3>
 	<hr /><br />
 	<label>Username: </label>{{view Ember.TextField valueBinding="username" }}<br />
-	<label>Password: </label>{{view Ember.TextField valueBinding="password" type="password" action="Login"}}<br />
+	<label>Password: </label>{{view Ember.TextField valueBinding="password" type="password" action="login"}}<br />
   
-	<br /><button {{action "Login"}} class='btn btn-success'>Login</button>
+	<br /><button {{action "login"}} class='btn btn-success'>Login</button>
 </div>
 
 {{/if}}
