@@ -28,62 +28,62 @@ module Options
         doc = Nokogiri::HTML(payload)
         # Search the doc for all td elements in the delayedQuotes class
         price = doc.xpath('//td[@class="delayedQuotes"]/text()')
+        datetime = "#{doc.xpath('//td[@class="delayedQuotes"]/text()')[0]}".strip.split('@')
+        date = datetime.first.strip.split(',')
+        year = date.last.strip
+        month_day = date.first.split(' ')
+        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first).to_s
+        day = month_day.last        
+        datetime = year + '/' + month + '/' + day + ' ' + datetime.last.strip.split(' ').first
+        #<h3>Price Data Table</h3>
         # strip out the nokogiri stuff from the data
         data = price.map { |elem| "#{elem}" }  
         bid = "#{price[data.find_index('Bid')+1]}"
         ask = "#{price[data.find_index('Ask')+1]}"  
         previous_close = "#{price[data.find_index('Previous Close')+1]}"  
       
-        return { 'Time' => Time.now.strftime("%I:%M%p CST"), 'Bid' => bid, 'Ask' => ask, 'Previous_Close' => previous_close }
+        return { 'Time' => datetime, 'Bid' => bid, 'Ask' => ask, 'Previous_Close' => previous_close }
       else
         return 'Symbol Not Found'
       end
   end
   
-  # Repository of latest prices of stocks
-#  @@stocks = { }
 
-  @@securities = [ ]
-  def self.securities
-    @@securities
-  end
-  
-  @@update_counter = 0  
-  def self.update_counter
-    @@update_counter
-  end
-  
-  def self.add_security(security_type, symbol, time, price, change, strike, expiration_date, bid, ask, previous_close )
-    @@securities.push [ security_type, symbol.upcase, time, price, change, strike, expiration_date, bid, ask, previous_close ]
-  end  
-
-  def self.local_stock_price(symbol, realtime)    
-    stock = @@securities.select { |sec| sec[0] == 'Stock' && sec[1] == symbol.upcase }
-    if stock.empty? # not found in @@securities array, need to add new
-      if realtime
-        price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
-        time = MarketBeat.last_trade_time_real_time(symbol.upcase)
-        change = MarketBeat.change_real_time(symbol.upcase)
+  def self.local_stock_price(symbol, real_time)    
+    price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase )
+    if price.empty? 
+      if real_time
+        puts price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
+        datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
+        month_day = datetime.first.split(' ')
+        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+        day = month_day.last
+        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+        time = format_date + ' ' + datetime.last.split(' ').first
+        puts change = MarketBeat.change_real_time(symbol.upcase)
       else
         price = MarketBeat.last_trade(symbol.upcase).to_f
-        time = MarketBeat.last_trade_time(symbol.upcase)
+        time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
         change = MarketBeat.change(symbol.upcase)
       end
-      add_security('Stock', symbol.upcase, time, price, change, nil,nil,nil,nil,nil)
+      Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => price, :last_update => time, :change => change)
       return time, price, change
     else
-      return @@securities.select { |sec| sec[0] == 'Stock' && sec[1] == symbol.upcase }.first[2..-6]
+      price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
+      return price.last_update.strftime("%H:%M"), price.last_price, price.change
     end
   end  
 
   def self.local_option_price(symbol, security_type, strike, expiration_date)
-    option = @@securities.select { |sec| sec[0] == security_type and sec[1] == symbol.upcase and sec[5] == strike and sec[6] == expiration_date }
+    option = Price.where(:sec_type => security_type, :symbol => symbol.upcase, :strike => strike, :exp_date => expiration_date )
     if option.empty?
       latest = self.option_price(symbol, strike, expiration_date)
-      add_security('Call Option', symbol, latest['Time'], nil,nil, strike, expiration_date, latest['Bid'], latest['Ask'], latest['Previous_Close'] )
+       new = Price.create(:sec_type => security_type, :symbol => symbol.upcase, :strike => strike, :exp_date => expiration_date,
+                             :last_update => latest['Time'], :bid => latest['Bid'], :ask => latest['Ask'], :last_price => latest['Previous_Close'])
+    option = [ new ]
     end
-    option = @@securities.select { |sec| sec[0] == security_type and sec[1] == symbol.upcase and sec[5] == strike and sec[6] == expiration_date }.first
-    return option[2], option[7], option[8], option[9]
+    price = option.first
+    return price.last_update, price.bid, price.ask, price.last_price
   end  
 
   def self.valid_price?(price)
@@ -91,34 +91,43 @@ module Options
   end
   
   def self.refresh_all(realtime)
-    @@securities.each_with_index do |sec, index|
-         after = refresh_price(index,realtime)
-         puts index
+    Price.all.each_with_index do |sec, index|
+         after = refresh_price(sec.id,realtime)
+      puts "index: #{index} = #{sec.sec_type}: #{sec.symbol} #{sec.last_update}"
     end  
-    return @@securities.count  
+    return Price.all.count  
   end
     
   def self.refresh_price(security_id,realtime)
-      security = @@securities[security_id]
-      symbol = security[1]
-      if security[0] == 'Stock'
-        if realtime
-          price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
-          time = MarketBeat.last_trade_time_real_time(symbol.upcase)
-          change = MarketBeat.change_real_time(symbol.upcase)
-        else
-          price = MarketBeat.last_trade(symbol.upcase).to_f
-          time = MarketBeat.last_trade_time(symbol.upcase)
-          change = MarketBeat.change(symbol.upcase)
-        end
-        @@securities[security_id] = [ 'Stock', symbol, time, price, change, nil, nil, nil, nil, nil ]
+      security = Price.find(security_id)
+      symbol = security.symbol
+      if security.sec_type == 'Stock'
+          if realtime
+            price = MarketBeat.last_trade_real_time(symbol).to_f
+            datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
+            month_day = datetime.first.split(' ')
+            month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+            day = month_day.last
+            format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+            time = format_date + ' ' + datetime.last.split(' ').first
+            change = MarketBeat.change_real_time(symbol.upcase)
+          else
+            price = MarketBeat.last_trade(symbol.upcase).to_f
+            time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
+            change = MarketBeat.change(symbol.upcase)
+          end
+         security.last_price = price
+         security.last_update = time
+         security.change = change
+         security.save
       else
-        strike = security[5]
-        expiration_date = security[6]
-        update = option_price(symbol, strike, expiration_date)        
-        @@securities[security_id] = ['Call Option', symbol, update['Time'], nil, nil, strike, expiration_date, update['Bid'], update['Ask'], update['Previous_Close'] ]        
+        update = option_price(symbol, security.strike, security.exp_date)        
+        security.last_update = update['Time']
+        security.bid = update['Bid']
+        security.ask = update['Ask']
+        security.last_price = update['Previous_Close']
+        security.save       
       end
-      return @@securities[security_id]
   end
 
   def self.list_all_securities

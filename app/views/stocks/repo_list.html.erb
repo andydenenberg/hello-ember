@@ -1,0 +1,52 @@
+<div class='container'>
+<div class='row'>
+	<div class='span'>
+	
+	<%= link_to 'Home', '/index#/portfolios' %>
+<h3><%= @stocks.count %> Stocks</h3>
+<table class="table table-condensed table-striped table-bordered">
+     <thead>
+       <tr>
+	     <th>Count</th>
+         <th>Symbol</th>
+         <th class='aln_r'>Last Trade</th>
+		 <th class='aln_r'>Change</th>
+		 <th class='aln_r'>Age (mins)</th>
+		 <th>Last Update</th>
+       </tr>
+     </thead>
+	<% @stocks.each_with_index do |security, index| %>
+		<tr><td><%= index %></td>
+			<td><%= security[0].symbol %></td>
+			<td class='aln_r'><%= number_with_precision(security[0].last_price, :delimiter => ',', :precision => 2 ) %></td>
+			<td class='aln_r'><%= number_with_precision(security[0].change, :delimiter => ',', :precision => 2 ) %></td>
+			<td class='aln_r'><%= number_with_precision(( security[1] / 60), :delimiter => ',', :precision => 0 ) %></td>
+			<td><%= security[0].last_update %></td>
+		</tr>
+	<% end %>
+ </table>
+
+<h3><%= @options.count %> Options</h3>
+<table class="table table-condensed table-striped table-bordered">
+     <thead>
+       <tr>
+	     <th>Count</th>
+         <th>Symbol</th>
+         <th>Last Trade</th>
+		 <th>Age</th>
+		 <th>Last Update</th>
+       </tr>
+     </thead>
+	<% @options.each_with_index do |security, index| %>
+		<tr><td><%= index %></td>
+			<td><%= security.symbol %></td>
+			<td class='aln_r'><%= number_with_precision(security.last_price, :delimiter => ',', :precision => 2 ) %></td>
+			<td class='aln_r'><%= number_with_precision( (Time.now + 1.hour - security.last_update) / 60, :delimiter => ',', :precision => 0 ) %></td>
+			<td><%= security.last_update %></td>
+		</tr>
+	<% end %>
+ </table>
+
+</div>
+</div>
+</div>

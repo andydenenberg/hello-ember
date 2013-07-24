@@ -1,8 +1,14 @@
 class StocksController < ApplicationController
-  before_filter :restrict_access
+  before_filter :restrict_access, :except => ["repo_list", 'current_price']
   # need to move to application controlller and except the auth.json
   
   require 'options'
+  
+  def repo_list
+    stocks = Price.where(:sec_type => 'Stock')
+    @stocks = stocks.collect { |stock| [stock, (Time.now + 1.hour - stock.last_update)] }.sort_by { |stock| -stock[1] }
+    @options = Price.where('sec_type != ?','Stock')
+  end
   
   def index
     render json: Stock.all
@@ -19,9 +25,9 @@ class StocksController < ApplicationController
   end
   
   def update_prices
-    realtime = params[:realtime]
+    real_time = params[:real_time] == 'true' ? true : false
     start = Time.now
-    update = Options.refresh_all(realtime)
+    update = Options.refresh_all(real_time)
     duration = Time.now - start
     render json: { 'duration' => duration, 'count' => update }
   end
@@ -30,10 +36,10 @@ class StocksController < ApplicationController
 #    Options.refresh_prices
     
     security = Stock.find(params[:id])
-    realtime = params[:realtime]
-
+    real_time = params[:real_time] == 'true' ? true : false
+    
     if security.stock_option == 'Stock'
-      resp = Options.local_stock_price(security.symbol,realtime)
+      resp = Options.local_stock_price(security.symbol,real_time)
       render json: { 'symbol' => security.symbol, 'price' => resp[1], 'time' => resp[0], 'change' => resp[2] }
     else
       resp = Options.local_option_price(security.symbol, security.stock_option, security.strike, security.expiration_date )

@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  sec_type: MyString
+  symbol: MyString
+  price_time: MyString
+  change: 9.99
+  strike: 9.99
+  exp_date: MyString
+  bid: 9.99
+  ask: 9.99
+  last_price: 9.99
+
+two:
+  sec_type: MyString
+  symbol: MyString
+  price_time: MyString
+  change: 9.99
+  strike: 9.99
+  exp_date: MyString
+  bid: 9.99
+  ask: 9.99
+  last_price: 9.99

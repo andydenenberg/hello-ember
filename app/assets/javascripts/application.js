@@ -108,6 +108,10 @@ function refresh_cache()  {
 	   stocks.forEach(function(stock){	
 		   	$.ajax({  
 		 		url: "/stocks/" + stock.get('id') + "/current_price?real_time=" + HelloEmber.real_time,  
+		        beforeSend: function (request)
+		        {
+		            request.setRequestHeader("token", localStorage.login_token);
+		        },
 		 		dataType: "json",  
 		 		success: function(data) { 		
 			   		console.log('updating stock:', stock.get('id'), data.symbol, data.price, data.change) ;
@@ -121,6 +125,10 @@ function refresh_cache()  {
 	   options.forEach(function(option){	
 		   	$.ajax({  
 		 		url: "/stocks/" + option.get('id') + "/current_price/",  
+		        beforeSend: function (request)
+		        {
+		            request.setRequestHeader("token", localStorage.login_token);
+		        },
 		 		dataType: "json",  
 		 		success: function(data) { 		
 			   		console.log('updating opton:', option.get('id'), option.get('symbol'), data.bid, data.ask, data.previous_close) ;
@@ -143,6 +151,10 @@ function refresh_cache()  {
 function refresh_repo() {
 	$.ajax({  
 		url: "/stocks/update_prices?real_time=" + HelloEmber.real_time,  
+        beforeSend: function (request)
+        {
+            request.setRequestHeader("token", localStorage.login_token);
+        },
 		dataType: "json",  
 		success: function(data) { 		
 	   		console.log('Cache refreshed:', data.duration, ' seconds ', data.count, 'updated') ;
