@@ -2,7 +2,40 @@
 namespace :family do
   
 desc 'Build the Databases'
-task :setup => ["db:drop", "db:create", "db:migrate"]
+task :setup => ["db:drop", "db:create", "db:migrate", 
+  'create_K', 'create_HP', 'create_ETrade' ]
+
+
+desc "Setup K"
+task :create_K => :environment do
+    stocks = [ ['K',268.55] ]
+    portfolio = Portfolio.create!( :name => 'K', :user_id => 1, :cash => 0 )
+    stocks.each do |sec|
+      s = Stock.create!( :symbol => sec[0],
+                         :name => '',
+                         :quantity => sec[1],
+                         :purchase_price => 0,
+                         :portfolio_id => portfolio.id,
+                         :stock_option => 'Stock',
+                         :purchase_date => '12/31/2002' )
+    end
+end
+
+desc "Setup HP"
+task :create_HP => :environment do
+    stocks = [ ['HPQ',84.978] ]
+    portfolio = Portfolio.create!( :name => 'HP', :user_id => 1, :cash => 0 )
+    stocks.each do |sec|
+      s = Stock.create!( :symbol => sec[0],
+                         :name => '',
+                         :quantity => sec[1],
+                         :purchase_price => 0,
+                         :portfolio_id => portfolio.id,
+                         :stock_option => 'Stock',
+                         :purchase_date => '12/31/2002' )
+    end
+end
+
 
 desc "Setup SLAT1"
 task :create_SLAT1 => :environment do

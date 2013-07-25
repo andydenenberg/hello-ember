@@ -35,7 +35,6 @@ module Options
         month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first).to_s
         day = month_day.last        
         datetime = year + '/' + month + '/' + day + ' ' + datetime.last.strip.split(' ').first
-        #<h3>Price Data Table</h3>
         # strip out the nokogiri stuff from the data
         data = price.map { |elem| "#{elem}" }  
         bid = "#{price[data.find_index('Bid')+1]}"
@@ -93,7 +92,7 @@ module Options
   def self.refresh_all(realtime)
     Price.all.each_with_index do |sec, index|
          after = refresh_price(sec.id,realtime)
-      puts "index: #{index} = #{sec.sec_type}: #{sec.symbol} #{sec.last_update}"
+#      puts "index: #{index} = #{sec.sec_type}: #{sec.symbol} #{sec.last_update}"
     end  
     return Price.all.count  
   end

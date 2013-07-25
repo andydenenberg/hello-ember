@@ -1,9 +1,7 @@
 class StocksController < ApplicationController
-  before_filter :restrict_access, :except => ["repo_list", 'current_price']
+  before_filter :restrict_access, :except => ["repo_list"]
   # need to move to application controlller and except the auth.json
-  
-  require 'options'
-  
+    
   def repo_list
     stocks = Price.where(:sec_type => 'Stock')
     @stocks = stocks.collect { |stock| [stock, (Time.now + 1.hour - stock.last_update)] }.sort_by { |stock| -stock[1] }
@@ -25,11 +23,12 @@ class StocksController < ApplicationController
   end
   
   def update_prices
-    real_time = params[:real_time] == 'true' ? true : false
     start = Time.now
-    update = Options.refresh_all(real_time)
+      system "rake demo:refresh_all RAILS_ENV=development --trace 2>&1 >> #{Rails.root}/log/rake.log &"
+#    real_time = params[:real_time] == 'true' ? true : false
+#    update = Options.refresh_all(real_time)
     duration = Time.now - start
-    render json: { 'duration' => duration, 'count' => update }
+    render json: { 'duration' => duration, 'count' => Price.all.count }
   end
   
   def current_price
@@ -78,10 +77,10 @@ class StocksController < ApplicationController
   
 
   private
-
+  
     def restrict_access
-  #      puts request.headers['token']
-      head :unauthorized unless request.headers['token'] == '1234'
+      @user= User.find_by_authentication_token(request.headers['token'])
+      head :unauthorized unless !@user.nil?
     end
   
     def permitted_params

@@ -38,6 +38,7 @@ GEM
       ember-source
       execjs
       handlebars-source
+    bcrypt-ruby (3.1.0)
     builder (3.0.4)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -46,6 +47,11 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
+    devise (2.2.4)
+      bcrypt-ruby (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (~> 3.1)
+      warden (~> 1.2.1)
     domain_name (0.5.7)
       unf (~> 0.0.3)
     ember-data-source (0.13)
@@ -92,6 +98,7 @@ GEM
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     ntlm-http (0.1.1)
+    orm_adapter (0.4.0)
     polyglot (0.3.3)
     rack (1.4.5)
     rack-cache (1.2)
@@ -145,6 +152,8 @@ GEM
     unf (0.0.5)
       unf_ext
     unf_ext (0.0.5)
+    warden (1.2.1)
+      rack (>= 1.0)
     webrobots (0.0.13)
 
 PLATFORMS
@@ -154,6 +163,7 @@ DEPENDENCIES
   active_model_serializers
   anjlab-bootstrap-rails (>= 2.1)
   coffee-rails (~> 3.2.1)
+  devise
   ember-rails
   ember-source (= 1.0.0.rc6.2)
   handlebars-source (~> 1.0.12)

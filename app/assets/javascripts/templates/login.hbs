@@ -61,6 +61,9 @@ in Portfolio Controller<br>
 	  // do something
 	  return this.get('clock') ;
 	 }.property("clock.second").cacheable(),
+	
+	http://log.simplabs.com/post/53016599611/authentication-in-ember-js
+	
 </code>
 
 {{else}}
@@ -68,7 +71,7 @@ in Portfolio Controller<br>
 <div class="form-signin">
 	<h3>Please login</h3>
 	<hr /><br />
-	<label>Username: </label>{{view Ember.TextField valueBinding="username" }}<br />
+	<label>Email: </label>{{view Ember.TextField valueBinding="email" }}<br />
 	<label>Password: </label>{{view Ember.TextField valueBinding="password" type="password" action="login"}}<br />
   
 	<br /><button {{action "login"}} class='btn btn-success'>Login</button>

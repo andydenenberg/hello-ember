@@ -40,8 +40,8 @@ class PortfoliosController < ApplicationController
   private
 
   def restrict_access
-#      puts request.headers['token']
-    head :unauthorized unless request.headers['token'] == '1234'
+    @user= User.find_by_authentication_token(request.headers['token'])
+    head :unauthorized unless !@user.nil?
   end
   
   def permitted_params
