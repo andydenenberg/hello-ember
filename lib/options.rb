@@ -20,7 +20,6 @@ module Options
     strike = strike.to_i.to_s
     appendix = '-E'
     url = "http://www.cboe.com/DelayedQuote/SimpleQuote.aspx?ticker=#{symbol}#{format_date}#{strike}#{appendix}"
-    puts url
     
     page = @agent.get(url)
     payload = page.body
@@ -69,7 +68,7 @@ module Options
       return time, price, change
     else
       price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
-      return price.last_update.strftime("%H:%M"), price.last_price, price.change
+      return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change
     end
   end  
 
@@ -82,7 +81,7 @@ module Options
     option = [ new ]
     end
     price = option.first
-    return price.last_update, price.bid, price.ask, price.last_price
+    return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.bid, price.ask, price.last_price
   end  
 
   def self.valid_price?(price)
@@ -91,7 +90,7 @@ module Options
   
   def self.refresh_all(realtime)
     Price.all.each_with_index do |sec, index|
-         after = refresh_price(sec.id,realtime)
+         refresh_price(sec.id,realtime)
 #      puts "index: #{index} = #{sec.sec_type}: #{sec.symbol} #{sec.last_update}"
     end  
     return Price.all.count  
