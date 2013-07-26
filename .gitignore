@@ -8,7 +8,7 @@
 /config/database.yml
 
 # Ignore the database setups
-/tasks/setup.rake
+/lib/tasks/setup.rake
 
 # Ignore bundler config
 /.bundle
