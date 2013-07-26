@@ -213,7 +213,7 @@ task :create_AndR => :environment do
     ['GBDC','GOLUB CAPITAL BDC INC',  1000, 16.88,  '12/31/2012'],
     ['GOODX','GOODHAVEN FD',          1486.99,26.95,'12/31/2012'],
     ['HON','HONEYWELL INTERNATIONAL', 600,  72.44,  '12/31/2012'],
-    ['INTC','INTEL CORP',             3000, 21.61,  '12/31/2012'],
+    ['INTC','INTEL CORP',             4000, 21.61,  '12/31/2012'],
     ['EWH','ISHARES MSCI HK ETF',     2000, 19.27,  '12/31/2012'],
     ['KMP','KINDER MORGAN ENERGY LP', 300,  90.98,  '12/31/2012'],
     ['MCD','MC DONALDS CORP',         200,  99.89,  '12/31/2012'],

@@ -68,21 +68,6 @@ module Options
     price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase )
     if price.empty? 
       latest = latest_price(symbol, real_time)
-#      if real_time
-#        puts price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
-#        datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
-#        month_day = datetime.first.split(' ')
-#        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
-#        day = month_day.last
-#        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
-#        time = format_date + ' ' + datetime.last.split(' ').first
-#        puts change = MarketBeat.change_real_time(symbol.upcase)
-#      else
-#        price = MarketBeat.last_trade(symbol.upcase).to_f
-#        time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
-#        change = MarketBeat.change(symbol.upcase)
-#      end
-#     Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => price, :last_update => time, :change => change)
       Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => latest[1], :last_update => latest[0], :change => latest[2] )
       return latest
     else
@@ -120,34 +105,12 @@ module Options
       symbol = security.symbol
       if security.sec_type == 'Stock'
         update = latest_price(symbol, real_time)
-
-        puts update
-#          if realtime
-#            price = MarketBeat.last_trade_real_time(symbol).to_f
-#            datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
-#            month_day = datetime.first.split(' ')
-#            month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
-#            day = month_day.last
-#            format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
-#            time = format_date + ' ' + datetime.last.split(' ').first
-#            change = MarketBeat.change_real_time(symbol.upcase)
-#          else
-#            price = MarketBeat.last_trade(symbol.upcase).to_f
-#            time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
-#            change = MarketBeat.change(symbol.upcase)
-#          end
-#         security.last_price = price
-#         security.last_update = time
-#         security.change = change
          security.last_price = update[1]
          security.last_update = update[0]
          security.change = update[2]
          security.save
       else
         update = option_price(symbol, security.strike, security.exp_date) 
-        
-        puts update
-               
         security.last_update = update['Time']
         security.bid = update['Bid']
         security.ask = update['Ask']

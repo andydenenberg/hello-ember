@@ -20,6 +20,23 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	else { this.set('sortAscending', true) ; };    
   },
 
+  	total_stocks_only: function() {
+	var total = 0 ;
+			this.content.forEach(function(portfolio){				
+				total += portfolio.get('stocks_value') ;			
+			});
+	return total // Ember.inspect( this.count )
+	}.property('content.@each.stocks_value'),
+
+  	total_options_only: function() {
+	var total = 0 ;
+			this.content.forEach(function(portfolio){				
+				total += portfolio.get('options_value') ;			
+			});
+	return total // Ember.inspect( this.count )
+	}.property('content.@each.options_value'),
+
+	
   total_stocks: function() {
 	var total = 0 ;
 //	contacts.then(function(contacts){

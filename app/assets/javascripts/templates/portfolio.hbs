@@ -18,10 +18,24 @@
 	      <div class="tab-pane active fade in" id="daily">
 
 			<table class='table table-condensed table-striped table-bordered'>
+			{{#if stocks_exist}}	
+				<thead><tr><th colspan=9>Stocks</th><tr></thead>			
 				{{partial "partials/daily_header"}}
-					{{#each stock in stocks}}
+					{{#each stock in stocks_only}}
 						{{partial "partials/daily_data"}}
 					{{/each}}
+				{{partial "partials/daily_totals_stocks"}}
+			{{/if}}
+					
+			{{#if options_exist}}	
+				<thead><tr><th colspan=9>Options</th><tr></thead>
+				{{partial "partials/daily_header_options"}}
+					{{#each stock in options_only}}
+						{{partial "partials/daily_data_options"}}
+					{{/each}}
+				{{partial "partials/daily_totals_options"}}
+			{{/if}}
+				
 				{{partial "partials/daily_totals"}}
 			</table>
 
