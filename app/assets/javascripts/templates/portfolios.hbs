@@ -29,11 +29,12 @@
 			<th>Full Name</th>
 			<th style='text-align:right;'>Cash</th>
 			<th style='text-align:right;'>Stocks</th>
+			<th style='text-align:right;'>Options</th>
 			<th style='text-align:right;'>Total Value
 			<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
 			</th>
 			<th style='text-align:right;'>Daily Change</th>
-			<th>Controls</th>
+			<th style='text-align:right;'>Status</th>
 		</tr>
 	  {{#each portfolio in controller}}
 		<tr>
@@ -47,6 +48,7 @@
 			<th style='text-align:right;'>Totals: </th>
 			<td style='text-align:right;'>${{decimal total_cash}}</td>
 			<td style='text-align:right;'>${{subtract total_stocks total_cash}}</td>			
+			<td style='text-align:right;'></td>
 			<td style='text-align:right;'>${{decimal total_stocks}}</td>
 			<td style='text-align:right;'>${{decimal total_daily}}</td>
 			<td></td>

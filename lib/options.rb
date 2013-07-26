@@ -61,7 +61,7 @@ module Options
       time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
       change = MarketBeat.change(symbol.upcase)
     end 
-    return price, time, change   
+    return time, price, change   
   end
 
   def self.local_stock_price(symbol, real_time)    
@@ -83,7 +83,7 @@ module Options
 #        change = MarketBeat.change(symbol.upcase)
 #      end
 #     Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => price, :last_update => time, :change => change)
-      Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => latest[0], :last_update => latest[1], :change => latest[2] )
+      Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => latest[1], :last_update => latest[0], :change => latest[2] )
       return latest
     else
       price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
@@ -139,8 +139,8 @@ module Options
 #         security.last_price = price
 #         security.last_update = time
 #         security.change = change
-         security.last_price = update[0]
-         security.last_update = update[1]
+         security.last_price = update[1]
+         security.last_update = update[0]
          security.change = update[2]
          security.save
       else
