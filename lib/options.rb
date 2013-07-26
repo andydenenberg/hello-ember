@@ -46,26 +46,45 @@ module Options
       end
   end
   
+  def self.latest_price(symbol, real_time)
+    if real_time
+      price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
+      datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
+      month_day = datetime.first.split(' ')
+      month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+      day = month_day.last
+      format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+      time = format_date + ' ' + datetime.last.split(' ').first
+      change = MarketBeat.change_real_time(symbol.upcase)
+    else
+      price = MarketBeat.last_trade(symbol.upcase).to_f
+      time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
+      change = MarketBeat.change(symbol.upcase)
+    end 
+    return price, time, change   
+  end
 
   def self.local_stock_price(symbol, real_time)    
     price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase )
     if price.empty? 
-      if real_time
-        puts price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
-        datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
-        month_day = datetime.first.split(' ')
-        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
-        day = month_day.last
-        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
-        time = format_date + ' ' + datetime.last.split(' ').first
-        puts change = MarketBeat.change_real_time(symbol.upcase)
-      else
-        price = MarketBeat.last_trade(symbol.upcase).to_f
-        time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
-        change = MarketBeat.change(symbol.upcase)
-      end
-      Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => price, :last_update => time, :change => change)
-      return time, price, change
+      latest = latest_price(symbol, real_time)
+#      if real_time
+#        puts price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
+#        datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
+#        month_day = datetime.first.split(' ')
+#        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+#        day = month_day.last
+#        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+#        time = format_date + ' ' + datetime.last.split(' ').first
+#        puts change = MarketBeat.change_real_time(symbol.upcase)
+#      else
+#        price = MarketBeat.last_trade(symbol.upcase).to_f
+#        time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
+#        change = MarketBeat.change(symbol.upcase)
+#      end
+#     Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => price, :last_update => time, :change => change)
+      Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => latest[0], :last_update => latest[1], :change => latest[2] )
+      return latest
     else
       price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
       return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change
@@ -96,30 +115,39 @@ module Options
     return Price.all.count  
   end
     
-  def self.refresh_price(security_id,realtime)
+  def self.refresh_price(security_id,real_time)
       security = Price.find(security_id)
       symbol = security.symbol
       if security.sec_type == 'Stock'
-          if realtime
-            price = MarketBeat.last_trade_real_time(symbol).to_f
-            datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
-            month_day = datetime.first.split(' ')
-            month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
-            day = month_day.last
-            format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
-            time = format_date + ' ' + datetime.last.split(' ').first
-            change = MarketBeat.change_real_time(symbol.upcase)
-          else
-            price = MarketBeat.last_trade(symbol.upcase).to_f
-            time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
-            change = MarketBeat.change(symbol.upcase)
-          end
-         security.last_price = price
-         security.last_update = time
-         security.change = change
+        update = latest_price(symbol, real_time)
+
+        puts update
+#          if realtime
+#            price = MarketBeat.last_trade_real_time(symbol).to_f
+#            datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
+#            month_day = datetime.first.split(' ')
+#            month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+#            day = month_day.last
+#            format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+#            time = format_date + ' ' + datetime.last.split(' ').first
+#            change = MarketBeat.change_real_time(symbol.upcase)
+#          else
+#            price = MarketBeat.last_trade(symbol.upcase).to_f
+#            time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
+#            change = MarketBeat.change(symbol.upcase)
+#          end
+#         security.last_price = price
+#         security.last_update = time
+#         security.change = change
+         security.last_price = update[0]
+         security.last_update = update[1]
+         security.change = update[2]
          security.save
       else
-        update = option_price(symbol, security.strike, security.exp_date)        
+        update = option_price(symbol, security.strike, security.exp_date) 
+        
+        puts update
+               
         security.last_update = update['Time']
         security.bid = update['Bid']
         security.ask = update['Ask']
@@ -128,22 +156,6 @@ module Options
       end
   end
 
-  def self.list_all_securities
-    @@securities.each do |stock|
-      puts stock.inspect
-    end    
-  end
-
-  def self.update_all(interval) # infinite loop run in a new thread
-     loop {
-       refresh_prices
-       @@update_counter += 1
-  
-       (1..10).each { puts 'updating' }
-       
-       sleep(interval)
-      }
-  end
 
 end
 

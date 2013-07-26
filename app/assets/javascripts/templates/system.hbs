@@ -1,41 +1,56 @@
-<h3>The System Page</h3>
+<div class="span3">
+  <div class="well sidebar-nav">
+    <ul class="nav nav-list">
+      <li class="nav-header">SYSTEM</li>
+		<li>Cache Update Delay</li>
+		<li>Repository Update Delay</li>
+		<li>Rails Repo List</li>
+    </ul>
+  </div>
+</div>
 
-<form class="form-inline">
-<div class="control-group">
-  	<label class="control-label" >Enable</label>
-	<label class="checkbox">
-    {{view Ember.Checkbox checkedBinding="HelloEmber.cache_auto" }}
-  	</label>
-	<label class="control-label" >Cache Update Delay is</label>
-	<div class="input-append">
-  	{{view Ember.TextField valueBinding="HelloEmber.cache_delay" class='input-mini' }}
-		<span class="add-on"> seconds</span>
+<div class="span8">
+
+	<h3>The System Page</h3>
+
+	<form class="form-inline">
+	<div class="control-group">
+	  	<label class="control-label" >Enable</label>
+		<label class="checkbox">
+	    {{view Ember.Checkbox checkedBinding="HelloEmber.cache_auto" }}
+	  	</label>
+		<label class="control-label" >Cache Update Delay is</label>
+		<div class="input-append">
+	  	{{view Ember.TextField valueBinding="HelloEmber.cache_delay" class='input-mini' }}
+			<span class="add-on"> seconds</span>
+		</div>
 	</div>
-</div>
 
-<div class="control-group">
-  	<label class="control-label" >Enable</label>
-	<label class="checkbox">
-    {{view Ember.Checkbox checkedBinding="HelloEmber.repo_auto" }}
-  	</label>
-	<label class="control-label" >Repository Update Delay is</label>
-	<div class="input-append">
-  	{{view Ember.TextField valueBinding="HelloEmber.repo_delay" class='input-mini' }}
-		<span class="add-on"> seconds</span>
+	<div class="control-group">
+	  	<label class="control-label" >Enable</label>
+		<label class="checkbox">
+	    {{view Ember.Checkbox checkedBinding="HelloEmber.repo_auto" }}
+	  	</label>
+		<label class="control-label" >Repository Update Delay is</label>
+		<div class="input-append">
+	  	{{view Ember.TextField valueBinding="HelloEmber.repo_delay" class='input-mini' }}
+			<span class="add-on"> seconds</span>
+		</div>
 	</div>
-</div>
 
-<div class="control-group">
-  	<label class="control-label" >Enable</label>
-	<label class="checkbox">
-    {{view Ember.Checkbox checkedBinding="HelloEmber.real_time" }}
-  	</label>
-	<label class="control-label" >Real-Time Quotes</label>
-</div>
+	<div class="control-group">
+	  	<label class="control-label" >Enable</label>
+		<label class="checkbox">
+	    {{view Ember.Checkbox checkedBinding="HelloEmber.real_time" }}
+	  	</label>
+		<label class="control-label" >Real-Time Quotes</label>
+	</div>
 
-<div class="control-group">
-  	<label class="control-label" >Repo List</label>
-    <a href='/stocks/repo_list'>list</a>
-</div>
+	<div class="control-group">
+	  	<label class="control-label" >Repo List</label>
+	    <a href='/stocks/repo_list'>list</a>
+	</div>
 
-</form>
+	</form>
+
+</div>

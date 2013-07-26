@@ -6,8 +6,9 @@ namespace :demo do
     
     task :refresh_all  => :environment do
         require 'options'
+        start = Time.now
         Options.refresh_all(true)
-        puts "Repo refreshed at: #{Time.now}"
+        puts "Repo refreshed at: #{Time.now} and took #{Time.now - start} seconds"
         
     end
   

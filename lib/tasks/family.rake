@@ -2,8 +2,9 @@
 namespace :family do
   
 desc 'Build the Databases'
-task :setup => ["db:drop", "db:create", "db:migrate", 
-  'create_K', 'create_HP', 'create_ETrade' ]
+task :setup => ["db:drop", "db:create", "db:migrate"]
+desc 'Create Data'
+task :create_db => ['create_K', 'create_HP', 'create_ETrade', 'create_SLAT1', 'create_SLAT2', 'create_AndR', 'create_DHC', 'create_MSA']
 
 
 desc "Setup K"
