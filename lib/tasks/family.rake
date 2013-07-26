@@ -95,7 +95,7 @@ task :create_SLAT1 => :environment do
     ['V',450.00],
     ['WAG',4800.00]
   ]
-portfolio = Portfolio.create!( :name => 'SLAT1', :user_id => 1, :cash => 136256.62 )
+portfolio = Portfolio.create!( :name => 'SLAT1', :user_id => 1, :cash => 140063.22 )
 
 stocks.each do |sec|
   s = Stock.create!( :symbol => sec[0],
@@ -172,7 +172,7 @@ task :create_SLAT2 => :environment do
     ['VMW',135.00]
   ]
   
-  portfolio = Portfolio.create!( :name => 'SLAT2', :user_id => 1, :cash => 74523.40 )
+  portfolio = Portfolio.create!( :name => 'SLAT2', :user_id => 1, :cash => 75805.24 )
 
   stocks.each do |sec|
     s = Stock.create!( :symbol => sec[0],
@@ -205,6 +205,7 @@ task :create_AndR => :environment do
     [ 'DTEGY','DEUTSCHE TELEKOM ADR', 3500, 11.63,  '12/31/2012'],
     [ 'DISH','DISH NETWORK CORP',     500,  37.02,  '12/31/2012'],
     ['EBAY','EBAY INC',               300,  53.13,  '12/31/2012'],
+    ['EBAY','EBAY INC',               200,  53.45,  '07/18/2013'],
     ['EMR','EMERSON ELECTRIC CO',     400,  56.26,  '12/31/2012'],
     ['ETR','ENTERGY CORP NEW',        400,  70.17,  '12/31/2012'],
     ['XOM','EXXON MOBIL CORPORATION', 750,  88.40,  '12/31/2012'],
@@ -216,6 +217,7 @@ task :create_AndR => :environment do
     ['EWH','ISHARES MSCI HK ETF',     2000, 19.27,  '12/31/2012'],
     ['KMP','KINDER MORGAN ENERGY LP', 300,  90.98,  '12/31/2012'],
     ['MCD','MC DONALDS CORP',         200,  99.89,  '12/31/2012'],
+    ['MSFT','MICROSOFT CORP',         1000,  32.01,  '07/18/2013'],
     ['QLD','PROSHARES ULTRA QQQ',     1000, 58.73,  '12/31/2012'],
     ['QCOM','QUALCOMM INC',           600,  62.36,  '12/31/2012'],
     ['SPY','SPDR S&P 500 ETF',        600,  161.85, '12/31/2012'],
@@ -229,12 +231,13 @@ task :create_AndR => :environment do
     ['DXJ','WISDOMTREE JPN HDGD EQTY',500,  38.90,  '12/31/2012']]
 
 options = [
+  [ 'ATMI', 'ATMI',       -20,  25,     '12/21/2013',   3.30,   '07/18/2013'],
   [ 'ATMI', 'ATMI',       -25,  25,     '12/21/2013',   2.29,   '12/21/2012'],
   [ 'AAPL', 'Apple Inc',  5,    395.00, '01/18/2014',   44.48,  '12/31/2012'],
   [ 'AAPL', 'Apple Inc',  6,    480.00, '01/18/2014',   37.48,  '12/31/2012'],
   [ 'QQQ',  'QQQ',        30,   70.00,  '01/18/2014',   4.13,   '12/31/2012']]
 
-  portfolio = Portfolio.create!( :name => 'A&R', :user_id => 1, :cash => 1457784.16 )
+  portfolio = Portfolio.create!( :name => 'A&R', :user_id => 1, :cash => 1386455.77 )
 
   stocks.each do |sec|
     s = Stock.create!( :symbol => sec[0],
@@ -277,9 +280,11 @@ options =  [
   ['FCX', 'FREEPORT MCMORAN',     20, 34.00,  '01/18/2014',  '12/31/2012'],
   ['GOOG', 'GOOGLE INC',          1,  655.00, '01/18/2014',   '12/31/2012'],
   ['HPQ', 'HEWLETT PACKARD',      5,  10.00,  '01/18/2014',    '12/31/2012'],
-  ['AMGN','AMGEN INC',            3,  105.00, '01/17/2015',   '12/31/2012']]
+  ['AMGN','AMGEN INC',            3,  105.00, '01/17/2015',   '12/31/2012'],
+  ['GOOG','GOOGLE CORP',          2,  975.00, '01/18/2014',   '07/18/2013'],
+  ]
 
-     portfolio = Portfolio.create!( :name => 'DHC', :user_id => 1, :cash => 458614.73 )
+     portfolio = Portfolio.create!( :name => 'DHC', :user_id => 1, :cash => 453616.31 )
 
      stocks.each do |sec|
        s = Stock.create!( :symbol => sec[0],
@@ -302,7 +307,6 @@ options =  [
                           :expiration_date => sec[4] )
    end
 end
-
 
 desc "Setup ETrade"
 task :create_ETrade => :environment do
@@ -365,7 +369,7 @@ task :create_MSA => :environment do
    [ 'XOM','EXXON MOBIL CORP',        500,    60.09,  '04/19/2005' ],
    [ 'ZBRA','ZEBRA TECHNOLOGIES CORP',750,    4.06,   '01/23/1980 ']]
 
-   portfolio = Portfolio.create!( :name => 'MSA', :user_id => 1, :cash => 81695.58 )
+   portfolio = Portfolio.create!( :name => 'MSA', :user_id => 1, :cash => 84190.60 )
 
    csv.each do |sec|
      s = Stock.create!( :symbol => sec[0],
