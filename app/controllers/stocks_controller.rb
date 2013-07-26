@@ -24,7 +24,7 @@ class StocksController < ApplicationController
   
   def update_prices
     start = Time.now
-      system "rake demo:refresh_all RAILS_ENV=development --trace 2>&1 >> #{Rails.root}/log/rake.log &"
+      system "rake demo:refresh_all RAILS_ENV=development REALTIME=#{params[:real_time]} --trace 2>&1 >> #{Rails.root}/log/rake.log &"
 #    real_time = params[:real_time] == 'true' ? true : false
 #    update = Options.refresh_all(real_time)
     duration = Time.now - start

@@ -1,8 +1,8 @@
 <td>{{#linkTo "portfolio" portfolio}} {{portfolio.name}}{{/linkTo}}</td>
 <td style='text-align:right;'> ${{decimal portfolio.cash}}</td>
-<td style='text-align:right;'> ({{portfolio.stocks.length}}) ${{decimal portfolio.portfolio_value}}</td>
+<td style='text-align:right;'> ({{portfolio.stocks.length}}) ${{subtract portfolio.portfolio_value portfolio.cash }}</td>
 <td></td>
-<td style='text-align:right;'> ${{subtract portfolio.portfolio_value portfolio.cash }}</td>
+<td style='text-align:right;'>${{decimal portfolio.portfolio_value}}</td>
 <td style='text-align:right;'> ${{decimal portfolio.portfolio_daily}}</td>
 <td style='text-align:right;'><small style='color:black;'>({{portfolio.state}})</small></td>
 

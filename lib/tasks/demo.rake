@@ -5,11 +5,12 @@ namespace :demo do
     end
     
     task :refresh_all  => :environment do
+        rt = ENV["REALTIME"]
+        realtime = rt == 'true' ? true : false
         require 'options'
         start = Time.now
-        Options.refresh_all(true)
-        puts "Repo refreshed at: #{Time.now} and took #{Time.now - start} seconds"
-        
+        Options.refresh_all(realtime)
+        puts "Repo refreshed at: #{Time.now} and took #{Time.now - start} seconds using realtime: #{realtime}"        
     end
   
 end
