@@ -12,5 +12,10 @@ namespace :demo do
         Options.refresh_all(realtime)
         puts "Repo refreshed at: #{Time.now} and took #{Time.now - start} seconds using realtime: #{realtime}"        
     end
+
+    task :daily_snapshot  => :environment do
+        require 'options'
+        Options.daily_snapshot
+    end
   
 end

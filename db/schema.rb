@@ -11,7 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130724200405) do
+ActiveRecord::Schema.define(:version => 20130726193423) do
+
+  create_table "histories", :force => true do |t|
+    t.decimal  "cash",          :precision => 10, :scale => 2
+    t.decimal  "stocks",        :precision => 10, :scale => 2
+    t.integer  "stocks_count"
+    t.decimal  "options",       :precision => 10, :scale => 2
+    t.integer  "options_count"
+    t.decimal  "total",         :precision => 10, :scale => 2
+    t.datetime "snapshot_date"
+    t.integer  "portfolio_id"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
+  end
+
+  add_index "histories", ["portfolio_id"], :name => "index_histories_on_portfolio_id"
 
   create_table "portfolios", :force => true do |t|
     t.string   "name"

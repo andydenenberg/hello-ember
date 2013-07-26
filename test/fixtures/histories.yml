@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  cash: 9.99
+  stocks: 9.99
+  options: 9.99
+  total: 9.99
+  portfolio: 
+
+two:
+  cash: 9.99
+  stocks: 9.99
+  options: 9.99
+  total: 9.99
+  portfolio: 

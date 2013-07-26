@@ -4,8 +4,12 @@ namespace :family do
 desc 'Build the Databases'
 task :setup => ["db:drop", "db:create", "db:migrate"]
 desc 'Create Data'
-task :create_db => ['create_K', 'create_HP', 'create_ETrade', 'create_SLAT1', 'create_SLAT2', 'create_AndR', 'create_DHC', 'create_MSA']
+task :create_db => ['create_K', 'create_HP', 'create_ETrade', 'create_SLAT1', 'create_SLAT2', 'create_AndR', 'create_DHC', 'create_MSA', 'create_RN']
 
+desc "Setup RiverNorth"
+task :create_RN => :environment do
+    portfolio = Portfolio.create!( :name => 'River North', :user_id => 1, :cash => 368741.00 )
+end
 
 desc "Setup K"
 task :create_K => :environment do

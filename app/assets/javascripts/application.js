@@ -98,6 +98,9 @@ function current_quote(symbol, controller) {
 }
 
 function refresh_cache()  {	
+	
+	console.log('got here') ;
+	
 	    options = HelloEmber.Stock.find().filter(function(stock) {
 				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
 		});
