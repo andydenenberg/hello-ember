@@ -2,9 +2,11 @@
 	<th>Symbol</th>
 	<th colspan=4 style='text-align:right;'>Quantity</th>
 	<th style='text-align:right;'>Current Price</th>
-	<th style='text-align:right;'>Value</th>
+	<th style='text-align:right;'>Value
+	<button {{action sort_by_value}} class="sort" >{{sort_arrow sortAscending sortProperties col_Value}}</button>
+	</th>
 	<th style='text-align:right;'>Daily Change
-		<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
+	<button {{action sort_by_daily}} class="sort" >{{sort_arrow sortAscending sortProperties col_Daily}}</button>
 	</th>
 	<th style='text-align:right;'>Time</th>
 </tr>

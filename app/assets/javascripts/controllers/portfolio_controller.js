@@ -1,17 +1,35 @@
 HelloEmber.PortfolioController = Em.ObjectController.extend({
 	isEditing: false,
 	needs: ['PortfolioEdit'],
+	sortProperties: ['position_value'],
+	sortAscending: false,
+	col_Value: 'position_value',
+	col_Daily: 'position_daily',
 	
-//	sortProperties: ['???'],
-//    sortAscending: false,
-//
-// need to find a way to sort stocks.. sortProperties works with content..
+	stocks: (function() {
+		return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, {
+	    sortProperties: this.get('sortProperties'),
+		sortAscending: this.get('sortAscending'),
+	    content: this.get('content.stocks_only')
+	  });
+	}).property('content.stocks_only','sortProperties','sortAscending').cacheable(),
 
-//  	sort: function() {
-//		direction = this.get('sortAscending') ;
-//		if (direction == true) { this.set('sortAscending', false) ;	}
-//		else { this.set('sortAscending', true) ; };    
-//	  },
+  sort_by_value: function() {
+	this.set('sortProperties', ['position_value']);
+
+	direction = this.get('sortAscending') ;
+	if (direction == true) { this.set('sortAscending', false) ;	}
+	else { this.set('sortAscending', true) ; };    
+  },
+
+  sort_by_daily: function() {
+	this.set('sortProperties', ['position_daily']);
+	
+	direction = this.get('sortAscending') ;
+	if (direction == true) { this.set('sortAscending', false) ;	}
+	else { this.set('sortAscending', true) ; };    
+  },
+
 	
   	total_cost: function() {
 	var total = 0 ;

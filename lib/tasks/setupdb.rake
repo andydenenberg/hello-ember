@@ -3,7 +3,7 @@ namespace :family do
 desc 'Build the Databases'
 task :setup => ["db:drop", "db:create", "db:migrate"]
 desc 'Create Data'
-task :create_db => ['create_K', 'create_HP', 'create_ETrade', 'create_SLAT1', 'create_SLAT2', 'create_AndR', 'create_DHC', 'create_MSA', 'create_RN']
+task :create_db => ['create_K', 'create_HP', 'create_ETrade', 'create_SLAT1', 'create_SLAT2', 'create_AndR', 'create_DHC', 'create_MSA', 'create_RN', 'create_R']
 
 desc "Create 1st History"
 task :create_hist => :environment do
@@ -11,9 +11,9 @@ task :create_hist => :environment do
 hist = [
 [2, 0.00, 2205.23, 1, 0.00, 0, 2205.23],
 [1,	0.00, 17880.06, 1, 0.00, 0, 17880.06], 
-[3, 8300.53, 52781.00, 4, 24095.00, 2, 85,176.53], 
+[3, 8300.53, 52781.00, 4, 24095.00, 2, 85176.53], 
 [8, 84190.60, 1797337.74, 19, 0.00, 0, 1881528.34 ],
-[5, 75,805.24, 2494797.38, 57, 0.00, 0, 2570602.62 ],
+[5, 75805.24, 2494797.38, 57, 0.00, 0, 2570602.62 ],
 [7, 453616.31, 2271440.64, 7, 48205.00, 6, 2773261.95 ],
 [6, 1386455.77, 1471933.23, 39, 43620.00, 5, 2902009.00 ],
 [4, 140063.22, 5630185.92, 52, 0.00, 0, 5770249.14 ],
@@ -31,6 +31,21 @@ s = History.create!( :cash => record[1],
                    :total => record[6],
                    :snapshot_date => '2013-07-25 17:00:00 -0500' )
                  end
+end
+
+desc "Setup K"
+task :create_R => :environment do
+    stocks = [ ['COP', 400] ]
+    portfolio = Portfolio.create!( :name => 'R', :user_id => 1, :cash => 99595.79 )
+    stocks.each do |sec|
+      s = Stock.create!( :symbol => sec[0],
+                         :name => '',
+                         :quantity => sec[1],
+                         :purchase_price => 58.81,
+                         :portfolio_id => portfolio.id,
+                         :stock_option => 'Stock',
+                         :purchase_date => '2013/03/13' )
+    end
 end
 
 desc "Setup RiverNorth"

@@ -31,9 +31,11 @@
 			<th style='text-align:right;'>Stocks</th>
 			<th style='text-align:right;'>Options</th>
 			<th style='text-align:right;'>Total Value
-			<button {{action sort}} class="sort" >{{sort_arrow sortAscending}}</button>
+			<button {{action sort_by_value}} class="sort" >{{sort_arrow sortAscending sortProperties col_Total}}</button>
 			</th>
-			<th style='text-align:right;'>Daily Change</th>
+			<th style='text-align:right;'>Daily Change
+			<button {{action sort_by_daily_change}} class="sort" >{{sort_arrow sortAscending sortProperties col_Daily}}</button>
+			</th>
 			<th style='text-align:right;'>Status</th>
 		</tr>
 	  {{#each portfolio in controller}}

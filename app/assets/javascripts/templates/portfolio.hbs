@@ -21,7 +21,7 @@
 			{{#if stocks_exist}}	
 				<thead><tr><th colspan=9>Stocks</th><tr></thead>			
 				{{partial "partials/daily_header"}}
-					{{#each stock in stocks_only}}
+					{{#each stock in stocks}}
 						{{partial "partials/daily_data"}}
 					{{/each}}
 				{{partial "partials/daily_totals_stocks"}}

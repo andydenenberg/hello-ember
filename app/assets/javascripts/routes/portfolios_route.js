@@ -11,7 +11,7 @@ HelloEmber.PortfoliosRoute = HelloEmber.AuthenticatedRoute.extend({  // Ember.Ro
   },
 
   setupController: function(controller, model) {
-	controller.set('model', model ) ;	
+	controller.set('content', model ) ;	
   },
 
 });

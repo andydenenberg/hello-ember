@@ -6,6 +6,7 @@ class StocksController < ApplicationController
     stocks = Price.where(:sec_type => 'Stock')
     @stocks = stocks.collect { |stock| [stock, (Time.now + 1.hour - stock.last_update)] }.sort_by { |stock| -stock[1] }
     @options = Price.where('sec_type != ?','Stock')
+    @history = History.all
   end
   
   def index

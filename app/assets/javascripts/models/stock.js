@@ -39,6 +39,12 @@ HelloEmber.Stock  = DS.Model.extend({
 	return value 
   }.property('value_quantity', 'purchase_price').cacheable(),
 
+  position_daily: function() {
+	value = this.get('value_quantity') * this.get('daily_change')
+	if (this.get('stock_option') == 1) { value = value * 100 }
+	return value
+  }.property('value_quantity', 'daily_change').cacheable(),
+
   position_value: function() {
 	value = this.get('value_quantity') * this.get('latest_price')
 	if (this.get('stock_option') == 1) { value = value * 100 }

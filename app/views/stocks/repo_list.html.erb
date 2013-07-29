@@ -3,6 +3,64 @@
 	<div class='span'>
 	
 	<%= link_to 'Home', '/index#/portfolios' %>
+
+<% Portfolio.all.each do |port| %>
+<table class="table table-condensed table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>Portfolio Name</th>
+			<th>Date</th>
+			<th>Cash</th>
+			<th># Stocks</th>
+			<th>Stocks Value</th>
+			<th># Options</th>
+			<th>Options Value</th>
+			<th>Total Value</th>
+		<tr>
+	<thead>
+	<% History.where(:portfolio_id => port.id).each do |hist| %>
+		<tr>
+			<td><%= hist.portfolio.name %></td>
+			<td><%= hist.snapshot_date %></td>
+			<td class='aln_r'>$<%= number_with_precision(hist.cash, :precision => 2) %></td>
+			<td class='aln_r'><%= hist.stocks_count %></td>
+			<td class='aln_r'>$<%= number_with_precision(hist.stocks, :precision => 2) %></td>
+			<td class='aln_r'><%= hist.options_count %></td>
+			<td class='aln_r'>$<%= number_with_precision(hist.options, :precision => 2) %></td>
+			<td class='aln_r'>$<%= number_with_precision(hist.total, :precision => 2) %></td>
+		</tr>
+	<% end %>
+<table>
+<% end %>
+
+	<table class="table table-condensed table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Portfolio Name</th>
+				<th>Date</th>
+				<th>Cash</th>
+				<th># Stocks</th>
+				<th>Stocks Value</th>
+				<th># Options</th>
+				<th>Options Value</th>
+				<th>Total Value</th>
+			<tr>
+		<thead>
+		<% @history.each do |hist| %>
+			<tr>
+				<td><%= hist.portfolio.name %></td>
+				<td><%= hist.snapshot_date %></td>
+				<td class='aln_r'>$<%= number_with_precision(hist.cash, :precision => 2) %></td>
+				<td class='aln_r'><%= hist.stocks_count %></td>
+				<td class='aln_r'>$<%= number_with_precision(hist.stocks, :precision => 2) %></td>
+				<td class='aln_r'><%= hist.options_count %></td>
+				<td class='aln_r'>$<%= number_with_precision(hist.options, :precision => 2) %></td>
+				<td class='aln_r'>$<%= number_with_precision(hist.total, :precision => 2) %></td>
+			</tr>
+		<% end %>
+	<table>
+		      
+
 <h3><%= @stocks.count %> Stocks</h3>
 <table class="table table-condensed table-striped table-bordered">
      <thead>
