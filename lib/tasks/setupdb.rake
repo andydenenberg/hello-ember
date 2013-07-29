@@ -33,7 +33,7 @@ s = History.create!( :cash => record[1],
                  end
 end
 
-desc "Setup K"
+desc "Setup R"
 task :create_R => :environment do
     stocks = [ ['COP', 400] ]
     portfolio = Portfolio.create!( :name => 'R', :user_id => 1, :cash => 99595.79 )
