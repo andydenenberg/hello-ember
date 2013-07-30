@@ -1,17 +1,15 @@
-HelloEmber.PortfoliosRoute = HelloEmber.AuthenticatedRoute.extend({  // Ember.Route.extend({
-//  redirect: function() {
-//	if (!HelloEmber.get('logged_in_state')) {
-//		flash_message('You must first login to access System.', 'warning') ;	
-//		this.transitionTo('login');		
-//	}
-//  },
-//
+HelloEmber.PortfoliosRoute = HelloEmber.AuthenticatedRoute.extend({  
+
   model: function() {
     return HelloEmber.Portfolio.find();
   },
 
   setupController: function(controller, model) {
 	controller.set('content', model ) ;	
+	Ember.run.later(this, function(){
+	  // code here will execute within a RunLoop in about 2000ms with this == myContext
+	this.controllerFor('Application').cache_update();
+	}, 2000);
   },
 
 });

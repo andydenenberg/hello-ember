@@ -25,6 +25,7 @@
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
   logged_in_state: localStorage.logged_in_state,
+  logged_in_user: null,
 
   cache_delay: 60,  // every 60 seconds
   cache_count: 60,
@@ -37,6 +38,7 @@ HelloEmber = Ember.Application.create({
 
   ready: function() {
     console.log('HelloEmber ready!');
+	get_user() ;
   },
 
 });
@@ -65,6 +67,16 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 })
 
 HelloEmber.security_type = ["Stock", "Call Option", "Put Option"];
+
+function get_user() {
+   	$.ajax({  
+ 		url: "/get_user",  
+        beforeSend: function (request)
+        { request.setRequestHeader("token", localStorage.login_token) },
+ 		dataType: "json",  
+ 		success: function(data) { HelloEmber.set('logged_in_user', data.email) }  
+   	});				
+};
 
 function flash_message(message,severity) {
 	$("#flash").attr("class","alert alert-" + severity);			
@@ -98,9 +110,7 @@ function current_quote(symbol, controller) {
 }
 
 function refresh_cache()  {	
-	
-	console.log('got here') ;
-	
+
 	    options = HelloEmber.Stock.find().filter(function(stock) {
 				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
 		});
@@ -121,6 +131,7 @@ function refresh_cache()  {
 			   		stock.set('latest_price', data.price );
 			   		stock.set('latest_time', data.time );
 			   		stock.set('daily_change', data.change );
+					stock.set('daily_dividend', data.daily_dividend );
 		   			}  
 		   	});			
 	   });	

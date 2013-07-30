@@ -12,7 +12,7 @@
 	    <ul id="myTab" class="nav nav-tabs">
 	      <li class="active"><a href="#daily" data-toggle="tab">Daily</a></li>
 	      <li class=""><a href="#gain_loss" data-toggle="tab">Gain/Loss</a></li>
-	      <li class=""><a href="#position" data-toggle="tab">Position</a></li>
+	      <li class=""><a href="#dividends" data-toggle="tab">Dividends</a></li>
 	    </ul>
 	    <div id="myTabContent" class="tab-content">
 	      <div class="tab-pane active fade in" id="daily">
@@ -51,14 +51,14 @@
 			</table>
 
 	      </div>
-	      <div class="tab-pane fade" id="position">
+	      <div class="tab-pane fade" id="dividends">
 
 			<table class='table table-condensed table-striped table-bordered'>
-				{{partial "partials/position_header"}}
+				{{partial "partials/dividend_header"}}
 			{{#each stock in stocks}}
-				{{partial "partials/position_data"}}
+				{{partial "partials/dividend_data"}}
 			{{/each}}
-				{{partial "partials/position_totals"}}
+				{{partial "partials/dividend_totals"}}
 			</table>
 
 		</p>

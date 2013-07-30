@@ -27,6 +27,7 @@ HelloEmber::Application.routes.draw do
   resources :portfolios
   
   post 'auth', to: 'auth#create_session'
+  match 'get_user' => 'auth#get_user'
   
 end
 

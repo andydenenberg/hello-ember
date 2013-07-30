@@ -23,6 +23,7 @@ HelloEmber.Stock  = DS.Model.extend({
   latest_price: null,
   latest_time: null,
   daily_change: null,
+  daily_dividend: null,
 
   bid: null,
   ask: null,

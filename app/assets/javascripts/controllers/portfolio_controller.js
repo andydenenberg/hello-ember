@@ -5,14 +5,24 @@ HelloEmber.PortfolioController = Em.ObjectController.extend({
 	sortAscending: false,
 	col_Value: 'position_value',
 	col_Daily: 'position_daily',
+	col_symbol: 'symbol',
 	
-	stocks: (function() {
+  // use an array proxy with sortable mixin in order to sort by related data ( stocks )
+  stocks: (function() {
 		return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, {
 	    sortProperties: this.get('sortProperties'),
 		sortAscending: this.get('sortAscending'),
 	    content: this.get('content.stocks_only')
 	  });
-	}).property('content.stocks_only','sortProperties','sortAscending').cacheable(),
+  }).property('content.stocks_only','sortProperties','sortAscending').cacheable(),
+
+  sort_by_symbol: function() {
+	this.set('sortProperties', ['symbol']);
+
+	direction = this.get('sortAscending') ;
+	if (direction == true) { this.set('sortAscending', false) ;	}
+	else { this.set('sortAscending', true) ; };    
+  },
 
   sort_by_value: function() {
 	this.set('sortProperties', ['position_value']);
@@ -30,6 +40,13 @@ HelloEmber.PortfolioController = Em.ObjectController.extend({
 	else { this.set('sortAscending', true) ; };    
   },
 
+	total_dividends: function() {
+	var total = 0 ;
+			this.get('stocks').forEach(function(stock){
+				total += stock.get('daily_dividend') * stock.get('quantity') ;			
+			});
+	return total 
+	}.property('stocks.@each.daily_dividend'),
 	
   	total_cost: function() {
 	var total = 0 ;

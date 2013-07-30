@@ -2,6 +2,16 @@ class AuthController < ApplicationController
   
 # curl --data "param1=value1&param2=value2" -H 'test_header: 1234' http://localhost:3000/auth.json
 
+# curl  -H 'token: RyG7ZsTcgfyJcDmJboZF' http://localhost:3000/get_user.json
+  def get_user
+    if !request.headers['token'].nil? and
+        @user= User.find_by_authentication_token(request.headers['token'])
+      render :status=>200, :json=>{:email=>@user.email}
+    else
+      head :unauthorized 
+    end
+  end
+
   def create_session
     email = params[:email]
     password = params[:password]

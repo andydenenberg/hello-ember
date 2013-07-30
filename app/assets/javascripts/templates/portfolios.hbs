@@ -26,7 +26,9 @@
 	{{#if controller.display_list}}
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
-			<th>Full Name</th>
+			<th>Full Name
+			<button {{action sort_by_name}} class="sort" >{{sort_arrow sortAscending sortProperties col_Name}}</button>
+			</th>
 			<th style='text-align:right;'>Cash</th>
 			<th style='text-align:right;'>Stocks</th>
 			<th style='text-align:right;'>Options</th>

@@ -6,6 +6,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
     sortAscending: false,
 	col_Total: 'portfolio_value',
 	col_Daily: 'portfolio_daily',
+	col_Name: 'name',
 
 //  count: function() {
 //	return this.content.length > 0 
@@ -15,6 +16,14 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	// hide portfolio listing if one is selected of if list is blank
 	return (this.activePortfolioId == null) && (this.content.get('length') > 0) 	
   }.property('activePortfolioId','content.@each'),
+
+  sort_by_name: function() {
+	this.set('sortProperties', ['name']);
+	
+	direction = this.get('sortAscending') ;
+	if (direction == true) { this.set('sortAscending', false) ;	}
+	else { this.set('sortAscending', true) ; };    
+  },
 
   sort_by_value: function() {
 	this.set('sortProperties', ['portfolio_value']);

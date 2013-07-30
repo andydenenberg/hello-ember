@@ -2,6 +2,8 @@
 #  task :options => :environment do
 
 module Options
+  require 'csv'
+  require 'open-uri'
 
   def self.option_price(symbol,strike,date)
     require "net/http"
@@ -148,6 +150,43 @@ module Options
     end
     list.each { |item| puts item }
     return nil
+  end
+  
+  def self.get_annual(symbol)
+    start_date = Date.new(2013, 01, 01)
+    end_date = Date.today
+    total = 0
+    divs = [ ]
+    begin
+       resp = self.check_dividend(symbol, start_date.strftime("%m/%d/%Y") )
+       if resp['Date']
+         total += resp['Dividends']
+         divs.push [resp['Date'], resp['Dividends']]
+       end   
+       start_date += 1.days
+    end while start_date < end_date
+    return total, divs
+  end
+  
+  def self.check_dividend(symbol,date)
+        comps = date.split('/')
+        ds = "&a=#{(comps[0].to_i-1).to_s.rjust(2, '0')}&b=#{comps[1].rjust(2, '0')}&c=#{comps[2]}&d=#{(comps[0].to_i-1).to_s.rjust(2, '0')}&e=#{comps[1].rjust(2, '0')}&f=#{comps[2]}"
+        url = "http://ichart.finance.yahoo.com/table.csv?s=#{symbol}#{ds}&g=v&ignore=.csv"
+        hp = { }
+        begin            
+          resp = CSV.parse(open(url).read)          
+          if resp.length > 1 
+              str = resp[1][0].split('-')
+              hp['Date'] = str[1] + '/' + str[2] + '/' + str[0]
+            resp[0][1..-1].each_with_index do |title, i|
+              hp[title] = resp[1][i+1].to_f
+            end
+          end
+        rescue => e
+          hp['error'] = e.inspect
+        end      
+        
+        return hp # hash with "Date", "Dividends"          
   end
   
 end

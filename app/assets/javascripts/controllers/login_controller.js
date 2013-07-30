@@ -35,6 +35,7 @@ HelloEmber.LoginController = Ember.Controller.extend({
       if (response.token) {
 //        alert('Login succeeded!');
         self.set('login_token', response.token);
+		get_user() ;  // display on nav bar
 
         var attemptedTransition = self.get('attemptedTransition');
         if (attemptedTransition) {
