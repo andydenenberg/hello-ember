@@ -17,5 +17,10 @@ namespace :demo do
         require 'options'
         Options.daily_snapshot
     end
+    
+    task :refresh_daily_dividend => :environment do
+        require 'options'
+        Options.refresh_daily_dividend
+    end
   
 end
