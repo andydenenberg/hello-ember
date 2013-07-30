@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130726193423) do
+ActiveRecord::Schema.define(:version => 20130730162756) do
 
   create_table "histories", :force => true do |t|
     t.decimal  "cash",          :precision => 10, :scale => 2
@@ -41,14 +41,15 @@ ActiveRecord::Schema.define(:version => 20130726193423) do
     t.string   "sec_type"
     t.string   "symbol"
     t.datetime "last_update"
-    t.decimal  "change",      :precision => 10, :scale => 2
-    t.decimal  "strike",      :precision => 10, :scale => 2
+    t.decimal  "change",         :precision => 10, :scale => 2
+    t.decimal  "strike",         :precision => 10, :scale => 2
     t.string   "exp_date"
-    t.decimal  "bid",         :precision => 10, :scale => 2
-    t.decimal  "ask",         :precision => 10, :scale => 2
-    t.decimal  "last_price",  :precision => 10, :scale => 2
-    t.datetime "created_at",                                 :null => false
-    t.datetime "updated_at",                                 :null => false
+    t.decimal  "bid",            :precision => 10, :scale => 2
+    t.decimal  "ask",            :precision => 10, :scale => 2
+    t.decimal  "last_price",     :precision => 10, :scale => 2
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+    t.decimal  "daily_dividend", :precision => 10, :scale => 2
   end
 
   create_table "stocks", :force => true do |t|

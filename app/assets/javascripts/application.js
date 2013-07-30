@@ -18,6 +18,7 @@
 //= require ember-data
 //= require_self
 //= require hello_ember
+//= require jquery.jqplot.js
 //= require_tree .
 
 // for more details see: http://emberjs.com/guides/application/

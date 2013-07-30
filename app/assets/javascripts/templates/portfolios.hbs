@@ -38,6 +38,7 @@
 			<th style='text-align:right;'>Daily Change
 			<button {{action sort_by_daily_change}} class="sort" >{{sort_arrow sortAscending sortProperties col_Daily}}</button>
 			</th>
+			<th style='text-align:right;'>Dividends Yesterday</th>
 			<th style='text-align:right;'>Status</th>
 		</tr>
 	  {{#each portfolio in controller}}
@@ -55,6 +56,7 @@
 			<td style='text-align:right;'>${{decimal total_options_only}}</td>
 			<td style='text-align:right;'>${{decimal total_stocks}}</td>
 			<td style='text-align:right;'>${{decimal total_daily}}</td>
+			<td style='text-align:right;'>${{decimal total_dividends}}</td>
 			<td></td>
 		</tr>
 	  </table>

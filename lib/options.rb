@@ -70,20 +70,26 @@ module Options
     price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase )
     if price.empty? 
       latest = latest_price(symbol, real_time)
-      Price.create(:sec_type => 'Stock', :symbol => symbol, :last_price => latest[1], :last_update => latest[0], :change => latest[2] )
+      latest.push check_dividend(symbol, (Time.now - 1.day).strftime("%m/%d/%Y") )['Dividends']
+      Price.create( :sec_type => 'Stock', :symbol => symbol,
+                    :last_price => latest[1], :last_update => latest[0],
+                    :change => latest[2], :daily_dividend => latest[3] )
       return latest
     else
       price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
-      return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change
+      return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change, price.daily_dividend
     end
   end  
 
   def self.local_option_price(symbol, security_type, strike, expiration_date)
-    option = Price.where(:sec_type => security_type, :symbol => symbol.upcase, :strike => strike, :exp_date => expiration_date )
+    option = Price.where( :sec_type => security_type, :symbol => symbol.upcase,
+                          :strike => strike, :exp_date => expiration_date )
     if option.empty?
       latest = self.option_price(symbol, strike, expiration_date)
-       new = Price.create(:sec_type => security_type, :symbol => symbol.upcase, :strike => strike, :exp_date => expiration_date,
-                             :last_update => latest['Time'], :bid => latest['Bid'], :ask => latest['Ask'], :last_price => latest['Previous_Close'])
+       new = Price.create( :sec_type => security_type, :symbol => symbol.upcase,
+                           :strike => strike, :exp_date => expiration_date,
+                           :last_update => latest['Time'], :bid => latest['Bid'],
+                           :ask => latest['Ask'], :last_price => latest['Previous_Close'])
     option = [ new ]
     end
     price = option.first
@@ -123,7 +129,6 @@ module Options
 
   def self.daily_snapshot # store in History record in DB
     refresh_all(false) # not realtime
-
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
@@ -142,6 +147,22 @@ module Options
         hist.save
     end
   end
+  
+  def self.db_daily_snapshot # retrieve for display in graph
+    arr = [ ]
+    Portfolio.all.each do |port|
+      sub_arr = [ ]
+      port.histories.each do |hist|
+        sub_arr.push [ hist.created_at.strftime('%m-%d-%Y') + ' 05:00PM', hist.total.to_s ]
+      end
+      arr.push sub_arr
+    end
+#    colors = [ '#4bb2c5', "#c5b47f", "#EAA228", "#579575", "#839557", "#958c12" ] 
+#  	names = portfolios.collect { |u| User.find(u.user_id).name }
+  	
+    return arr   # , colors, names    
+  end
+  
   
   def self.hist_dump
     list = [ ]
@@ -168,10 +189,23 @@ module Options
     return total, divs
   end
   
+  def self.refresh_daily_dividend
+      Price.all.each do |security|
+        if security.sec_type == 'Stock'
+          yesterday = (Time.now - 1.day).strftime("%m/%d/%Y")
+          div = check_dividend(security.symbol, yesterday)
+          security.daily_dividend = div['Dividends']
+          puts div
+         security.save
+        end
+      end
+  end
+  
   def self.check_dividend(symbol,date)
         comps = date.split('/')
         ds = "&a=#{(comps[0].to_i-1).to_s.rjust(2, '0')}&b=#{comps[1].rjust(2, '0')}&c=#{comps[2]}&d=#{(comps[0].to_i-1).to_s.rjust(2, '0')}&e=#{comps[1].rjust(2, '0')}&f=#{comps[2]}"
         url = "http://ichart.finance.yahoo.com/table.csv?s=#{symbol}#{ds}&g=v&ignore=.csv"
+        puts url
         hp = { }
         begin            
           resp = CSV.parse(open(url).read)          

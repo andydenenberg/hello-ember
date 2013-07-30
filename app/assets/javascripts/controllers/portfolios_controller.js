@@ -47,7 +47,15 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 				total += portfolio.get('stocks_value') ;			
 			});
 	return total // Ember.inspect( this.count )
-	}.property('content.@each.stocks_value'),
+	}.property('content.@each.stocks_value').cacheable(),
+
+  	total_dividends: function() {
+	var total = 0 ;
+			this.content.forEach(function(portfolio){				
+				total += portfolio.get('daily_dividends') ;			
+			});
+	return total // Ember.inspect( this.count )
+	}.property('content.@each.daily_dividends').cacheable(),
 
   	total_options_only: function() {
 	var total = 0 ;
@@ -55,7 +63,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 				total += portfolio.get('options_value') ;			
 			});
 	return total // Ember.inspect( this.count )
-	}.property('content.@each.options_value'),
+	}.property('content.@each.options_value').cacheable(),
 
 	
   total_stocks: function() {
@@ -67,7 +75,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 			});
 //	});	
 	return total // Ember.inspect( this.count )
-	}.property('content.@each.portfolio_value'),
+	}.property('content.@each.portfolio_value').cacheable(),
 
   total_daily: function() {
 	var total = 0 ;
@@ -75,7 +83,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 				total += portfolio.get('portfolio_daily') ;			
 			});
 	return total
-	}.property('content.@each.portfolio_daily'),
+	}.property('content.@each.portfolio_daily').cacheable(),
   
   total_cash: function() {
 	var total = 0 ;
@@ -83,7 +91,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 				total += portfolio.get('cash') ;			
 			});
 	return total
-	}.property('content.@each.cash'),
+	}.property('content.@each.cash').cacheable(),
 	
   delete_portfolio: function(portfolio) {
     if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
