@@ -18,7 +18,20 @@
 
 {{#if controller.activePortfolioId}}
 {{else}}
-	<p class="box">Portfolios {{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Portfolio{{/linkTo}}</p>
+	<p class="box">Portfolios 
+	{{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Portfolio{{/linkTo}}
+	
+	<div class="control-group">
+	  <label class="control-label">Group</label>
+	  <div class="controls">
+		{{view Ember.Select
+	     contentBinding= "HelloEmber.security_type"
+		 valueBinding="stock_option"
+		 class='span3'  }}
+	  </div>
+	</div>
+	
+</p>
 {{/if}}
 
 	{{outlet}}

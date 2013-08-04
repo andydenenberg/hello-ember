@@ -24,7 +24,11 @@ HelloEmber::Application.routes.draw do
     end
   end
     
-  resources :portfolios
+  resources :portfolios do
+    collection do
+      get 'graph_data'
+    end
+  end
   
   post 'auth', to: 'auth#create_session'
   match 'get_user' => 'auth#get_user'

@@ -163,6 +163,44 @@ module Options
     return arr   # , colors, names    
   end
   
+  def self.daily_totals(start_date='07/01/2013', days=27, portfolios = [ 1, 2 ])
+    all_lines = [ ]
+    portfolios.count.times { all_lines.push [] }
+    total_line = [ ]
+    date = start_date.split('/')
+    start = Time.new(date[2].to_i,date[0].to_i,date[1].to_i,0,0,0)
+
+    (0..days).each do |day|
+      day_values = History.where(:snapshot_date => start + day.days)      
+      total_day = day_values.collect { |h| h.total }.inject(0) { |sum,tot| sum + tot }.to_i      
+      if total_day != 0  
+        total_line.push [ (start+day.days).strftime('%m-%d-%Y') + ' 05:00PM', total_day  ]
+      else
+        total_line.push [ (start+day.days).strftime('%m-%d-%Y') + ' 05:00PM', 'null'  ]        
+      end
+      portfolios.each_with_index do |port, idx|
+        port_value = day_values.select { |hist| hist.portfolio_id == port }
+        if !port_value.empty? 
+          all_lines[idx].push [ (start+day.days).strftime('%m-%d-%Y') + ' 05:00PM', port_value.first.total.to_i ]
+        end
+      end        
+    end
+    
+    return [ total_line, all_lines ]
+  end
+  
+  def self.fix_date
+    History.all.each do |hist|
+      dates = hist.snapshot_date.strftime('%Y,%m,%d').split(',').collect { |val| val.to_i }
+      y = dates[0]
+      m = dates[1]
+      d = dates[2]
+      hist.snapshot_date = Time.new(y,m,d)
+      hist.save
+    end
+  end
+  
+#History.where(:snapshot_date => '2013/07/25 22:00:00').collect { |hist| hist.total }.inject(0) { |result, element| result + element }.to_s
   
   def self.hist_dump
     list = [ ]

@@ -1,7 +1,13 @@
 class PortfoliosController < ApplicationController
   
-  before_filter :restrict_access
+  before_filter :restrict_access, :except => ["graph_data"]
   # need to move to application controlller and except the auth.json
+  
+  def graph_data
+    gd = Options.daily_totals('07/22/2013', days=14, portfolios = [ 1, 2 ])
+    total = gd[0]
+    render text: [total].inspect
+  end
   
   def index
     render json: Portfolio.all
