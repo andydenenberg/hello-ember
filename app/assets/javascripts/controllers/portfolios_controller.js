@@ -1,4 +1,6 @@
 HelloEmber.PortfoliosController = Ember.ArrayController.extend({
+	needs: ['Graph'],
+
 	activePortfolioId: null,
 	content: null,
 	
@@ -93,14 +95,22 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	return total
 	}.property('content.@each.cash').cacheable(),
 	
-  delete_portfolio: function(portfolio) {
-    if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
-		portfolio.get('stocks').forEach(function(stock) {
-			stock.deleteRecord() ;
-		});
-		portfolio.deleteRecord() ;
-		this.store.commit();
+		
+	  delete_portfolio: function(portfolio) {
+	    if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
+			portfolio.get('stocks').forEach(function(stock) {
+				stock.deleteRecord() ;
+			});
+			portfolio.deleteRecord() ;
+			this.store.commit();
+		}
+	  },
+
+
+	load_graph: function(){
+		var GraphController = this.get('controllers.Graph');
+	    GraphController.set('graph', 'theegraph');
+	    GraphController.load();
 	}
-  },
 	
 });

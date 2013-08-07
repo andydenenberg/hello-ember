@@ -1,3 +1,4 @@
+
 <div class="span2">
   <div class="well sidebar-nav">
     <ul class="nav nav-list">
@@ -18,24 +19,36 @@
 
 {{#if controller.activePortfolioId}}
 {{else}}
-	<p class="box">Portfolios 
-	{{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Portfolio{{/linkTo}}
+	<p> 
 	
 	<div class="control-group">
-	  <label class="control-label">Group</label>
+	  <label class="control-label"><b>Portfolio Group</b></label>
 	  <div class="controls">
 		{{view Ember.Select
 	     contentBinding= "HelloEmber.security_type"
 		 valueBinding="stock_option"
 		 class='span3'  }}
+		{{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Portfolio{{/linkTo}}
+		
 	  </div>
 	</div>
 	
 </p>
 {{/if}}
 
+
+<dd>			
+    <ul id="myTab" class="nav nav-tabs">
+      <li class="active"><a href="#daily" data-toggle="tab">Daily</a></li>
+      <li class=""><a href="#gain_loss" data-toggle="tab">Gain/Loss</a></li>
+      <li class=""><a href="#plot" data-toggle="tab">Plot</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div class="tab-pane active fade in" id="daily">
+
+
 	{{outlet}}
-	
+
 	{{#if controller.display_list}}
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
@@ -74,6 +87,53 @@
 		</tr>
 	  </table>
 	{{/if}}
+
+
+      </div>
+      <div class="tab-pane fade" id="gain_loss">
+
+
+      </div>
+      <div class="tab-pane fade" id="plot">
+
+		<div class='row'>
+			<div class='span7 offset1'>
+			<div class="control-group">
+		        <span class="control-label">Metadata</span>
+		        <div class="controls form-inline">
+		            <label for="inputKey">Date Range</label>
+		            {{view Ember.Select
+				     contentBinding= "HelloEmber.security_type"
+					 valueBinding="stock_option"
+					 class='span3'  }}
+					
+		            <label for="inputValue">Re Draw</label>
+		            <button {{action load_graph }} id='plot_btn' class='btn'><i class="icon-forward"></i></button>
+					
+		        </div>
+		    </div>
+		
+				<div id="theegraph" style="width:800px;height:400px;"></div>
+			</div>
+		</div>
+
+      </div>
+    </div>
+	    
+    </dd>
+
+
 		
 </div>
 
+
+<script>
+$('a[data-toggle="tab"]').on('shown', function (e) {
+//  alert(e.target);  // activated tab
+	if (e.target.toString().match('plot') ) { 
+	$("#plot_btn").click() ;
+	} ;
+	
+//  e.relatedTarget // previous tab
+})
+</script>

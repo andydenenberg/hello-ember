@@ -143,7 +143,7 @@ module Options
         end
         hist.cash = portfolio.cash
         hist.total = hist.options + hist.stocks + hist.cash
-        hist.snapshot_date = Time.now
+        hist.snapshot_date = Time.now.beginning_of_day()
         hist.save
     end
   end
