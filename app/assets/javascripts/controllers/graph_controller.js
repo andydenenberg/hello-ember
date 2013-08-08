@@ -1,41 +1,126 @@
-HelloEmber.GraphController = Em.ObjectController.extend({
-//    content: HelloEmber.GraphState.create(),
-	graph: null,
-	load: function(){
+function startAndEndOfGraph(date) {
+  // If no date object supplied, use current date
+  // Copy date so don't modify supplied date
+  	var now = date? new Date(date) : new Date();
+  // set time to some convenient value
+  	now.setHours(0,0,0,0);
 
-	  var ajaxDataRenderer = function(url, plot, options) {
-	    var ret = null;
-	    $.ajax({
-	      // have to use synchronous here, else the function 
-	      // will return before the data is fetched
-	      async: false,
-	      url: url,
-	      dataType:"json",
-          beforeSend: function (request)
-        	{ request.setRequestHeader("token", localStorage.login_token) },
-	      success: function(data) {
-	        ret = data;
-	      }
-	    });
-	    return ret;
-	  };
+  // Get current Week
+  	var monday = new Date(now);
+  	monday.setDate(monday.getDate() - monday.getDay() + 1);
+  	var friday = new Date(now)
+	var Current_Week = [ monday, friday ] ;
 	
-	tickFormatter = function (format, val) { 
-	return '$' + numberWithCommas(val) ;
-	};
+  // Get start of current Month
+	var date = new Date(now), y = date.getFullYear(), m = date.getMonth();
+	var firstMonth = new Date(y, m, 1);
+	var lastMonth = new Date(y, m + 1, 0);
+	var Current_Month = [ firstMonth, lastMonth ];
+	
+  // Get Current Quarter
+	//[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]
+//	var quarter = [0, 3, 6, 9]	
+	var date = new Date(now);	
+	var month = Math.floor((date.getMonth() + 1) / 3) * 3 ;
+	var date = new Date(now), year = date.getFullYear();
+	var firstQuarter = new Date(year, month, 1);
+	var lastQuarter = new Date(year, month + 3, 0);
+	var Current_Quarter = [ firstQuarter, lastQuarter ];
+	
+  // Get start of current Year
+	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+	var firstYear = new Date(y, 0, 1);
+	var lastYear = new Date(y, 11, 31);
+	var Current_Year = [ firstYear, lastYear ];
 
-	  var jsonurl = "/portfolios/graph_data";
+  // Return array of date objects
+  return [ Current_Week, Current_Month, Current_Quarter, Current_Year ];
+}
+
+var ajaxDataRenderer = function(url) {
+  var ret = null;
+  $.ajax({
+    // have to use synchronous here, else the function 
+    // will return before the data is fetched
+    async: false,
+    url: url,
+    dataType:"json",
+       beforeSend: function (request)
+     	{ request.setRequestHeader("token", localStorage.login_token) },
+    success: function(data) {
+      ret = data;
+    }
+  });
+  return ret;
+};
+
+var tickFormatter = function (format, val) { 
+return '$' + numberWithCommas(Number(val).toFixed(2)) ;
+};
+
+HelloEmber.GraphController = Em.ObjectController.extend({
+	needs: ['Portfolios'],
+	
+	jsonurl: "/portfolios/graph_data",
+	graph_id: 'theegraph',
+	title: 'Title',
+	y_min: null,
+	y_max: null,
+	y_axis_label: '',
+	x_min: null,
+	x_max: null,
+	x_tick_interval: '1 week',
+	
+	portfolio_names: [ ],
+	
+	load_data: function( portfolio_select, date_range ) {
+		
+		var data = ajaxDataRenderer(this.jsonurl) ;
+	
+		
+	var PortfoliosController = this.get('controllers.Portfolios');
+	var dates = PortfoliosController.get('dates');
+	var portfolios = this.get('portfolio_names');
+	var portfolio_index = portfolios.indexOf(portfolio_select) ;
+	
+	var graph_data ;
+	
+	if ( portfolio_index == 0 ) {
+		graph_data = [ data[0] ] ;
+	}
+	else {
+		graph_data = [ data[1][portfolio_index-1] ]
+	}
+	
+	var index = dates.indexOf(date_range);
+    var ranges = startAndEndOfGraph()[index] ;
+	// set the start and end date of x-axis
+	this.set('x_min',ranges[0]);
+	this.set('x_max',ranges[1]);
+	if (index == 3) { this.set('x_tick_interval', '2 months') }	
+	
+	
+	var series_min = graph_data[0].reduce(function(min, obj) { 
+	                      return obj[1] < min ? obj[1] : min; 
+	                   }, Infinity);
+	var series_max = graph_data[0].reduce(function(max, obj) { 
+	                      return obj[1] > max ? obj[1] : max; 
+	                   }, 0);
+	this.set('y_min', series_min * 0.8 ) ;
+	this.set('y_max', series_max * 1.2 ) ;
+
+
 	  var options = {
-		dataRenderer: ajaxDataRenderer,        		
+//		dataRenderer: ajaxDataRenderer,        		
 		title: {
-			text: 'Portfolio Performance',
+			text: portfolio_select, // this.title,
 			textAlign: 'center',
 			fontSize: '18pt',
 			textColor: 'black'
 	    },
 	   	axesDefaults: {
 	       	tickOptions: {
-	         		fontSize: '12pt'
+	         		fontSize: '10pt'
 	       	}
 	   	},		
 		seriesDefaults: {
@@ -46,18 +131,26 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 		axes: {
 		xaxis: {
 			renderer:$.jqplot.DateAxisRenderer,
-			tickOptions:{formatString:'%b %#d, %Y'},
-			min:'Jul 22, 2013', 
-			tickInterval:'1 week'
+			tickOptions:{
+				formatString:'%b %#d, %Y'
+		       },
+			min: this.x_min, 
+			max: this.x_max,
+			tickInterval: this.x_tick_interval,
 		},
 		yaxis: {
 			tickOptions: {
 		  		formatter: tickFormatter
 		 	},
+			label: this.y_axis_label,
+	        labelOptions: {
+	            fontFamily: 'Georgia, Serif',
+	            fontSize: '12pt'
+	        },
 			show: true,
 			showTicks: true,
-			min: 16000000,
-			max: 17500000,
+			min: this.y_min,
+			max: this.y_max,
 		}
 		},
 		legend:{
@@ -91,11 +184,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 		}
 	  };
       
-	  // passing in the url string as the jqPlot data argument is a handy
-	  // shortcut for our renderer.  You could also have used the
-	  // "dataRendererOptions" option to pass in the url.
-
-	  var plot2 = $.jqplot(this.graph, jsonurl, options );
+	  var plot2 = $.jqplot(this.graph_id, graph_data, options ).redraw();
 	
 	}
 	

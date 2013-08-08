@@ -99,16 +99,21 @@
 		<div class='row'>
 			<div class='span7 offset1'>
 			<div class="control-group">
-		        <span class="control-label">Metadata</span>
+		        <span class="control-label">Display Options</span>
 		        <div class="controls form-inline">
-		            <label for="inputKey">Date Range</label>
+		            <label>Date Range</label>
 		            {{view Ember.Select
-				     contentBinding= "HelloEmber.security_type"
-					 valueBinding="stock_option"
+				     contentBinding= "dates"
+					 valueBinding="date_range"
 					 class='span3'  }}
-					
-		            <label for="inputValue">Re Draw</label>
-		            <button {{action load_graph }} id='plot_btn' class='btn'><i class="icon-forward"></i></button>
+
+		            <label>Portfolios</label>
+		            {{view Ember.Select
+				     contentBinding= "port_range"
+					 valueBinding="portfolio_select"
+					 class='span3'  }}
+
+		            <button {{action load_graph }} id='plot_btn' class='btn'>Refresh Graph <i class="icon-forward"></i></button>
 					
 		        </div>
 		    </div>

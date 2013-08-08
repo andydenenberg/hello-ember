@@ -4,9 +4,9 @@ class PortfoliosController < ApplicationController
   # need to move to application controlller and except the auth.json
   
   def graph_data
-    gd = Options.daily_totals('07/22/2013', days=21, portfolios = [ 1, 2 ])
-    total = gd[0]
-    render text: [total].inspect
+    gd = Options.daily_totals('07/22/2013', days=21, portfolios = Portfolio.all.collect { |port| port.id } )
+    total = gd
+    render text: total.inspect
   end
   
   def index

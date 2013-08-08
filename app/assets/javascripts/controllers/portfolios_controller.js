@@ -9,10 +9,31 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	col_Total: 'portfolio_value',
 	col_Daily: 'portfolio_daily',
 	col_Name: 'name',
+	
+	dates: ["Current Week", "Current Month", "Current Quarter", "Current Year"],
+	date_range: 'Current Week',
+	
+	port_range: function() {
+		var names = [ 'All' ] ;
+				this.content.forEach(function(portfolio){				
+					names.push( portfolio.get('name') );			
+				});
+		var GraphController = this.get('controllers.Graph');		
+		GraphController.set('portfolio_names', names) ;
+//		debugger;
+		return names		
+	}.property('content.length'), 
+		
+	portfolio_select: null,
+	
+	refresh_graph: function() {
+		this.load_graph() ;
+	}.observes('date_range','portfolio_select'),
+	
 
-//  count: function() {
-//	return this.content.length > 0 
-//  }.property(),
+  count: function() {
+	return this.content.length > 0 
+  }.property('content'),
 
   display_list: function() {
 	// hide portfolio listing if one is selected of if list is blank
@@ -106,11 +127,12 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 		}
 	  },
 
-
 	load_graph: function(){
 		var GraphController = this.get('controllers.Graph');
-	    GraphController.set('graph', 'theegraph');
-	    GraphController.load();
-	}
+//	    GraphController.set('graph_id', 'theegraph');
+//		GraphController.set('x_min','Jul 01, 2013') ;
+//		GraphController.set('x_max','Sep 01, 2013') ;
+	    GraphController.load_data( this.get('portfolio_select'), this.get('date_range') );
+	}	
 	
 });

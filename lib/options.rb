@@ -182,6 +182,8 @@ module Options
         port_value = day_values.select { |hist| hist.portfolio_id == port }
         if !port_value.empty? 
           all_lines[idx].push [ (start+day.days).strftime('%m-%d-%Y') + ' 05:00PM', port_value.first.total.to_i ]
+        else
+          all_lines[idx].push [ (start+day.days).strftime('%m-%d-%Y') + ' 05:00PM', 'null' ]          
         end
       end        
     end
