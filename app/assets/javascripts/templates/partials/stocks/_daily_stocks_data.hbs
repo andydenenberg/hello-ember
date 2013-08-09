@@ -1,0 +1,9 @@
+<tr>
+	<td>{{#linkTo "stock" stock}} {{stock.symbol}}{{/linkTo}}</td>
+	<td style='text-align:right;'> {{stock.portfolio.name}}</td>
+	<td style='text-align:right;'> {{stock.stock_option}}</td>
+	<td colspan=4 style='text-align:right;'> {{integer stock.quantity }} </td>
+	<td style='text-align:right;'> ${{stock.latest_price}} ({{stock.daily_change}})</td>
+	<td style='text-align:right;'> ${{decimal stock.position_value}} </td>
+	<td style='text-align:right;'>${{mult stock.value_quantity stock.daily_change}}</td>
+</tr>

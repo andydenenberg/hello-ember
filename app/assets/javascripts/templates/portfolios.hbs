@@ -36,6 +36,9 @@
 </p>
 {{/if}}
 
+{{outlet}}
+
+{{#if controller.display_list}}
 
 <dd>			
     <ul id="myTab" class="nav nav-tabs">
@@ -47,9 +50,6 @@
       <div class="tab-pane active fade in" id="daily">
 
 
-	{{outlet}}
-
-	{{#if controller.display_list}}
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
 			<th>Full Name
@@ -86,7 +86,6 @@
 			<td></td>
 		</tr>
 	  </table>
-	{{/if}}
 
 
       </div>
@@ -127,6 +126,7 @@
 	    
     </dd>
 
+{{/if}}
 
 		
 </div>

@@ -16,6 +16,15 @@ Ember.Handlebars.registerBoundHelper("mult_100", function(lvalue, rvalue) {
 Ember.Handlebars.registerBoundHelper('decimal', function(number) { return numberWithCommas(Number(number).toFixed(2)) });
 Ember.Handlebars.registerBoundHelper('integer', function(number) { return numberWithCommas(Number(number).toFixed(0)) ; });
 
+Ember.Handlebars.registerBoundHelper('sort_indicator', function(order, sort_criteria, column) {
+//debugger;
+	icon = '"icon-arrow-up"';
+	if ( sort_criteria != column ) { icon = '"icon-minus"'; }
+	else { 
+		if ( order == 'asc' ) { icon = '"icon-arrow-down"'; } }
+  return new Handlebars.SafeString( '<i class=' + icon + '></i>' );
+});
+
 Ember.Handlebars.registerBoundHelper('sort_arrow', function(sortAscending, sortProperties, column) {
 //debugger;
 	icon = '"icon-arrow-up"';

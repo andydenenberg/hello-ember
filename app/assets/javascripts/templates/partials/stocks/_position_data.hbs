@@ -1,0 +1,13 @@
+<tr>
+<td>{{#linkTo "stock" stock}} {{stock.symbol}} {{/linkTo}}</td>
+<td style='text-align:right;'> {{stock.quantity}} </td>
+<td style='text-align:right;'> ${{decimal stock.purchase_price}} </td>
+<td style='text-align:right;'> ${{decimal stock.position_cost}} </td>
+<td style='text-align:right;'> ${{decimal stock.position_value}} </td>
+<td style='text-align:center;'>{{stock.created_date}}</td>
+<td> {{stock.portfolio.name}}</td>
+<td> {{#linkTo "stocks.edit" stock class='btn btn-mini'}}Edit{{/linkTo}}
+	 <button {{action delete_stock stock}} class='btn btn-mini btn-warning'>Delete</button>
+	({{stock.state}})
+</td>
+</tr>
