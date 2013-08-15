@@ -57,7 +57,10 @@ HelloEmber.Stock  = DS.Model.extend({
 	var date2 = new Date( ) ;
 	var diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24)); 	
 	return diffDays
-  }.property().cacheable()
+  }.property().cacheable(),
 
+	didLoad: function() {
+    console.log('stock:didLoad model:', this.toJSON());
+  },
 
 });

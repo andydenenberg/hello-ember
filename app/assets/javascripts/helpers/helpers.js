@@ -8,12 +8,12 @@ Ember.Handlebars.registerBoundHelper("add", function(lvalue, rvalue) {
 Ember.Handlebars.registerBoundHelper("subtract", function(lvalue, rvalue) {
 	if (lvalue != null && rvalue != null) { return numberWithCommas( (parseFloat(lvalue) - parseFloat(rvalue)).toFixed(2)) } else { return 0 } });	
 Ember.Handlebars.registerBoundHelper("mult", function(lvalue, rvalue) {
-	if (lvalue != null && rvalue != null) { return numberWithCommas( (parseFloat(lvalue) * parseFloat(rvalue)).toFixed(2)) } else { return 0 }
-});
+	if (lvalue != null && rvalue != null) { return numberWithCommas( (parseFloat(lvalue) * parseFloat(rvalue)).toFixed(2)) } else { return 0 } });
 Ember.Handlebars.registerBoundHelper("mult_100", function(lvalue, rvalue) {
 	if (lvalue != null && rvalue != null) { return numberWithCommas( (100 * parseFloat(lvalue) * parseFloat(rvalue)).toFixed(2)) }
 	else { return 0 } });
-Ember.Handlebars.registerBoundHelper('decimal', function(number) { return numberWithCommas(Number(number).toFixed(2)) });
+
+Ember.Handlebars.registerBoundHelper('decimal', function(number) { return numberWithCommas(parseFloat(number).toFixed(2)) });
 Ember.Handlebars.registerBoundHelper('integer', function(number) { return numberWithCommas(Number(number).toFixed(0)) ; });
 
 Ember.Handlebars.registerBoundHelper('sort_indicator', function(order, sort_criteria, column) {

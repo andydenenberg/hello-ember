@@ -9,7 +9,7 @@ gem 'sqlite3'
 gem 'mysql2'
 
 gem 'ember-rails'
-gem 'ember-source', '1.0.0.rc6.2' # or the version you need
+gem 'ember-source', '1.0.0.rc7' # or the version you need
 #gem "ember-data-source", "~> 0.13"
 #gem 'ember-rails', github: 'emberjs/ember-rails'
 

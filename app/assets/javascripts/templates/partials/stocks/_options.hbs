@@ -1,0 +1,8 @@
+<table class='table table-condensed table-striped table-bordered'>
+	{{partial "partials/stocks/individual_stocks_header"}}
+		{{#each stock in options}}
+			{{partial "partials/stocks/individual_stocks_data"}}
+		{{/each}}
+		{{partial "partials/stocks/individual_stocks_totals"}}
+</table>
+

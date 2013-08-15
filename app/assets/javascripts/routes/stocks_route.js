@@ -12,6 +12,12 @@ HelloEmber.StocksRoute = HelloEmber.AuthenticatedRoute.extend({
 
   setupController: function(controller, model) {
 	controller.set('model', model ) ;
+//	this.controllerFor('Application').consolidate();
+//	
+//	Ember.run.later(this, function(){
+//	this.controllerFor('Application').cache_update();
+//	}, 500);
+
   },
 
 

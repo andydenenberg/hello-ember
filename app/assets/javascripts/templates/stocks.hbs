@@ -26,13 +26,21 @@
 {{#if controller.display_list}}
 
     <ul id="myTab" class="nav nav-tabs">
-      <li class="active"><a href="#daily" data-toggle="tab">Daily</a></li>
+      <li class="active"><a href="#consolidated" data-toggle="tab">Consolidated ({{consolidated_stocks.length}})</a></li>
+      <li class=""><a href="#options" data-toggle="tab">Options ({{options.length}})</a></li>
+      <li class=""><a href="#individual" data-toggle="tab">Individual ({{sorted_with_ids.length}})</a></li>
       <li class=""><a href="#gain_loss" data-toggle="tab">Gain/Loss</a></li>
       <li class=""><a href="#position" data-toggle="tab">Position</a></li>
     </ul>
     <div id="myTabContent" class="tab-content">
-      <div class="tab-pane active fade in" id="daily">
-        <p>{{partial "partials/stocks/daily_stocks"}}</p>
+	   <div class="tab-pane active fade in" id="consolidated">
+		<p>{{partial "partials/stocks/consolidated"}}</p>
+	   </div>
+      <div class="tab-pane fade" id="options">
+        <p>{{partial "partials/stocks/options"}}</p>
+      </div>
+      <div class="tab-pane fade" id="individual">
+        <p>{{partial "partials/stocks/individual_stocks"}}</p>
       </div>
       <div class="tab-pane fade" id="gain_loss">
         <p>{{partial "partials/stocks/gain_loss"}}</p>

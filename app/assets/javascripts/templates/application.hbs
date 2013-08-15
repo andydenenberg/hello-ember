@@ -14,6 +14,11 @@
 				{{#linkTo 'login' classNameBindings="view.login_button_class"}}<i class="icon-user"></i> 
 				{{HelloEmber.logged_in_user}}{{/linkTo}}
 				{{#linkTo "system" class='btn'}}System{{/linkTo}}
+					<button {{action consolidate}}
+					 		{{bindAttr class="view.consolidate_button_class"}}>
+							Consolidate
+					</button>
+					
 				<div class="btn-group">			
 					<button {{action toggle_cache_auto}} 
 							{{bindAttr class="view.toggle_cache_auto_class"}}>

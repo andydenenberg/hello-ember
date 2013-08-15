@@ -1,0 +1,14 @@
+<tr>
+	<td>{{stk.symbol}}</td>
+	<td style='text-align:right;'>{{integer stk.quantity}}</td>
+	<td style='text-align:right;'>${{decimal stk.latest_price}} ({{decimal stk.daily_change}})</td>
+	<td style='text-align:right;'>${{decimal stk.position_value}}</td>
+	<td style='text-align:right;'>${{decimal stk.position_daily}}</td>
+	<td style='text-align:right;'>
+	{{#each port in stk.portfolios }}
+		{{#linkTo "portfolio" port}}{{port.name}}{{/linkTo}}
+	{{/each}}
+	({{stk.accounts}})
+	</td>
+</tr>
+

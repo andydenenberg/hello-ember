@@ -36,6 +36,14 @@ HelloEmber.Portfolio  = DS.Model.extend({
 	return cost
 	}.property('stocks.@each.daily_dividend').cacheable(),	
 
+  	stocks_cost: function() {
+	cost = 0 ;
+	this.get('stocks_only').forEach(function(stock){
+			cost += stock.get('position_cost') ;				
+		});
+	return cost
+ 	}.property('stocks.@each.position_cost').cacheable(),
+
   	stocks_value: function() {
 	cost = 0 ;
 	this.get('stocks_only').forEach(function(stock){
@@ -51,7 +59,15 @@ HelloEmber.Portfolio  = DS.Model.extend({
 				total += summ ;			
 			});
 	return total 
-	}.property('stocks.@each.daily_change'),
+	}.property('stocks.@each.daily_change').cacheable(),
+
+  	options_cost: function() {
+	cost = 0 ;
+	this.get('options_only').forEach(function(stock){
+			cost += stock.get('position_cost') ;				
+		});
+	return cost
+ 	}.property('stocks.@each.position_cost').cacheable(),
 
   	options_value: function() {
 	cost = 0 ;
@@ -68,7 +84,7 @@ HelloEmber.Portfolio  = DS.Model.extend({
 				total += summ ;			
 			});
 	return total 
-	}.property('stocks.@each.daily_change'),
+	}.property('stocks.@each.daily_change').cacheable(),
 
   	portfolio_value: function() {
 	cost = 0 ;
@@ -86,7 +102,7 @@ HelloEmber.Portfolio  = DS.Model.extend({
 				total += summ ;			
 			});
 	return total 
-	}.property('stocks.@each.daily_change'),
+	}.property('stocks.@each.daily_change').cacheable(),
 
 //  display_list: function() {
 //	return this.get('stocks').get('length') > 0

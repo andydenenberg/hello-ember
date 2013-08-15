@@ -37,6 +37,8 @@ HelloEmber = Ember.Application.create({
 	
   real_time: true,
 
+  consolidating: false,
+
   ready: function() {
     console.log('HelloEmber ready!');
 	get_user() ;
@@ -45,8 +47,52 @@ HelloEmber = Ember.Application.create({
 });
 
 HelloEmber.ApplicationController = Ember.ObjectController.extend({
+//  needs: ['Con'],
+	
+  consolidate: function() {
+//		var ConController = this.get('controllers.Con');
+//		ConController.set('model', HelloEmber.Con.find() ) ;
+//		var cons = ConController.get('content') ;
+		
+		HelloEmber.set('consolidating', true) ;
+		Ember.run.later(this, function(){
+			HelloEmber.set('consolidating', false ) ;
+		}, 2000);
+		
+		var portfolios = HelloEmber.Portfolio.find() ;
+		
+		HelloEmber.Con.find().toArray().forEach(function(stock) {	
+		      stock.deleteRecord();
+		});
+
+		var cons = Ember.A() ;    
+		var stks = HelloEmber.Stock.find().filter(function(stock) {
+		  	return (stock.get('id') != null) && (stock.get('stock_option') == 'Stock') });
+	    stks.forEach(function(stock) {
+			var existing = cons.filterProperty('symbol', stock.get('symbol') ) ;
+			if (existing.length > 0 ) {
+				existing[0].set('quantity', existing[0].get('quantity') + stock.get('quantity') ) ;
+				existing[0].set('accounts', existing[0].get('accounts') + 1 ) ;
+				var ports = existing[0].get('portfolios') ;
+				ports.push( stock.get('portfolio') ) ;
+				existing[0].set('portfolios', ports );
+			 }
+			else {
+			cons.push (
+				HelloEmber.Con.createRecord({
+					symbol: stock.get('symbol'),
+					quantity: stock.get('quantity'),
+					accounts: 1,
+					portfolios: [ stock.get('portfolio'), stock.get('portfolio')  ] })
+			); }
+		});	
+		
+  },
 	
   cache_update: function() {
+
+	this.consolidate();
+
     refresh_cache();
   },
 
@@ -111,21 +157,21 @@ function current_quote(symbol, controller) {
 }
 
 function refresh_cache()  {	
-
-	    options = HelloEmber.Stock.find().filter(function(stock) {
+	    
+	    var options = HelloEmber.Stock.find().filter(function(stock) {
 				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
 		});
-		stocks = HelloEmber.Stock.find().filter(function(stock) {
+		var stocks = HelloEmber.Stock.find().filter(function(stock) {
 				return (stock.get('stock_option') == 'Stock' && stock.get('id') != null );
 		});
-	//	stocks = HelloEmber.Stock.find().filterProperty('email', this.username) ;			
+
+		var cons = HelloEmber.Con.find() ;  // Consolidated Stocks
+
 	   stocks.forEach(function(stock){	
 		   	$.ajax({  
 		 		url: "/stocks/" + stock.get('id') + "/current_price?real_time=" + HelloEmber.real_time,  
 		        beforeSend: function (request)
-		        {
-		            request.setRequestHeader("token", localStorage.login_token);
-		        },
+		        { request.setRequestHeader("token", localStorage.login_token) },
 		 		dataType: "json",  
 		 		success: function(data) { 		
 			   		console.log('updating stock:', stock.get('id'), data.symbol, data.price, data.change) ;
@@ -133,6 +179,11 @@ function refresh_cache()  {
 			   		stock.set('latest_time', data.time );
 			   		stock.set('daily_change', data.change );
 					stock.set('daily_dividend', data.daily_dividend );
+					
+					var con = cons.filterProperty('symbol', data.symbol ) ;
+						if (con.length > 0 ) { 
+							con[0].set('daily_change', data.change);
+							con[0].set('latest_price', data.price);  };
 		   			}  
 		   	});			
 	   });	

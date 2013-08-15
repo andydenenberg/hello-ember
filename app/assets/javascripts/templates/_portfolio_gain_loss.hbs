@@ -1,0 +1,9 @@
+<td>{{#linkTo "portfolio" portfolio}} {{portfolio.name}}{{/linkTo}}</td>
+<td style='text-align:right;' class='success'>${{decimal portfolio.stocks_value }}</td>
+<td style='text-align:right;' class='success'>${{decimal portfolio.stocks_cost }}</td>
+<td style='text-align:right;' class='success'>${{subtract portfolio.stocks_value portfolio.stocks_cost }}</td>
+<td style='text-align:right;'>${{decimal portfolio.options_value }}</td>
+<td style='text-align:right;'>${{decimal portfolio.options_cost }}</td>
+<td style='text-align:right;'>${{subtract portfolio.options_value portfolio.options_cost }}</td>
+
+

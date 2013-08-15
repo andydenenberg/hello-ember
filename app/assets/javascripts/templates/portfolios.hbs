@@ -1,4 +1,3 @@
-
 <div class="span2">
   <div class="well sidebar-nav">
     <ul class="nav nav-list">
@@ -53,16 +52,16 @@
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
 			<th>Full Name
-			<button {{action sort_by_name}} class="sort" >{{sort_arrow sortAscending sortProperties col_Name}}</button>
+			<button {{action sort by_name}}>{{sort_arrow sortAscending sortProperties col_Name}}</button>
 			</th>
 			<th style='text-align:right;'>Cash</th>
 			<th style='text-align:right;'>Stocks</th>
 			<th style='text-align:right;'>Options</th>
 			<th style='text-align:right;'>Total Value
-			<button {{action sort_by_value}} class="sort" >{{sort_arrow sortAscending sortProperties col_Total}}</button>
+			<button {{action sort by_value}}>{{sort_arrow sortAscending sortProperties col_Total}}</button>
 			</th>
 			<th style='text-align:right;'>Daily Change
-			<button {{action sort_by_daily_change}} class="sort" >{{sort_arrow sortAscending sortProperties col_Daily}}</button>
+			<button {{action sort by_daily}}>{{sort_arrow sortAscending sortProperties col_Daily}}</button>
 			</th>
 			<th style='text-align:right;'>Dividends Yesterday</th>
 			<th style='text-align:right;'>Status</th>
@@ -80,7 +79,7 @@
 			<td style='text-align:right;'>${{decimal total_cash}}</td>
 			<td style='text-align:right;'>${{decimal total_stocks_only}}</td>			
 			<td style='text-align:right;'>${{decimal total_options_only}}</td>
-			<td style='text-align:right;'>${{decimal total_stocks}}</td>
+			<td style='text-align:right;'>${{decimal total_value}}</td>
 			<td style='text-align:right;'>${{decimal total_daily}}</td>
 			<td style='text-align:right;'>${{decimal total_dividends}}</td>
 			<td></td>
@@ -90,6 +89,29 @@
 
       </div>
       <div class="tab-pane fade" id="gain_loss">
+
+		<table class="table table-condensed table-bordered table-striped">
+		<thead>
+		  <tr>
+			<th>Full Name
+			<button {{action sort by_name}}>{{sort_arrow sortAscending sortProperties col_Name}}</button>
+			</th>
+			<th style='text-align:right;'>Stocks</th>
+			<th style='text-align:right;'>Stocks Cost</th>
+			<th style='text-align:right;'>Stocks Gain/Loss</th>
+			
+			<th style='text-align:right;'>Options</th>
+			<th style='text-align:right;'>Options Cost</th>
+			<th style='text-align:right;'>Options Gain/Loss</th>
+		  </tr>
+		</thead>
+		
+	  {{#each portfolio in controller}}
+		<tr>
+	    {{ partial "portfolio_gain_loss" }}
+		</tr>
+	  {{/each}}
+	  </table>
 
 
       </div>

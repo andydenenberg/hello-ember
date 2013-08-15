@@ -1,0 +1,13 @@
+<p>{{#if controller.sorted_with_ids}}
+	<table class='table table-condensed table-striped table-bordered'>
+		{{partial "partials/stocks/consolidated_header"}}
+	{{#each stk in consolidated_stocks }}
+		{{partial "partials/stocks/consolidated_data"}}
+	{{/each}}
+		{{partial "partials/stocks/consolidated_totals"}}
+	</table>
+{{/if}}
+</p>
+
+
+

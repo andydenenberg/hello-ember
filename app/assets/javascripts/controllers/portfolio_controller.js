@@ -1,8 +1,14 @@
 HelloEmber.PortfolioController = Em.ObjectController.extend({
 	isEditing: false,
 	needs: ['PortfolioEdit'],
+
 	sortProperties: ['position_value'],
 	sortAscending: false,
+
+	  by_symbol: 'symbol',
+	  by_value: 'position_value',
+	  by_daily: 'position_daily',
+
 	col_Value: 'position_value',
 	col_Daily: 'position_daily',
 	col_symbol: 'symbol',
@@ -16,25 +22,9 @@ HelloEmber.PortfolioController = Em.ObjectController.extend({
 	  });
   }).property('content.stocks_only','sortProperties','sortAscending').cacheable(),
 
-  sort_by_symbol: function() {
-	this.set('sortProperties', ['symbol']);
+  sort: function(criteria) {
+	this.set('sortProperties', [criteria]);
 
-	direction = this.get('sortAscending') ;
-	if (direction == true) { this.set('sortAscending', false) ;	}
-	else { this.set('sortAscending', true) ; };    
-  },
-
-  sort_by_value: function() {
-	this.set('sortProperties', ['position_value']);
-
-	direction = this.get('sortAscending') ;
-	if (direction == true) { this.set('sortAscending', false) ;	}
-	else { this.set('sortAscending', true) ; };    
-  },
-
-  sort_by_daily: function() {
-	this.set('sortProperties', ['position_daily']);
-	
 	direction = this.get('sortAscending') ;
 	if (direction == true) { this.set('sortAscending', false) ;	}
 	else { this.set('sortAscending', true) ; };    

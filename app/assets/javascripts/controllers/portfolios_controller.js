@@ -9,7 +9,10 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	col_Total: 'portfolio_value',
 	col_Daily: 'portfolio_daily',
 	col_Name: 'name',
-	
+	by_name: 'name',
+  	by_value: 'portfolio_value',
+  	by_daily: 'portfolio_daily',
+  	
 	dates: ["Current Week", "Current Month", "Current Quarter", "Current Year"],
 	date_range: 'Current Week',
 	
@@ -30,7 +33,6 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 		this.load_graph() ;
 	}.observes('date_range','portfolio_select'),
 	
-
   count: function() {
 	return this.content.length > 0 
   }.property('content'),
@@ -40,84 +42,55 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	return (this.activePortfolioId == null) && (this.content.get('length') > 0) 	
   }.property('activePortfolioId','content.@each'),
 
-  sort_by_name: function() {
-	this.set('sortProperties', ['name']);
+  sort: function(criteria) {
+	this.set('sortProperties', [criteria]);
 	
 	direction = this.get('sortAscending') ;
 	if (direction == true) { this.set('sortAscending', false) ;	}
 	else { this.set('sortAscending', true) ; };    
   },
 
-  sort_by_value: function() {
-	this.set('sortProperties', ['portfolio_value']);
+	total_options_cost: function() {
+		return this.content.reduce(function(accum, portfolio) { 
+	                      return accum + portfolio.get('options_cost') }, 0)
+						}.property('content.@each.options_cost').cacheable(),
 	
-	direction = this.get('sortAscending') ;
-	if (direction == true) { this.set('sortAscending', false) ;	}
-	else { this.set('sortAscending', true) ; };    
-  },
-
-  sort_by_daily_change: function() {
-	this.set('sortProperties', ['portfolio_daily']);
+	total_stocks_cost: function() {
+		return this.content.reduce(function(accum, portfolio) { 
+	                      return accum + portfolio.get('stocks_cost') }, 0)
+						}.property('content.@each.stocks_cost').cacheable(),
 	
-	direction = this.get('sortAscending') ;
-	if (direction == true) { this.set('sortAscending', false) ;	}
-	else { this.set('sortAscending', true) ; };    
-  },
-
-  	total_stocks_only: function() {
-	var total = 0 ;
-			this.content.forEach(function(portfolio){				
-				total += portfolio.get('stocks_value') ;			
-			});
-	return total // Ember.inspect( this.count )
-	}.property('content.@each.stocks_value').cacheable(),
-
+	total_stocks_only: function() {
+		return this.content.reduce(function(accum, portfolio) { 
+	                      return accum + portfolio.get('stocks_value') }, 0)
+					}.property('content.@each.stocks_value').cacheable(),
+	
   	total_dividends: function() {
-	var total = 0 ;
-			this.content.forEach(function(portfolio){				
-				total += portfolio.get('daily_dividends') ;			
-			});
-	return total // Ember.inspect( this.count )
-	}.property('content.@each.daily_dividends').cacheable(),
+		return this.content.reduce(function(accum, portfolio) { 
+	                      return accum + portfolio.get('daily_dividends') }, 0)
+					}.property('content.@each.daily_dividends').cacheable(),
 
   	total_options_only: function() {
-	var total = 0 ;
-			this.content.forEach(function(portfolio){				
-				total += portfolio.get('options_value') ;			
-			});
-	return total // Ember.inspect( this.count )
-	}.property('content.@each.options_value').cacheable(),
-
+		return this.content.reduce(function(accum, portfolio) { 
+	                      return accum + portfolio.get('options_value') }, 0)
+					}.property('content.@each.options_value').cacheable(),
 	
-  total_stocks: function() {
-	var total = 0 ;
-//	contacts.then(function(contacts){
-		console.log('in total calc')
-			this.content.forEach(function(portfolio){
-				total += portfolio.get('portfolio_value') ;			
-			});
-//	});	
-	return total // Ember.inspect( this.count )
-	}.property('content.@each.portfolio_value').cacheable(),
+  	total_value: function() {
+		return this.content.reduce(function(accum, portfolio) { 
+	                      return accum + portfolio.get('portfolio_value') }, 0)
+					}.property('content.@each.portfolio_value').cacheable(),
 
-  total_daily: function() {
-	var total = 0 ;
-			this.content.forEach(function(portfolio){
-				total += portfolio.get('portfolio_daily') ;			
-			});
-	return total
-	}.property('content.@each.portfolio_daily').cacheable(),
+	total_daily: function() {
+		return this.content.reduce(function(accum, portfolio) { 
+                      return accum + portfolio.get('portfolio_daily') }, 0)
+					}.property('content.@each.portfolio_daily').cacheable(),
   
-  total_cash: function() {
-	var total = 0 ;
-			this.content.forEach(function(portfolio){
-				total += portfolio.get('cash') ;			
-			});
-	return total
-	}.property('content.@each.cash').cacheable(),
-	
+	total_cash: function() {
+		return this.content.reduce(function(accum, portfolio) { 
+                      return accum + portfolio.get('cash') }, 0)
+					}.property('content.@each.cash').cacheable(),
 		
-	  delete_portfolio: function(portfolio) {
+	delete_portfolio: function(portfolio) {
 	    if (window.confirm("Are you sure you want to delete this portfolio and its stocks?")) {
 			portfolio.get('stocks').forEach(function(stock) {
 				stock.deleteRecord() ;

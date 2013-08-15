@@ -1,4 +1,12 @@
 HelloEmber.ApplicationView = Em.View.extend({
+	consolidate_button_class: function(){ 
+		var btn = 'btn'
+		if ( HelloEmber.consolidating ) {
+		btn = 'btn btn-success'	
+		}
+	    return btn
+	}.property('HelloEmber.consolidating').cacheable(),
+
 	login_button_class: function(){ 
 		var btn = 'btn btn-success'
 		if ( HelloEmber.logged_in_state ) {
