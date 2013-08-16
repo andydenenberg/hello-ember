@@ -1,5 +1,5 @@
 HelloEmber.StocksController = Em.ArrayController.extend({
-  needs: ['Portfolios'],
+  needs: ['Portfolios', 'Cons'],
   activeStockId: null,
 
 // individual sort criteria
@@ -54,13 +54,14 @@ HelloEmber.StocksController = Em.ArrayController.extend({
   },
 
 
-	consolidated_stocks: function() {		
-		var cons = HelloEmber.Con.find() ;
-		return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, { 
-			sortProperties: this.get('ConSortProperties'),
-			sortAscending: this.get('ConSortAscending'),
-		    content: cons });
-    }.property("content.@each.stock.latest_price",'ConSortProperties','ConSortAscending').cacheable(),
+  	consolidated_stocks: function() {		
+		var ConsController = this.get('controllers.Cons');
+	    var con = ConsController.get('content') ;
+			return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, { 
+				sortProperties: this.get('ConSortProperties'),
+				sortAscending: this.get('ConSortAscending'),
+			    content: con });
+    }.property("controllers.Cons.content",'ConSortProperties','ConSortAscending').cacheable(),
 
 	options: function() {
 		var sorted = this.content.filter(function(stock) {
@@ -120,73 +121,4 @@ HelloEmber.StocksController = Em.ArrayController.extend({
 						return accum + summ }, 0)			
 					}.property('sorted_with_ids.@each.daily_change').cacheable(),
 	
-// another way to calculate totals without .reduce
-	//  with_ids: function(){        
-	//    var stocks = this.content.filter(function(stock) {
-	//	  return stock.get('id') != null;
-	//	});
-	//	return stocks
-	//  }.property("content.@each.stock").cacheable(),
-
-	//    consolidated: function(){
-	//  	var cons = {} ;    
-	//  	var stks = this.content.filter(function(stock) {
-	//  	  	return (stock.get('id') != null) && (stock.get('stock_option') == 'Stock') });
-	//      var stocks = stks.forEach(function(stock) {
-	//  		if (cons[stock.get('symbol')] != null) {
-	//  			cons[stock.get('symbol')].quantity += stock.get('quantity') ;			
-	//  			cons[stock.get('symbol')].value = stock.get('latest_price') * cons[stock.get('symbol')].quantity ;
-	//  			cons[stock.get('symbol')].change = stock.get('daily_change') * cons[stock.get('symbol')].quantity ;			
-	//  			cons[stock.get('symbol')].accounts += 1 ;
-	//  			cons[stock.get('symbol')].portfolios.push( stock.get('portfolio').get('name') ) ;
-	//  		}
-	//  		else {
-	//  			var newStock = Ember.Object.create({
-	//  			  symbol: stock.get('symbol'),
-	//  			  quantity: stock.get('quantity'),
-	//  			  value: stock.get('latest_price') * stock.get('quantity'),
-	//  			  change: stock.get('daily_change') * stock.get('quantity'),
-	//  			  stock: stock,
-	//  			  accounts: 1,
-	//  			  portfolios: [ stock.get('portfolio').get('name') ]
-	//  			});			
-	//  			cons[stock.get('symbol')] = newStock ;			
-	//  		}
-	//  	});
-	//  	var a = this.get('cons') ;
-	//  //	debugger;
-	//  	var arr = [];
-	//  	for(key in cons) { 
-	//  		arr.push( cons[key] ); 
-	//  	};
-	//  	return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, { 
-	//  		sortProperties: this.get('sortProperties'),
-	//  		sortAscending: this.get('sortAscending'),
-	//  	    content: Ember.A(arr) });	
-	//  //  }.property("sorted_with_ids").cacheable(),
-	//      }.property("content.@each.stock",'sortProperties','sortAscending').cacheable(),
-
-
-
-	//	sorted_consolidated: function() {
-	//	  var criteria = 'latest_price' ;
-	//	  var order = 'desc' ; // this.get('sort_order') ;
-	//	  var arr = this.get('consolidated') ;
-	//	  debugger ;
-	//			sorted = this.get('consolidated').sort(function(a,b) {
-	//				var first = a.get('quantity') * a.stock.get(criteria);
-	//				var last = b.get('quantity') * b.stock.get(criteria) ;
-	//				if ( order == 'asc') {	//sort string ascending
-	//					 if (last > first) return -1 
-	//					 if (last < first) return 1 }
-	//				else {
-	//					 if (first > last) return -1 
-	//					 if (first < last) return 1 }
-	//			});
-	//		return sorted
-	//		}.property("content.@each.stock").cacheable(),
-
-
-
-
 });

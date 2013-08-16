@@ -1,5 +1,5 @@
-HelloEmber.Con  = DS.Model.extend({
-  symbol: DS.attr('string'),
+HelloEmber.Cons = Ember.Object.extend({
+  symbol: null,
   stock_option: null,
   quantity: 0,
   accounts: 0,

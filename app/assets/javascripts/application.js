@@ -47,53 +47,119 @@ HelloEmber = Ember.Application.create({
 });
 
 HelloEmber.ApplicationController = Ember.ObjectController.extend({
-//  needs: ['Con'],
+  needs: ['Cons'],
 	
-  consolidate: function() {
-//		var ConController = this.get('controllers.Con');
-//		ConController.set('model', HelloEmber.Con.find() ) ;
-//		var cons = ConController.get('content') ;
-		
+  consolidate: function() {		
 		HelloEmber.set('consolidating', true) ;
 		Ember.run.later(this, function(){
 			HelloEmber.set('consolidating', false ) ;
 		}, 2000);
 		
-		var portfolios = HelloEmber.Portfolio.find() ;
-		
-		HelloEmber.Con.find().toArray().forEach(function(stock) {	
-		      stock.deleteRecord();
-		});
-
-		var cons = Ember.A() ;    
+		var portfolios = HelloEmber.Portfolio.find() ; // preload to get data for building cons
+		var cons_content = [ ] ;
 		var stks = HelloEmber.Stock.find().filter(function(stock) {
 		  	return (stock.get('id') != null) && (stock.get('stock_option') == 'Stock') });
-	    stks.forEach(function(stock) {
-			var existing = cons.filterProperty('symbol', stock.get('symbol') ) ;
-			if (existing.length > 0 ) {
-				existing[0].set('quantity', existing[0].get('quantity') + stock.get('quantity') ) ;
-				existing[0].set('accounts', existing[0].get('accounts') + 1 ) ;
-				var ports = existing[0].get('portfolios') ;
+	    stks.forEach(function(stock) {						
+			var exist = cons_content.filterProperty('symbol', stock.get('symbol') ) ;
+			if (exist.length > 0 ) { 
+				exist[0].set('quantity', exist[0].get('quantity') + stock.get('quantity') ) ;
+				exist[0].set('accounts', exist[0].get('accounts') + 1 ) ;
+				var ports = exist[0].get('portfolios') ;
 				ports.push( stock.get('portfolio') ) ;
-				existing[0].set('portfolios', ports );
-			 }
+				exist[0].set('portfolios', ports );  }
 			else {
-			cons.push (
-				HelloEmber.Con.createRecord({
-					symbol: stock.get('symbol'),
-					quantity: stock.get('quantity'),
-					accounts: 1,
-					portfolios: [ stock.get('portfolio'), stock.get('portfolio')  ] })
-			); }
+			  	var abc = HelloEmber.Cons.create({
+					  		symbol: stock.get('symbol'),
+					  		quantity: stock.get('quantity'),
+					  		accounts: 1,
+					  		portfolios: [ stock.get('portfolio')  ]
+					 }) ;
+				cons_content.push( abc ) ;  }
 		});	
-		
+		var ConsController = this.get('controllers.Cons');
+		ConsController.set('content', cons_content ) ;		
   },
+
+
+	refresh_cache: function() {
+	    var options = HelloEmber.Stock.find().filter(function(stock) {
+				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
+		});
+		var stocks = HelloEmber.Stock.find().filter(function(stock) {
+				return (stock.get('stock_option') == 'Stock' && stock.get('id') != null );
+		});
+
+		var cons = this.get('controllers.Cons').get('content') ;		
+
+	   stocks.forEach(function(stock){	
+		   	$.ajax({  
+		 		url: "/stocks/" + stock.get('id') + "/current_price?real_time=" + HelloEmber.real_time,  
+		        beforeSend: function (request)
+		        { request.setRequestHeader("token", localStorage.login_token) },
+		 		dataType: "json",  
+		 		success: function(data) { 		
+			   		console.log('updating stock:', stock.get('id'), data.symbol, data.price, data.change) ;
+			   		stock.set('latest_price', data.price );
+			   		stock.set('latest_time', data.time );
+			   		stock.set('daily_change', data.change );
+					stock.set('daily_dividend', data.daily_dividend );
+
+					var con = cons.filterProperty('symbol', data.symbol ) ;
+						if (con.length > 0 ) { 
+							con[0].set('daily_change', data.change);
+							con[0].set('latest_price', data.price);  };
+		   			}  
+		   	});			
+	   });	
+
+	   options.forEach(function(option){	
+		   	$.ajax({  
+		 		url: "/stocks/" + option.get('id') + "/current_price/",  
+		        beforeSend: function (request)
+		        {
+		            request.setRequestHeader("token", localStorage.login_token);
+		        },
+		 		dataType: "json",  
+		 		success: function(data) { 		
+			   		console.log('updating opton:', option.get('id'), option.get('symbol'), data.bid, data.ask, data.previous_close) ;
+					quantity = option.get('quantity') ;
+
+					option.set('bid', data.bid ) ;
+					option.set('ask', data.ask ) ;
+					option.set('previous_close', data.previous_close ) ;
+					option.set('latest_time', data.time );
+
+					if (quantity < 0) { option.set('latest_price', data.ask ) }
+					else { option.set('latest_price', data.bid ) }
+					option.set('daily_change', numberWithCommas(Number(option.get('latest_price') - data.previous_close).toFixed(2)) );
+			   		}  
+		   	});			
+	   });
+},
+
+	timer_update: function() {
+		HelloEmber.set('cache_count', HelloEmber.cache_count - 10) ;
+		if (HelloEmber.cache_count <= 0 ) {
+			HelloEmber.set('cache_count', HelloEmber.cache_delay ) ;
+			if (HelloEmber.cache_auto ) {
+				this.cache_update();
+		    }
+		}
+		HelloEmber.set('repo_count', HelloEmber.repo_count - 10) ;
+		if (HelloEmber.repo_count <= 0 ) {
+			HelloEmber.set('repo_count', HelloEmber.repo_delay );
+			if (HelloEmber.repo_auto) {
+					refresh_repo() ;
+			}
+		}	
+	}.observes("clock.second"),
+	
 	
   cache_update: function() {
 
 	this.consolidate();
 
-    refresh_cache();
+    this.refresh_cache();
   },
 
   repo_update: function() {
@@ -156,64 +222,6 @@ function current_quote(symbol, controller) {
    	});				
 }
 
-function refresh_cache()  {	
-	    
-	    var options = HelloEmber.Stock.find().filter(function(stock) {
-				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
-		});
-		var stocks = HelloEmber.Stock.find().filter(function(stock) {
-				return (stock.get('stock_option') == 'Stock' && stock.get('id') != null );
-		});
-
-		var cons = HelloEmber.Con.find() ;  // Consolidated Stocks
-
-	   stocks.forEach(function(stock){	
-		   	$.ajax({  
-		 		url: "/stocks/" + stock.get('id') + "/current_price?real_time=" + HelloEmber.real_time,  
-		        beforeSend: function (request)
-		        { request.setRequestHeader("token", localStorage.login_token) },
-		 		dataType: "json",  
-		 		success: function(data) { 		
-			   		console.log('updating stock:', stock.get('id'), data.symbol, data.price, data.change) ;
-			   		stock.set('latest_price', data.price );
-			   		stock.set('latest_time', data.time );
-			   		stock.set('daily_change', data.change );
-					stock.set('daily_dividend', data.daily_dividend );
-					
-					var con = cons.filterProperty('symbol', data.symbol ) ;
-						if (con.length > 0 ) { 
-							con[0].set('daily_change', data.change);
-							con[0].set('latest_price', data.price);  };
-		   			}  
-		   	});			
-	   });	
-
-	   options.forEach(function(option){	
-		   	$.ajax({  
-		 		url: "/stocks/" + option.get('id') + "/current_price/",  
-		        beforeSend: function (request)
-		        {
-		            request.setRequestHeader("token", localStorage.login_token);
-		        },
-		 		dataType: "json",  
-		 		success: function(data) { 		
-			   		console.log('updating opton:', option.get('id'), option.get('symbol'), data.bid, data.ask, data.previous_close) ;
-					quantity = option.get('quantity') ;
-					
-					option.set('bid', data.bid ) ;
-					option.set('ask', data.ask ) ;
-					option.set('previous_close', data.previous_close ) ;
-					option.set('latest_time', data.time );
-			   								
-					if (quantity < 0) { option.set('latest_price', data.ask ) }
-					else { option.set('latest_price', data.bid ) }
-					option.set('daily_change', numberWithCommas(Number(option.get('latest_price') - data.previous_close).toFixed(2)) );
-			   		}  
-		   	});			
-	   });
-	return stocks.length	
-}
-
 function refresh_repo() {
 	$.ajax({  
 		url: "/stocks/update_prices?real_time=" + HelloEmber.real_time,  
@@ -242,22 +250,6 @@ HelloEmber.Clock = Ember.Object.extend({
     var now = new Date()
 
 //  if updating, block the timer from firing again
-
-	HelloEmber.set('cache_count', HelloEmber.cache_count - 10) ;
-	if (HelloEmber.cache_count <= 0 ) {
-		HelloEmber.set('cache_count', HelloEmber.cache_delay ) ;
-		if (HelloEmber.cache_auto ) {
-				var poll = refresh_cache() ;
-	    }
-	}
-	
-	HelloEmber.set('repo_count', HelloEmber.repo_count - 10) ;
-	if (HelloEmber.repo_count <= 0 ) {
-		HelloEmber.set('repo_count', HelloEmber.repo_delay );
-		if (HelloEmber.repo_auto) {
-				refresh_repo() ;
-		}
-	}
    	
     this.setProperties({	
       second: now.getSeconds(),

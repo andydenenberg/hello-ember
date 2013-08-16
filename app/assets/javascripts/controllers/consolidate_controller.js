@@ -1,2 +1,6 @@
-HelloEmber.ConController = Em.ArrayController.extend({
+HelloEmber.ConsController = Em.ObjectController.extend({
+	content: [ ] 
 });
+
+  
+  

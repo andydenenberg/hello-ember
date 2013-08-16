@@ -2,6 +2,11 @@
 <div class="span2">
   <div class="well">
     <ul class="nav nav-list">
+    <li class="nav-header">System</li>
+		<li>{{#linkTo 'login' classNameBindings="view.login_button_class"}}<i class="icon-user"></i> 
+		{{HelloEmber.logged_in_user}}{{/linkTo}}</li>
+    	<li>{{#linkTo 'about'}}About{{/linkTo}}</li>
+    <li class="nav-header">Portfolios (  )</li>
       <li class="nav-header">Positions ( {{sorted_with_ids.length}} )</li>
       {{#each stock in sorted_with_ids}}
         {{view HelloEmber.StockInListView contentBinding="stock"}}
