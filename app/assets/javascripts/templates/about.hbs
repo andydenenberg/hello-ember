@@ -1,1 +1,65 @@
+<div class="menu_span">
+  <div class="well">
+    <ul class="nav nav-list">
+    <li class="nav-header">Analysis</li>
+		<li>{{#linkTo "portfolios"}}Portfolios{{/linkTo}}</li>
+		<li>{{#linkTo 'stocks'}}Stocks and Options{{/linkTo}}</li>
+    <li class="nav-header">System</li>
+		<li>{{#linkTo 'login' }}<i class="icon-user"></i> 
+			{{HelloEmber.logged_in_user}}{{/linkTo}}</li>
+    	<li class='active'>{{#linkTo 'about'}}About{{/linkTo}}</li>
+    	<li><a href='/'>Exit</a></li>	
+    </ul>
+  </div>
+</div>
+
+<div class="span9">
+
 Write up some comments about this application...
+<hr>
+
+<form class="form-inline">
+<div class="control-group">
+  	<label class="control-label" >Enable</label>
+	<label class="checkbox">
+    {{view Ember.Checkbox checkedBinding="HelloEmber.cache_auto" }}
+  	</label>
+	<label class="control-label" >Cache Update Delay is</label>
+	<div class="input-append">
+  	{{view Ember.TextField valueBinding="HelloEmber.cache_delay" class='input-mini' }}
+		<span class="add-on"> seconds</span>
+	</div>
+</div>
+
+<div class="control-group">
+  	<label class="control-label" >Enable</label>
+	<label class="checkbox">
+    {{view Ember.Checkbox checkedBinding="HelloEmber.repo_auto" }}
+  	</label>
+	<label class="control-label" >Repository Update Delay is</label>
+	<div class="input-append">
+  	{{view Ember.TextField valueBinding="HelloEmber.repo_delay" class='input-mini' }}
+		<span class="add-on"> seconds</span>
+	</div>
+</div>
+
+<div class="control-group">
+  	<label class="control-label" >Enable</label>
+	<label class="checkbox">
+    {{view Ember.Checkbox checkedBinding="HelloEmber.real_time" }}
+  	</label>
+	<label class="control-label" >Real-Time Quotes</label>
+</div>
+
+<div class="control-group">
+  	<label class="control-label" >Repo List</label>
+    <a href='/stocks/repo_list'>list</a>
+</div>
+
+</form>
+
+</div>
+
+
+<br>
+

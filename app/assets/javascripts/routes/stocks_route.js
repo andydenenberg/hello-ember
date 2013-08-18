@@ -11,11 +11,10 @@ HelloEmber.StocksRoute = HelloEmber.AuthenticatedRoute.extend({
   },
 
   setupController: function(controller, model) {
-	controller.set('model', model ) ;
-	Ember.run.later(this, function(){
-	  // code here will execute within a RunLoop in about 2000ms with this == myContext
-	this.controllerFor('Application').cache_update();
-	}, 2000);
+	controller.set('content', model ) ;
+//	Ember.run.later(this, function(){
+//		this.controllerFor('Application').cache_update();
+//	}, 2000);
 
   },
 

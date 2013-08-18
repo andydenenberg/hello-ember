@@ -1,16 +1,23 @@
-<div class="span2">
-  <div class="well sidebar-nav">
+<div class="menu_span">
+  <div class="well">
     <ul class="nav nav-list">
-      <li class="nav-header">Portfolios ({{content.length}})
-	</li>
+    <li class="nav-header">Portfolios</li>
+		{{view HelloEmber.PortfolioHeaderView contentBinding="activePortfolioId"}}
       {{#each portfolio in controller}}
         {{view HelloEmber.PortfolioInListView contentBinding="portfolio"}}
       {{/each}}
+    <li class="nav-header">Positions</li>
+		<li>{{#linkTo 'stocks'}}Stocks and Options{{/linkTo}}</li>
+    <li class="nav-header">System</li>
+		<li>{{#linkTo 'login' }}<i class="icon-user"></i> 
+			{{HelloEmber.logged_in_user}}{{/linkTo}}</li>
+    	<li>{{#linkTo 'about'}}About{{/linkTo}}</li>
+    	<li><a href='/'>Exit</a></li>	
     </ul>
   </div>
 </div>
 
-<div class="span10">
+<div class="span9">
 
 <div id="flash" class="alert alert-success">
     <span></span>
@@ -51,7 +58,7 @@
 
 		<table class="table table-condensed table-bordered table-striped">
 		<tr>
-			<th>Full Name
+			<th>Name
 			<button {{action sort by_name}}>{{sort_arrow sortAscending sortProperties col_Name}}</button>
 			</th>
 			<th style='text-align:right;'>Cash</th>

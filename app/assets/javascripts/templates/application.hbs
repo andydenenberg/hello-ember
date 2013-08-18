@@ -3,20 +3,13 @@
     <div class="container-fluid">
 
 		{{#if HelloEmber.logged_in_state }}
-			<div class="brand">
-			{{#linkTo "portfolios"}}Portfolios{{/linkTo}} |
-			{{#linkTo 'stocks'}}Positions{{/linkTo}} |
-			{{#linkTo 'about'}}About{{/linkTo}} |
-			<a href='/'>Exit</a>
-			</div>
+			{{#linkTo 'login' classNameBindings="view.login_button_class"}}<i class="icon-user"></i> 
+			{{HelloEmber.logged_in_user}}{{/linkTo}}
 			
 			<ul class="nav pull-right">
-				{{#linkTo 'login' classNameBindings="view.login_button_class"}}<i class="icon-user"></i> 
-				{{HelloEmber.logged_in_user}}{{/linkTo}}
-				{{#linkTo "system" class='btn'}}System{{/linkTo}}
 					<button {{action consolidate}}
 					 		{{bindAttr class="view.consolidate_button_class"}}>
-							Consolidate
+							{{HelloEmber.consolidating}}
 					</button>
 					
 				<div class="btn-group">			

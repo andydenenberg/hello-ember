@@ -2,7 +2,7 @@ HelloEmber.AuthenticatedRoute = Ember.Route.extend({
 
   beforeModel: function(transition) {
 	var token = this.controllerFor('login').get('login_token');
-	if (token == 'null') {
+	if (token == 'null' || token == null ) {
       this.redirectToLogin(transition);
     }
   },

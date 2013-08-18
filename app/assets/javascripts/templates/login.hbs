@@ -1,82 +1,57 @@
-<style type="text/css">
-
-  /* Main marketing message and sign up button */
-  .centered {
-    margin: 20px 0;
-    text-align: center;
-  }
-
-.form-signin {
-  max-width: 250px;
-  padding: 10px 19px 19px;
-  margin: 0 auto 20px;
-  border: 1px solid #e5e5e5;
-  -webkit-border-radius: 5px;
-     -moz-border-radius: 5px;
-          border-radius: 5px;
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-     -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-          box-shadow: 0 1px 2px rgba(0,0,0,.05);
-}
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-  margin-bottom: 10px;
-}
-.form-signin input[type="text"],
-.form-signin input[type="email"],
-.form-signin input[type="password"] {
-  height: auto;
-  margin-bottom: 15px;
-  padding: 7px 9px;
-}
-
-
-</style>
-
-<div id="flash" class="alert alert-warning">
-    <span></span>
+<div class="menu_span">
+  <div class="well">
+    <ul class="nav nav-list">
+    <li class="nav-header">Analysis</li>
+		<li>{{#linkTo "portfolios"}}Portfolios{{/linkTo}}</li>
+		<li>{{#linkTo 'stocks'}}Stocks and Options{{/linkTo}}</li>
+    <li class="nav-header">System</li>
+		<li class='active'>{{#linkTo 'login' classNameBindings="view.login_button_class"}}<i class="icon-user"></i> 
+			{{HelloEmber.logged_in_user}}{{/linkTo}}</li>
+    	<li>{{#linkTo 'about'}}About{{/linkTo}}</li>
+    	<li><a href='/'>Exit</a></li>	
+    </ul>
+  </div>
 </div>
 
-{{#if HelloEmber.logged_in_state}}
+<div class="span7">
 
-    <div class="centered">
-      <h3>Welcome to Nvestr</h3>
-      <h4>Profile Information</h4>
-	  <p>Contact: {{contact.fullName}}</p>
-      <p>Email: {{contact.email}}</p>
 
-      <h4>Portfolio Information</h4>
-      <p>Total Value: ${{decimal contact.portfolio_value}}</p>
-	  <p>Number of Stocks: {{contact.stocks.length}}
+	{{#if HelloEmber.logged_in_state}}
 
-	<br><br>
-	 <button {{action "logout"}}  class="btn btn-warning">
-		    <i class="icon-off"></i> Logout</button>
+	    <div">
+	      <h3>Welcome to Nvestr</h3>
+	      <h4>Profile Information</h4>
+		  <p>Contact: {{contact.fullName}}</p>
+	      <p>Email: {{contact.email}}</p>
 
-    </div>
+	      <h4>Portfolio Information</h4>
+	      <p>Total Value: ${{decimal contact.portfolio_value}}</p>
+		  <p>Number of Stocks: {{contact.stocks.length}}
 
-Change the cache refresh logic to use this?<br>
-in Portfolio Controller<br>
-<code>	refresh_timer: function(){
-	  // do something
-	  return this.get('clock') ;
-	 }.property("clock.second").cacheable(),
-	
-	http://log.simplabs.com/post/53016599611/authentication-in-ember-js
-	
-</code>
+		<br><br>
+		 <button {{action "logout"}}  class="btn btn-warning">
+			    <i class="icon-off"></i> Logout</button>
 
-{{else}}
+	    </div>
 
-<div class="form-signin">
-	<h3>Please login</h3>
-	<hr /><br />
-	<label>Email: </label>{{view Ember.TextField valueBinding="email" }}<br />
-	<label>Password: </label>{{view Ember.TextField valueBinding="password" type="password" action="login"}}<br />
+	{{else}}
+
+	<div class="form-signin">
+		<h3>Please login</h3>
+		<hr /><br />
+		<label>Email: </label>{{view Ember.TextField valueBinding="email" }}<br />
+		<label>Password: </label>{{view Ember.TextField valueBinding="password" type="password" action="login"}}<br />
   
-	<br /><button {{action "login"}} class='btn btn-success'>Login</button>
+		<br /><button {{action "login"}} class='btn btn-success'>Login</button>
+	</div>
+
+	{{/if}}
+
+
 </div>
 
-{{/if}}
 
-<div style="margin:0;padding:0;display:inline">
+<br>
+
+
+

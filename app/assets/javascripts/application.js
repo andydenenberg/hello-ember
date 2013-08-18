@@ -37,10 +37,12 @@ HelloEmber = Ember.Application.create({
 	
   real_time: true,
 
-  consolidating: false,
+  consolidating: 'Consolidate',
 
   ready: function() {
     console.log('HelloEmber ready!');
+	HelloEmber.Stock.find() ;
+	HelloEmber.Portfolio.find() ;	
 	get_user() ;
   },
 
@@ -50,10 +52,10 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
   needs: ['Cons'],
 	
   consolidate: function() {		
-		HelloEmber.set('consolidating', true) ;
+		HelloEmber.set('consolidating', 'Consolidating') ;
 		Ember.run.later(this, function(){
-			HelloEmber.set('consolidating', false ) ;
-		}, 2000);
+			HelloEmber.set('consolidating', 'Consolidate' ) ;
+		}, 1500);
 		
 		var portfolios = HelloEmber.Portfolio.find() ; // preload to get data for building cons
 		var cons_content = [ ] ;
@@ -77,7 +79,7 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 				cons_content.push( abc ) ;  }
 		});	
 		var ConsController = this.get('controllers.Cons');
-		ConsController.set('content', cons_content ) ;		
+		ConsController.set('content', cons_content ) ;				
   },
 
 
@@ -138,14 +140,15 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 },
 
 	timer_update: function() {
-		HelloEmber.set('cache_count', HelloEmber.cache_count - 10) ;
+		HelloEmber.set('cache_count', HelloEmber.cache_count - 1) ;
+		var cache = HelloEmber.get('cache_count') ;
 		if (HelloEmber.cache_count <= 0 ) {
 			HelloEmber.set('cache_count', HelloEmber.cache_delay ) ;
 			if (HelloEmber.cache_auto ) {
 				this.cache_update();
 		    }
 		}
-		HelloEmber.set('repo_count', HelloEmber.repo_count - 10) ;
+		HelloEmber.set('repo_count', HelloEmber.repo_count - 1) ;
 		if (HelloEmber.repo_count <= 0 ) {
 			HelloEmber.set('repo_count', HelloEmber.repo_delay );
 			if (HelloEmber.repo_auto) {
@@ -258,7 +261,7 @@ HelloEmber.Clock = Ember.Object.extend({
     });
 
     var self = this;
-    setTimeout(function(){ self.tick(); }, 10000)
+    setTimeout(function(){ self.tick(); }, 1000)
   }
 });
 

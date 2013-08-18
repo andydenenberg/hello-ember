@@ -3,7 +3,7 @@ HelloEmber.Router.map(function() {
   this.route("about");
   this.route("login");
 //  this.route("login", { path: "/login" });
-  this.resource('system');
+  this.route('system');
   this.resource('stocks', function() {
 	this.route('new');
 	this.route('edit', { path: '/:stock_id/edit' });
