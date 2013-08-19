@@ -21,6 +21,18 @@ HelloEmber.ApplicationView = Em.View.extend({
 		var btn = 'btn btn-success'
 		if ( !HelloEmber.repo_auto ) { btn = 'btn'	}
 	    return btn
-	}.property('HelloEmber.repo_auto').cacheable()
+	}.property('HelloEmber.repo_auto').cacheable(),
+	
+	refresh_repo_button_class: function() {
+		var btn = 'btn'
+		if ( HelloEmber.refresh_repo_status == 'Updating') { btn = 'btn btn-info' }
+	    return btn
+	}.property('HelloEmber.refresh_repo_status').cacheable(),
+	
+	refresh_cache_button_class: function() {
+		var btn = 'btn'
+		if ( HelloEmber.refresh_cache_status == 'Updating') { btn = 'btn btn-info' }
+	    return btn
+	}.property('HelloEmber.refresh_cache_status').cacheable(),
 	
 });

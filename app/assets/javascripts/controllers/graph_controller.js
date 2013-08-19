@@ -1,3 +1,11 @@
+function rnd(value) {
+	var i=0;
+	var mults = [1,1000,1000000]
+	for(; value >= 1000 ; ++i) value/=1000;
+	var mag = Math.round(value) ;
+	return mag * mults[i] 	
+};
+
 function startAndEndOfGraph(date) {
   // If no date object supplied, use current date
   // Copy date so don't modify supplied date
@@ -6,9 +14,15 @@ function startAndEndOfGraph(date) {
   	now.setHours(0,0,0,0);
 
   // Get current Week
-  	var monday = new Date(now);
-  	monday.setDate(monday.getDate() - monday.getDay() + 1);
-  	var friday = new Date(now)
+	var today = now ;
+	var day_of_week = today.getDay() ;
+	var date_of_month = today.getDate() ;
+	var monday_date = date_of_month - day_of_week + 1;
+	var friday_date = monday_date + 4 ;
+	var friday = new Date(now) ;
+	var monday = new Date(now) ;
+	monday.setDate(monday_date) ;
+	friday.setDate(friday_date) ;
 	var Current_Week = [ monday, friday ] ;
 	
   // Get start of current Month
@@ -35,7 +49,7 @@ function startAndEndOfGraph(date) {
 
   // Return array of date objects
   return [ Current_Week, Current_Month, Current_Quarter, Current_Year ];
-}
+};
 
 var ajaxDataRenderer = function(url) {
   var ret = null;
@@ -69,7 +83,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 	y_axis_label: '',
 	x_min: null,
 	x_max: null,
-	x_tick_interval: '1 week',
+	x_tick_interval: '1 day',
 	
 	portfolio_names: [ ],
 	
@@ -97,18 +111,20 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 	// set the start and end date of x-axis
 	this.set('x_min',ranges[0]);
 	this.set('x_max',ranges[1]);
+	if (index == 1) { this.set('x_tick_interval', '1 week') }	
+	if (index == 2) { this.set('x_tick_interval', '1 month') }	
 	if (index == 3) { this.set('x_tick_interval', '2 months') }	
 	
 	
 	var series_min = graph_data[0].reduce(function(min, obj) { 
 	                      return obj[1] < min ? obj[1] : min; 
-	                   }, Infinity);
+	                   }, Infinity) ;
 	var series_max = graph_data[0].reduce(function(max, obj) { 
 	                      return obj[1] > max ? obj[1] : max; 
-	                   }, 0);
-	this.set('y_min', series_min * 0.8 ) ;
-	this.set('y_max', series_max * 1.2 ) ;
-
+	                   }, 0) ;
+	
+	this.set('y_min', rnd(series_min * 0.8 , 2) );
+	this.set('y_max', rnd(series_max * 1.2 , 2) );
 
 	  var options = {
 //		dataRenderer: ajaxDataRenderer,        		
@@ -151,6 +167,8 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 			showTicks: true,
 			min: this.y_min,
 			max: this.y_max,
+			tickInterval: 1000000
+	        
 		}
 		},
 		legend:{
@@ -178,7 +196,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 //			{label: 'Another' },
 		],
 		grid: {
-			backgroundColor: '#FFF',
+			backgroundColor: '#CCFFFF',
 			drawGridLines: true,
 			shadow: false
 		}

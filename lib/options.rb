@@ -229,10 +229,11 @@ module Options
     return total, divs
   end
   
-  def self.refresh_daily_dividend
+  def self.refresh_daily_dividend(date)
       Price.all.each do |security|
         if security.sec_type == 'Stock'
-          yesterday = (Time.now - 1.day).strftime("%m/%d/%Y")
+#          yesterday = (Time.now - 1.day).strftime("%m/%d/%Y")
+          yesterday = date
           div = check_dividend(security.symbol, yesterday)
           security.daily_dividend = div['Dividends']
           puts div

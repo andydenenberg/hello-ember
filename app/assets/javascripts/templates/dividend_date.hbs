@@ -1,0 +1,22 @@
+<div class="modal-header centerAlign"> 
+    <button type="button" class="close" data-dismiss="modal" class="floatRight">×</button> 
+    <h1 class="centerAlign">{{view.header}}</h1> 
+</div> 
+<div class="modal-body"> 
+    {{view.message}} 
+     
+
+	<form class="form-horizontal"> 
+	  <div class="control-group"> 
+	    <label class="control-label">Dividend Date</label> 
+	    <div class="controls"> 
+	      {{view Ember.TextField valueBinding="dividend_date" class='span2'}}  
+	    </div> 
+	  </div> 
+	</form> 
+
+</div> 
+<div class="modal-footer"> 
+<button {{action collect_dividends}}class='btn btn-success'>{{view.okButtonLabel}}</button>
+<button data-dismiss='modal' class='btn'>{{view.cancelButtonLabel}}</button>
+</div>

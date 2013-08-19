@@ -17,6 +17,7 @@ HelloEmber::Application.routes.draw do
     end
     
     collection do
+      get 'refresh_daily_dividend'
       get 'repo_list'
       get 'update_prices'
       get 'stock_price'

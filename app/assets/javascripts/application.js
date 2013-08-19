@@ -38,6 +38,8 @@ HelloEmber = Ember.Application.create({
   real_time: true,
 
   consolidating: 'Consolidate',
+  refresh_repo_status: '', 
+  refresh_cache_status: '',
 
   ready: function() {
     console.log('HelloEmber ready!');
@@ -50,7 +52,31 @@ HelloEmber = Ember.Application.create({
 
 HelloEmber.ApplicationController = Ember.ObjectController.extend({
   needs: ['Cons'],
+
+  dividend_date: null,
+
+  refresh_daily_dividend: function() {	
+	  var today = new Date()
+	  var date = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear() ;
+	  this.set('dividend_date', date) ;
+	  $("#dividend_dateDialog").modal({show: true});
+  },
 	
+  collect_dividends: function() {
+	$("#dividend_dateDialog").modal('hide');	
+	$.ajax({  
+		url: "/stocks/refresh_daily_dividend?date=" + this.get('dividend_date') ,  
+        beforeSend: function (request)
+        {
+            request.setRequestHeader("token", localStorage.login_token);
+        },
+		dataType: "json",  
+		success: function(data) { 		
+	   		console.log(data.response, data.duration, ' seconds ') ;
+			}  
+	});			
+  },
+    	
   consolidate: function() {		
 		HelloEmber.set('consolidating', 'Consolidating') ;
 		Ember.run.later(this, function(){
@@ -84,6 +110,7 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 
 
 	refresh_cache: function() {
+		HelloEmber.set('refresh_cache_status', 'Updating') ;
 	    var options = HelloEmber.Stock.find().filter(function(stock) {
 				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
 		});
@@ -91,15 +118,22 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 				return (stock.get('stock_option') == 'Stock' && stock.get('id') != null );
 		});
 
+		// load cons so that it can be updated
 		var cons = this.get('controllers.Cons').get('content') ;		
-
+		
+		var last_stock = stocks.get('lastObject') ;
+		if (typeof last_stock != 'undefined') { last_stock = last_stock.get('id') };
+		
 	   stocks.forEach(function(stock){	
 		   	$.ajax({  
 		 		url: "/stocks/" + stock.get('id') + "/current_price?real_time=" + HelloEmber.real_time,  
 		        beforeSend: function (request)
 		        { request.setRequestHeader("token", localStorage.login_token) },
 		 		dataType: "json",  
-		 		success: function(data) { 		
+		 		success: function(data) { 	
+					if (stock.get('id') == last_stock) {
+						HelloEmber.set('refresh_cache_status', '') ;
+					}
 			   		console.log('updating stock:', stock.get('id'), data.symbol, data.price, data.change) ;
 			   		stock.set('latest_price', data.price );
 			   		stock.set('latest_time', data.time );
@@ -145,7 +179,7 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 		if (HelloEmber.cache_count <= 0 ) {
 			HelloEmber.set('cache_count', HelloEmber.cache_delay ) ;
 			if (HelloEmber.cache_auto ) {
-				this.cache_update();
+				this.refresh_cache();
 		    }
 		}
 		HelloEmber.set('repo_count', HelloEmber.repo_count - 1) ;
@@ -158,16 +192,12 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 	}.observes("clock.second"),
 	
 	
-  cache_update: function() {
-
-	this.consolidate();
-
-    this.refresh_cache();
-  },
-
-  repo_update: function() {
-    refresh_repo();
-  },
+//  cache_update: function() {
+//
+//	this.consolidate();
+//
+//    this.refresh_cache();
+//  },
 
   toggle_cache_auto: function() {
 	cache_auto = HelloEmber.get('cache_auto') ;
@@ -178,9 +208,25 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 	repo_auto = HelloEmber.get('repo_auto') ;
 	repo_auto = repo_auto ? false : true ;
 	HelloEmber.set('repo_auto', repo_auto) ;		
-  }
+  },
 
-})
+  refresh_repo: function() {
+	HelloEmber.set('refresh_repo_status', 'Updating') ;
+		$.ajax({  
+			url: "/stocks/update_prices?real_time=" + HelloEmber.real_time,  
+	        beforeSend: function (request)
+	        {
+	            request.setRequestHeader("token", localStorage.login_token);
+	        },
+			dataType: "json",  
+			success: function(data) { 
+				HelloEmber.set('refresh_repo_status', '') ;
+		   		console.log('Cache refreshed:', data.duration, ' seconds ', data.count, 'updated') ;
+				}  
+		});		
+	}
+	
+});
 
 HelloEmber.security_type = ["Stock", "Call Option", "Put Option"];
 
@@ -225,19 +271,6 @@ function current_quote(symbol, controller) {
    	});				
 }
 
-function refresh_repo() {
-	$.ajax({  
-		url: "/stocks/update_prices?real_time=" + HelloEmber.real_time,  
-        beforeSend: function (request)
-        {
-            request.setRequestHeader("token", localStorage.login_token);
-        },
-		dataType: "json",  
-		success: function(data) { 		
-	   		console.log('Cache refreshed:', data.duration, ' seconds ', data.count, 'updated') ;
-			}  
-	});		
-}
 
 HelloEmber.Clock = Ember.Object.extend({
   second: null,
@@ -248,12 +281,8 @@ HelloEmber.Clock = Ember.Object.extend({
     this.tick();
   },
 
-
   tick: function() {
     var now = new Date()
-
-//  if updating, block the timer from firing again
-   	
     this.setProperties({	
       second: now.getSeconds(),
       minute: now.getMinutes(),

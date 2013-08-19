@@ -19,8 +19,9 @@ namespace :demo do
     end
     
     task :refresh_daily_dividend => :environment do
+        date = ENV["DATE"]
         require 'options'
-        Options.refresh_daily_dividend
+        Options.refresh_daily_dividend(date)
     end
   
 end
