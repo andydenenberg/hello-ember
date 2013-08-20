@@ -29,10 +29,10 @@ HelloEmber = Ember.Application.create({
   logged_in_user: 'locating user info...',
 
   cache_delay: 60,  // every 60 seconds
-  cache_count: 60,
+  cache_count: 20,
   cache_auto: false,
   repo_delay: 300,  // every 5 minutes
-  repo_count: 300,
+  repo_count: 25,
   repo_auto: false,
 	
   real_time: true,
@@ -190,7 +190,7 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 		if (HelloEmber.repo_count <= 0 ) {
 			HelloEmber.set('repo_count', HelloEmber.repo_delay );
 			if (HelloEmber.repo_auto) {
-					refresh_repo() ;
+				this.refresh_repo() ;
 			}
 		}	
 	}.observes("clock.second"),
