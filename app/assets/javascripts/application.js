@@ -26,7 +26,7 @@
 HelloEmber = Ember.Application.create({
   LOG_TRANSITIONS: true,
   logged_in_state: localStorage.logged_in_state,
-  logged_in_user: null,
+  logged_in_user: 'locating user info...',
 
   cache_delay: 60,  // every 60 seconds
   cache_count: 60,
@@ -37,15 +37,16 @@ HelloEmber = Ember.Application.create({
 	
   real_time: true,
 
+  dividend_date: '',
   consolidating: 'Consolidate',
   refresh_repo_status: '', 
   refresh_cache_status: '',
 
   ready: function() {
-    console.log('HelloEmber ready!');
-	HelloEmber.Stock.find() ;
-	HelloEmber.Portfolio.find() ;	
 	get_user() ;
+    console.log('HelloEmber ready!');
+//	HelloEmber.Stock.find() ;
+//	HelloEmber.Portfolio.find() ;	
   },
 
 });
@@ -63,7 +64,8 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
   },
 	
   collect_dividends: function() {
-	$("#dividend_dateDialog").modal('hide');	
+	$("#dividend_dateDialog").modal('hide');
+	var self = this
 	$.ajax({  
 		url: "/stocks/refresh_daily_dividend?date=" + this.get('dividend_date') ,  
         beforeSend: function (request)
@@ -71,10 +73,12 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
             request.setRequestHeader("token", localStorage.login_token);
         },
 		dataType: "json",  
-		success: function(data) { 		
+		success: function(data) { 
+			HelloEmber.set('dividend_date', self.get('dividend_date') )	;
+			self.refresh_cache() ;					
 	   		console.log(data.response, data.duration, ' seconds ') ;
 			}  
-	});			
+	});
   },
     	
   consolidate: function() {		

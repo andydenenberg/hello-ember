@@ -26,7 +26,7 @@ class StocksController < ApplicationController
   def refresh_daily_dividend
     date = params[:date] ||= (Time.now - 1.day).strftime("%m/%d/%Y")
     start = Time.now
-    system "rake demo:refresh_daily_dividend RAILS_ENV=development DATE=#{date} --trace >> #{Rails.root}/log/rake.log"
+    system "rake demo:refresh_daily_dividend RAILS_ENV=#{Rails.env} DATE=#{date} --trace >> #{Rails.root}/log/rake.log &"
 #    Options.refresh_daily_dividend(date)
     duration = Time.now - start
     render json: { 'response' => "Dividends collected for #{date}", 'duration' => duration }
@@ -34,7 +34,7 @@ class StocksController < ApplicationController
   
   def update_prices
     start = Time.now
-      system "rake demo:refresh_all RAILS_ENV=development REALTIME=#{params[:real_time]} --trace >> #{Rails.root}/log/rake.log"
+      system "rake demo:refresh_all RAILS_ENV=#{Rails.env} REALTIME=#{params[:real_time]} --trace >> #{Rails.root}/log/rake.log &"
 #    real_time = params[:real_time] == 'true' ? true : false
 #    update = Options.refresh_all(real_time)
     duration = Time.now - start
