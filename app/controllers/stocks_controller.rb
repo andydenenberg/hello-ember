@@ -47,7 +47,9 @@ class StocksController < ApplicationController
     
     if security.stock_option == 'Stock'
       resp = Options.local_stock_price(security.symbol,real_time)
-      render json: { :symbol => security.symbol, :price => resp[1], :time => resp[0], :change => resp[2], :daily_dividend => resp[3] }
+      render json: {  :symbol => security.symbol, :price => resp[1],
+                      :time => resp[0], :change => resp[2],
+                      :daily_dividend => resp[3], :daily_dividend_date => resp[4].strftime("%m/%d/%y") }
     else
       resp = Options.local_option_price(security.symbol, security.stock_option, security.strike, security.expiration_date )
       render json: { 'symbol' => security.symbol, 'time' => resp[0], 'bid' => resp[1], 'ask' => resp[2], 'previous_close' => resp[3] }

@@ -37,10 +37,10 @@ HelloEmber = Ember.Application.create({
 	
   real_time: true,
 
-  dividend_date: '',
   consolidating: 'Consolidate',
   refresh_repo_status: '', 
   refresh_cache_status: '',
+  daily_dividend_date: null,
 
   ready: function() {
 	get_user() ;
@@ -58,14 +58,13 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 
   refresh_daily_dividend: function() {	
 	  var today = new Date()
-	  var date = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear() ;
+	  var date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate() ;
 	  this.set('dividend_date', date) ;
 	  $("#dividend_dateDialog").modal({show: true});
   },
 	
   collect_dividends: function() {
 	$("#dividend_dateDialog").modal('hide');
-	var self = this
 	$.ajax({  
 		url: "/stocks/refresh_daily_dividend?date=" + this.get('dividend_date') ,  
         beforeSend: function (request)
@@ -74,8 +73,6 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
         },
 		dataType: "json",  
 		success: function(data) { 
-			HelloEmber.set('dividend_date', self.get('dividend_date') )	;
-			self.refresh_cache() ;					
 	   		console.log(data.response, data.duration, ' seconds ') ;
 			}  
 	});
@@ -142,7 +139,8 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 			   		stock.set('latest_price', data.price );
 			   		stock.set('latest_time', data.time );
 			   		stock.set('daily_change', data.change );
-					stock.set('daily_dividend', data.daily_dividend );
+					stock.set('daily_dividend', data.daily_dividend);
+					HelloEmber.set('daily_dividend_date', data.daily_dividend_date );
 
 					var con = cons.filterProperty('symbol', data.symbol ) ;
 						if (con.length > 0 ) { 

@@ -11,19 +11,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730162756) do
+ActiveRecord::Schema.define(:version => 20130820183128) do
 
   create_table "histories", :force => true do |t|
-    t.decimal  "cash",          :precision => 10, :scale => 2
-    t.decimal  "stocks",        :precision => 10, :scale => 2
+    t.decimal  "cash",                :precision => 10, :scale => 2
+    t.decimal  "stocks",              :precision => 10, :scale => 2
     t.integer  "stocks_count"
-    t.decimal  "options",       :precision => 10, :scale => 2
+    t.decimal  "options",             :precision => 10, :scale => 2
     t.integer  "options_count"
-    t.decimal  "total",         :precision => 10, :scale => 2
+    t.decimal  "total",               :precision => 10, :scale => 2
     t.datetime "snapshot_date"
     t.integer  "portfolio_id"
-    t.datetime "created_at",                                   :null => false
-    t.datetime "updated_at",                                   :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
+    t.decimal  "daily_dividend",      :precision => 10, :scale => 2
+    t.datetime "daily_dividend_date"
   end
 
   add_index "histories", ["portfolio_id"], :name => "index_histories_on_portfolio_id"
@@ -41,15 +43,16 @@ ActiveRecord::Schema.define(:version => 20130730162756) do
     t.string   "sec_type"
     t.string   "symbol"
     t.datetime "last_update"
-    t.decimal  "change",         :precision => 10, :scale => 2
-    t.decimal  "strike",         :precision => 10, :scale => 2
+    t.decimal  "change",              :precision => 10, :scale => 2
+    t.decimal  "strike",              :precision => 10, :scale => 2
     t.string   "exp_date"
-    t.decimal  "bid",            :precision => 10, :scale => 2
-    t.decimal  "ask",            :precision => 10, :scale => 2
-    t.decimal  "last_price",     :precision => 10, :scale => 2
-    t.datetime "created_at",                                    :null => false
-    t.datetime "updated_at",                                    :null => false
-    t.decimal  "daily_dividend", :precision => 10, :scale => 2
+    t.decimal  "bid",                 :precision => 10, :scale => 2
+    t.decimal  "ask",                 :precision => 10, :scale => 2
+    t.decimal  "last_price",          :precision => 10, :scale => 2
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
+    t.decimal  "daily_dividend",      :precision => 10, :scale => 2
+    t.datetime "daily_dividend_date"
   end
 
   create_table "stocks", :force => true do |t|

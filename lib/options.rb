@@ -70,14 +70,16 @@ module Options
     price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase )
     if price.empty? 
       latest = latest_price(symbol, real_time)
-      latest.push check_dividend(symbol, (Time.now - 1.day).strftime("%m/%d/%Y") )['Dividends']
+      latest.push price.daily_dividend
+      latest.push price.daily_dividend_date
+#      latest.push check_dividend(symbol, (Time.now - 1.day).strftime("%m/%d/%Y") )['Dividends']
       Price.create( :sec_type => 'Stock', :symbol => symbol,
                     :last_price => latest[1], :last_update => latest[0],
                     :change => latest[2], :daily_dividend => latest[3] )
       return latest
     else
       price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
-      return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change, price.daily_dividend
+      return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change, price.daily_dividend, price.daily_dividend_date
     end
   end  
 
@@ -129,11 +131,17 @@ module Options
 
   def self.daily_snapshot # store in History record in DB
     refresh_all(false) # not realtime
+    refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
         hist.stocks_count = stocks.count
         hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
+
+        hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
+        hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
+        puts "portfolio.name: Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
+
       options = portfolio.stocks.where('stock_option != ?', 'Stock' )
         hist.options_count = options.count
         hist.options = options.reduce(0) do |sum,option| 
@@ -233,9 +241,9 @@ module Options
       Price.all.each do |security|
         if security.sec_type == 'Stock'
 #          yesterday = (Time.now - 1.day).strftime("%m/%d/%Y")
-          yesterday = date
-          div = check_dividend(security.symbol, yesterday)
-          security.daily_dividend = div['Dividends']
+          div = check_dividend(security.symbol, date)
+          security.daily_dividend = div['Dividends'] ||= 0
+          security.daily_dividend_date = date
           puts div
          security.save
         end
@@ -244,7 +252,10 @@ module Options
   
   def self.check_dividend(symbol,date)
         comps = date.split('/')
-        ds = "&a=#{(comps[0].to_i-1).to_s.rjust(2, '0')}&b=#{comps[1].rjust(2, '0')}&c=#{comps[2]}&d=#{(comps[0].to_i-1).to_s.rjust(2, '0')}&e=#{comps[1].rjust(2, '0')}&f=#{comps[2]}"
+        year = comps[0]
+        month = comps[1]
+        day = comps[2]
+        ds = "&a=#{(month.to_i-1).to_s.rjust(2, '0')}&b=#{day.rjust(2, '0')}&c=#{year}&d=#{(month.to_i-1).to_s.rjust(2, '0')}&e=#{day.rjust(2, '0')}&f=#{year}"
         url = "http://ichart.finance.yahoo.com/table.csv?s=#{symbol}#{ds}&g=v&ignore=.csv"
         puts url
         hp = { }

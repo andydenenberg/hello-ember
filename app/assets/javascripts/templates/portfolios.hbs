@@ -2,6 +2,8 @@
   <div class="well">
     <ul class="nav nav-list">
     <li class="nav-header">Portfolios</li>
+	<li>{{#linkTo "portfolios.new"}}<i class="icon-plus-sign"></i> Create New{{/linkTo}}</li>
+	<li>{{#linkTo "portfolios.new"}}New Ideas{{/linkTo}}</li>
 		{{view HelloEmber.PortfolioHeaderView contentBinding="activePortfolioId"}}
       {{#each portfolio in controller}}
         {{view HelloEmber.PortfolioInListView contentBinding="portfolio"}}
@@ -25,21 +27,8 @@
 
 {{#if controller.activePortfolioId}}
 {{else}}
-	<p> 
-	
-	<div class="control-group">
-	  <label class="control-label"><b>Portfolio Group</b></label>
-	  <div class="controls">
-		{{view Ember.Select
-	     contentBinding= "HelloEmber.security_type"
-		 valueBinding="stock_option"
-		 class='span3'  }}
-		{{#linkTo "portfolios.new" class="btn btn-mini" }}<i class="icon-plus-sign"></i> Create New Portfolio{{/linkTo}}
-		
-	  </div>
-	</div>
-	
-</p>
+<p class="box">All Combined</p>
+
 {{/if}}
 
 {{outlet}}
@@ -70,7 +59,7 @@
 			<th style='text-align:right;'>Daily Change
 			<button {{action sort by_daily}}>{{sort_arrow sortAscending sortProperties col_Daily}}</button>
 			</th>
-			<th style='text-align:right;'>{{HelloEmber.dividend_date}} Dividends</th>
+			<th style='text-align:right;'>{{HelloEmber.daily_dividend_date}}<br>Dividends</th>
 			<th style='text-align:right;'>Status</th>
 		</tr>
 	  {{#each portfolio in controller}}
