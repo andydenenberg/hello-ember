@@ -1,9 +1,9 @@
 
 HelloEmber.Router.map(function() {
+  this.route('home') ;
   this.route("about");
   this.route("login");
 //  this.route("login", { path: "/login" });
-  this.route('system');
   this.resource('stocks', function() {
 	this.route('new');
 	this.route('edit', { path: '/:stock_id/edit' });

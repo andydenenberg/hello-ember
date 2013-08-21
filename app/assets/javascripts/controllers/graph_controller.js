@@ -69,7 +69,7 @@ var ajaxDataRenderer = function(url) {
 };
 
 var tickFormatter = function (format, val) { 
-return '$' + numberWithCommas(Number(val).toFixed(2)) ;
+return '$' + numberWithCommas(Number(val).toFixed(0)) ;
 };
 
 HelloEmber.GraphController = Em.ObjectController.extend({
@@ -196,7 +196,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 //			{label: 'Another' },
 		],
 		grid: {
-			backgroundColor: '#CCFFFF',
+			backgroundColor: '#eeffff', // '#eeffff',  //'#CCFFFF',
 			drawGridLines: true,
 			shadow: false
 		}

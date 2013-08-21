@@ -1,0 +1,1 @@
+HelloEmber.HomeRoute = HelloEmber.AuthenticatedRoute.extend({ });

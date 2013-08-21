@@ -1,4 +1,5 @@
 HelloEmber.LoginController = Ember.Controller.extend({
+  needs: ['Application'],
 
   reset: function() {
     this.setProperties({
@@ -28,7 +29,7 @@ HelloEmber.LoginController = Ember.Controller.extend({
     var self = this, data = this.getProperties('email', 'password');
     // Clear out any error messages.
     this.set('errorMessage', null);
-
+	
     $.post('/auth.json', data).then(function(response) {
 
       self.set('errorMessage', response.message);
@@ -36,6 +37,8 @@ HelloEmber.LoginController = Ember.Controller.extend({
 //        alert('Login succeeded!');
         self.set('login_token', response.token);
 		get_user() ;  // display on nav bar
+
+		self.get('controllers.Application').initialize_data() ;
 
         var attemptedTransition = self.get('attemptedTransition');
         if (attemptedTransition) {

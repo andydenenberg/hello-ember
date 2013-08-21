@@ -56,6 +56,18 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 
   dividend_date: null,
 
+  initialize_data: function() {
+	this.refresh_cache();
+
+	Ember.run.later(this, function(){
+	    this.consolidate() ;
+	}, 2000);
+
+	Ember.run.later(this, function(){
+		this.refresh_cache();
+	}, 4000);
+  },
+
   refresh_daily_dividend: function() {	
 	  var today = new Date()
 	  var date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate() ;

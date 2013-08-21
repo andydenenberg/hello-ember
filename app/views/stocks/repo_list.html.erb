@@ -16,6 +16,7 @@
 			<th># Options</th>
 			<th>Options Value</th>
 			<th>Total Value</th>
+			<th>Dividends</th>
 		<tr>
 	<thead>
 	<% History.where(:portfolio_id => port.id).each do |hist| %>
@@ -28,6 +29,7 @@
 			<td class='aln_r'><%= hist.options_count %></td>
 			<td class='aln_r'>$<%= number_with_precision(hist.options, :precision => 2) %></td>
 			<td class='aln_r'>$<%= number_with_precision(hist.total, :precision => 2) %></td>
+			<td class='aln_r'>$<%= number_with_precision(hist.daily_dividend, :precision => 2) %></td>
 		</tr>
 	<% end %>
 <table>
