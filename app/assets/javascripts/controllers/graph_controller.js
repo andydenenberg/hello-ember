@@ -111,7 +111,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 	       	}
 	   	},		
 		seriesDefaults: {
-			lineWidth: 1.5,
+			lineWidth: 3,
 			showMarker: false,
 			shadow: false
 		},
@@ -153,7 +153,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 	        sizeAdjust: 10
       	},      
 		series:[
-			{ showMarker:true,
+			{ showMarker:false,
 //			 pointLabels: { show:true, location: 'ne' } // do not show marker, but do show point label
           	},
 //			{label: 'One' },
