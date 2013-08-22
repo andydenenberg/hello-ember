@@ -13,25 +13,54 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
   	by_value: 'portfolio_value',
   	by_daily: 'portfolio_daily',
   	
+// Graph related variables and functions
 	dates: ["Current Week", "Current Month", "Current Quarter", "Current Year"],
-	date_range: 'Current Week',
-	
+	date_range: 'Current Week',	
 	port_range: function() {
 		var names = [ 'All' ] ;
-				this.content.forEach(function(portfolio){				
-					names.push( portfolio.get('name') );			
-				});
+		this.content.forEach(function(portfolio) { names.push( portfolio.get('name') ) }) ;
 		var GraphController = this.get('controllers.Graph');		
-		GraphController.set('portfolio_names', names) ;
-//		debugger;
+//		GraphController.set('portfolio_names', names) ;
 		return names		
-	}.property('content.length'), 
-		
-	portfolio_select: null,
-	
+	}.property('content.length'), 		
+	portfolio_select: null,	
+
 	refresh_graph: function() {
 		this.load_graph() ;
 	}.observes('date_range','portfolio_select'),
+
+	load_graph: function(){
+		var index = this.dates.indexOf(this.date_range);
+	    var ranges = startAndEndOfGraph()[index] ;
+		// set the start and end date of x-axis
+		var x_min = ranges[0] ;
+		var x_max = ranges[1] ;
+		var x_tick_interval = '1 day' ; // if index = 0
+		if (index == 1) { x_tick_interval = '1 week' }	
+		if (index == 2) { x_tick_interval = '1 month' }	
+		if (index == 3) { x_tick_interval = '2 months' }
+		var data = ajaxDataRenderer("/portfolios/graph_data") ;
+			
+//		var portfolios = this.get('portfolio_names');
+		var portfolio_index = this.get('port_range').indexOf(this.portfolio_select) ;
+
+		var graph_data ;
+
+		if ( portfolio_index == 0 ) {
+			graph_data = [ data[0] ] ;
+		}
+		else {
+			graph_data = [ data[1][portfolio_index-1] ]
+		}
+		
+		
+		var GraphController = this.get('controllers.Graph');
+//	    GraphController.set('graph_id', 'theegraph');
+//		GraphController.set('x_min','Jul 01, 2013') ;
+//		GraphController.set('x_max','Sep 01, 2013') ;
+	    GraphController.load_data( 'portfolios_graph', this.get('portfolio_select'), x_min, x_max, x_tick_interval, graph_data );
+	},	
+	
 	
   count: function() {
 	return this.content.length > 0 
@@ -98,14 +127,6 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 			portfolio.deleteRecord() ;
 			this.store.commit();
 		}
-	  },
-
-	load_graph: function(){
-		var GraphController = this.get('controllers.Graph');
-//	    GraphController.set('graph_id', 'theegraph');
-//		GraphController.set('x_min','Jul 01, 2013') ;
-//		GraphController.set('x_max','Sep 01, 2013') ;
-	    GraphController.load_data( this.get('portfolio_select'), this.get('date_range') );
-	}	
+	  }
 	
 });

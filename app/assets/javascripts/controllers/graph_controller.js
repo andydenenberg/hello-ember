@@ -1,4 +1,4 @@
-function rnd(value) {
+function round_off(value) {
 	var i=0;
 	var mults = [1,1000,1000000]
 	for(; value >= 1000 ; ++i) value/=1000;
@@ -75,61 +75,32 @@ return '$' + numberWithCommas(Number(val).toFixed(0)) ;
 HelloEmber.GraphController = Em.ObjectController.extend({
 	needs: ['Portfolios'],
 	
-	jsonurl: "/portfolios/graph_data",
-	graph_id: 'theegraph',
-	title: 'Title',
+//	jsonurl: "/portfolios/graph_data",
+//	graph_id: 'theegraph',
+//	title: 'Title',
 	y_min: null,
 	y_max: null,
 	y_axis_label: '',
-	x_min: null,
-	x_max: null,
-	x_tick_interval: '1 day',
+//	x_min: null,
+//	x_max: null,
+//	x_tick_interval: null,
+//	portfolio_names: [ ],
 	
-	portfolio_names: [ ],
+	load_data: function(graph_id, title, x_min, x_max, x_tick_interval, series_data  ) {
+//	this.set('x_min',x_min);
+//	this.set('x_max',x_max);
+//	this.set('x_tick_interval', x_tick_interval) ;
 	
-	load_data: function( portfolio_select, date_range ) {
-		
-		var data = ajaxDataRenderer(this.jsonurl) ;
+	var series_min = series_data[0].reduce(function(min, obj) { return obj[1] < min ? obj[1] : min; }, Infinity) ;
+	var series_max = series_data[0].reduce(function(max, obj) { return obj[1] > max ? obj[1] : max; }, 0) ;
 	
-		
-	var PortfoliosController = this.get('controllers.Portfolios');
-	var dates = PortfoliosController.get('dates');
-	var portfolios = this.get('portfolio_names');
-	var portfolio_index = portfolios.indexOf(portfolio_select) ;
-	
-	var graph_data ;
-	
-	if ( portfolio_index == 0 ) {
-		graph_data = [ data[0] ] ;
-	}
-	else {
-		graph_data = [ data[1][portfolio_index-1] ]
-	}
-	
-	var index = dates.indexOf(date_range);
-    var ranges = startAndEndOfGraph()[index] ;
-	// set the start and end date of x-axis
-	this.set('x_min',ranges[0]);
-	this.set('x_max',ranges[1]);
-	if (index == 1) { this.set('x_tick_interval', '1 week') }	
-	if (index == 2) { this.set('x_tick_interval', '1 month') }	
-	if (index == 3) { this.set('x_tick_interval', '2 months') }	
-	
-	
-	var series_min = graph_data[0].reduce(function(min, obj) { 
-	                      return obj[1] < min ? obj[1] : min; 
-	                   }, Infinity) ;
-	var series_max = graph_data[0].reduce(function(max, obj) { 
-	                      return obj[1] > max ? obj[1] : max; 
-	                   }, 0) ;
-	
-	this.set('y_min', rnd(series_min * 0.8 , 2) );
-	this.set('y_max', rnd(series_max * 1.2 , 2) );
+	this.set('y_min', round_off(series_min * 0.95 , 2) );
+	this.set('y_max', round_off(series_max * 1.05 , 2) );
 
 	  var options = {
 //		dataRenderer: ajaxDataRenderer,        		
 		title: {
-			text: portfolio_select, // this.title,
+			text: title,
 			textAlign: 'center',
 			fontSize: '18pt',
 			textColor: 'black'
@@ -148,11 +119,12 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 		xaxis: {
 			renderer:$.jqplot.DateAxisRenderer,
 			tickOptions:{
-				formatString:'%b %#d, %Y'
+//				formatString:'%b %#d, %Y'
+				formatString:'%I:%M %p'
 		       },
-			min: this.x_min, 
-			max: this.x_max,
-			tickInterval: this.x_tick_interval,
+			min: x_min, 
+			max: x_max,
+			tickInterval: x_tick_interval,
 		},
 		yaxis: {
 			tickOptions: {
@@ -167,24 +139,24 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 			showTicks: true,
 			min: this.y_min,
 			max: this.y_max,
-			tickInterval: 1000000
+			tickInterval: round_off( ((this.y_max - this.y_min) / 10), 2 ),
 	        
 		}
 		},
 		legend:{
-			show:true, 
+			show:false, 
 			location: 'e',
 			rendererOptions:{numberRows: 1, placement: "outside"}
 		},
 		highlighter: {
 	        show: true,
-	        sizeAdjust: 7.5
+	        sizeAdjust: 10
       	},      
 		series:[
 			{ showMarker:true,
 //			 pointLabels: { show:true, location: 'ne' } // do not show marker, but do show point label
           	},
-			{label: 'One' },
+//			{label: 'One' },
 //			{label: 'Rivernorth' },
 //			{label: 'K' },
 //			{label: 'R' },
@@ -202,7 +174,8 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 		}
 	  };
       
-	  var plot2 = $.jqplot(this.graph_id, graph_data, options ).redraw();
+//	  var plot2 = $.jqplot(this.graph_id, series_data, options ).redraw();
+	  var plot2 = $.jqplot(graph_id, series_data, options ).redraw();
 	
 	}
 	
