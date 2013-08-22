@@ -1,6 +1,11 @@
 HelloEmber.ApplicationController = Ember.ObjectController.extend({
   needs: ['Cons'],
 
+  currentPathDidChange: function() {
+    path = this.get('currentPath');
+	HelloEmber.set('currentPath', path) ;
+  }.observes('currentPath'),
+
   dividend_date: null,
 
   initialize_data: function() {

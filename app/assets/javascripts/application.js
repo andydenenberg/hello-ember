@@ -42,6 +42,8 @@ HelloEmber = Ember.Application.create({
   refresh_cache_status: '',
   daily_dividend_date: null,
 
+  currentPath: null,
+
   ready: function() {
 // get the token the locally stored token (if existing) and authenticate with server
 // if valid will retrieve and store the user email in logged_in_user:

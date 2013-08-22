@@ -11,9 +11,14 @@ HelloEmber.HomeController = Ember.ArrayController.extend({
 	most_recent: 0,
 	
 	load_graph: function(){
-		this.update_content() ;
-		var GraphController = this.get('controllers.Graph');
-		GraphController.load_data( 'total_combined_value', 'Total Combined Value', '08:00AM', '04:00PM', '60 minutes', [this.series] );
+//		this.update_content() ;
+//		debugger;
+		var test = this.series ;
+		var any = (this.get('series').length > 0) ;
+		if (any) { 
+			var GraphController = this.get('controllers.Graph') ;
+		    GraphController.load_data( 'total_combined_value', 'Total Combined Value', '08:00AM', '04:00PM', '60 minutes', [test] );
+		} ;
 	},	
 	
 	update_content: function() {
@@ -39,6 +44,9 @@ HelloEmber.HomeController = Ember.ArrayController.extend({
 		var timer_count = this.timer_count - 1 ;
 		if (timer_count <= 0 ) {
 			this.update_content() ;
+			
+			if (HelloEmber.get('currentPath') =='home' ) { this.load_graph() } ;
+			
 			timer_count = 60 ;
 		}
 		this.set('timer_count', timer_count ) ;
