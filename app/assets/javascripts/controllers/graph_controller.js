@@ -86,7 +86,7 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 //	x_tick_interval: null,
 //	portfolio_names: [ ],
 	
-	load_data: function(graph_id, title, x_min, x_max, x_tick_interval, series_data  ) {
+	load_data: function(graph_id, title, x_min, x_max, x_tick_interval, series_data, x_tick_options  ) {
 //	this.set('x_min',x_min);
 //	this.set('x_max',x_max);
 //	this.set('x_tick_interval', x_tick_interval) ;
@@ -120,7 +120,8 @@ HelloEmber.GraphController = Em.ObjectController.extend({
 			renderer:$.jqplot.DateAxisRenderer,
 			tickOptions:{
 //				formatString:'%b %#d, %Y'
-				formatString:'%I:%M %p'
+//				formatString:'%I:%M %p'
+				formatString: x_tick_options,
 		       },
 			min: x_min, 
 			max: x_max,

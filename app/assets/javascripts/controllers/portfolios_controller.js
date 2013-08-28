@@ -36,9 +36,10 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 		var x_min = ranges[0] ;
 		var x_max = ranges[1] ;
 		var x_tick_interval = '1 day' ; // if index = 0
-		if (index == 1) { x_tick_interval = '1 week' }	
-		if (index == 2) { x_tick_interval = '1 month' }	
-		if (index == 3) { x_tick_interval = '2 months' }
+		var x_tick_options = '%b %#d, %Y' ; // '%I:%M %p' ;
+		if (index == 1) { x_tick_interval = '1 week' ; x_tick_options = '%b %#d, %Y' }	
+		if (index == 2) { x_tick_interval = '1 month' ; x_tick_options = '%b %#d, %Y'  }	
+		if (index == 3) { x_tick_interval = '2 months' ; x_tick_options = '%b %#d, %Y'  }
 		var data = ajaxDataRenderer("/portfolios/graph_data") ;
 			
 //		var portfolios = this.get('portfolio_names');
@@ -58,7 +59,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 //	    GraphController.set('graph_id', 'theegraph');
 //		GraphController.set('x_min','Jul 01, 2013') ;
 //		GraphController.set('x_max','Sep 01, 2013') ;
-	    GraphController.load_data( 'portfolios_graph', this.get('portfolio_select'), x_min, x_max, x_tick_interval, graph_data );
+	    GraphController.load_data( 'portfolios_graph', this.get('portfolio_select'), x_min, x_max, x_tick_interval, graph_data, x_tick_options );
 	},	
 	
 	

@@ -17,7 +17,7 @@ HelloEmber.HomeController = Ember.ArrayController.extend({
 		var any = (this.get('series').length > 0) ;
 		if (any) { 
 			var GraphController = this.get('controllers.Graph') ;
-		    GraphController.load_data( 'total_combined_value', 'Total Combined Value', '08:00AM', '04:00PM', '60 minutes', [test] );
+		    GraphController.load_data( 'total_combined_value', 'Total Combined Value', '08:00AM', '04:00PM', '60 minutes', [test], '%I:%M %p'  );
 		} ;
 	},	
 	
