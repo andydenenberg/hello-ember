@@ -32,13 +32,22 @@ function startAndEndOfGraph(date) {
 	var Current_Month = [ firstMonth, lastMonth ];
 	
   // Get Current Quarter
-	//[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]
-//	var quarter = [0, 3, 6, 9]	
-	var date = new Date(now);	
-	var month = Math.floor((date.getMonth() + 1) / 3) * 3 ;
-	var date = new Date(now), year = date.getFullYear();
-	var firstQuarter = new Date(year, month, 1);
-	var lastQuarter = new Date(year, month + 3, 0);
+//	var range = [0, 2], [3, 5], [6, 8], [9, 11]
+	var date = new Date(now);		
+	var month = date.getMonth();
+	var quarter;
+	if (month < 3)
+	  quarter = 0;
+	else if (month < 6)
+	  quarter = 3;
+	else if (month < 9)
+	  quarter = 6;
+	else if (month < 12)
+	  quarter = 9;
+	
+	year = date.getFullYear();
+	var firstQuarter = new Date(year, quarter, 1);
+	var lastQuarter = new Date(year, quarter + 3, 0);
 	var Current_Quarter = [ firstQuarter, lastQuarter ];
 	
   // Get start of current Year
