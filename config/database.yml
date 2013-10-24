@@ -7,6 +7,7 @@ development:
   username: root
   password:
   host: localhost
+  
 test: &test
   adapter: sqlite3
   database: db/test.sqlite3
