@@ -130,7 +130,7 @@ module Options
   end
 
   def self.daily_snapshot # store in History record in DB
-    refresh_all(false) # not realtime
+    refresh_all(true) # not realtime
     refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
