@@ -324,6 +324,25 @@ module Options
     
   end
   
+  def self.price_test
+    
+    (1..1000).each do |index|
+      
+      (1..10).each { |i| puts '' }
+      (1..10).each { |i| puts index }
+      (1..10).each { |i| puts '' }
+      
+        Price.all.each_with_index do |sec, index|
+             if sec.sec_type == 'Stock'
+               update = latest_price(sec.symbol, true)
+               puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
+             end
+        end
+    
+    end # outer loop counter
+                 
+  end
+  
   
 end
 
