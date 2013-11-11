@@ -49,21 +49,33 @@ module Options
   end
   
   def self.latest_price(symbol, real_time)
+    valid = true
     if real_time
-      price = MarketBeat.last_trade_real_time(symbol.upcase).to_f
+      price = MarketBeat.last_trade_real_time(symbol)
+      if price.length > 1 
+        price = price.to_f
+      else
+        valid = false
+      end
+      
       datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
-      month_day = datetime.first.split(' ')
-      month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
-      day = month_day.last
-      format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
-      time = format_date + ' ' + datetime.last.split(' ').first
+      if datetime.length > 1
+        month_day = datetime.first.split(' ')
+        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+        day = month_day.last
+        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+        time = format_date + ' ' + datetime.last.split(' ').first
+      else
+        valid = false
+      end
+      
       change = MarketBeat.change_real_time(symbol.upcase)
     else
       price = MarketBeat.last_trade(symbol.upcase).to_f
       time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
       change = MarketBeat.change(symbol.upcase)
     end 
-    return time, price, change   
+    return time, price, change, valid  
   end
 
   def self.local_stock_price(symbol, real_time)    
@@ -334,12 +346,13 @@ module Options
       
         Price.all.each_with_index do |sec, index|
              if sec.sec_type == 'Stock'
-               print "#{sec.id}: #{sec.symbol} "
-               price = MarketBeat.last_trade_real_time(sec.symbol.upcase).to_f
-               datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol) # .split(',')
-               puts "#{price} at #{datetime}"
-#               update = latest_price(sec.symbol, true)
-#               puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
+#               print "#{sec.id}: #{sec.symbol} "
+#               price = MarketBeat.last_trade_real_time(sec.symbol.upcase).to_f
+#               datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol) # .split(',')
+#               puts "#{price} at #{datetime}"
+
+               update = latest_price(sec.symbol, true)
+               puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
              end
         end
     
