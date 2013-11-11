@@ -58,9 +58,9 @@ module Options
         valid = false
       end
       
-      datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
+      datetime = MarketBeat.last_trade_datetime_real_time(symbol)
       if datetime
-        month_day = datetime.first.split(' ')
+        month_day = datetime.split(',').first.split(' ')
         month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
         day = month_day.last
         format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
