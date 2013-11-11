@@ -52,14 +52,14 @@ module Options
     valid = true
     if real_time
       price = MarketBeat.last_trade_real_time(symbol)
-      if price.length > 1 
+      if price
         price = price.to_f
       else
         valid = false
       end
       
       datetime = MarketBeat.last_trade_datetime_real_time(symbol).split(',')
-      if datetime.length > 1
+      if datetime
         month_day = datetime.first.split(' ')
         month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
         day = month_day.last
