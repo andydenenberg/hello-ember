@@ -336,7 +336,7 @@ module Options
              if sec.sec_type == 'Stock'
                print "#{sec.id}: #{sec.symbol} "
                price = MarketBeat.last_trade_real_time(sec.symbol.upcase).to_f
-               datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol).split(',')
+               datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol) # .split(',')
                puts "#{price} at #{datetime}"
 #               update = latest_price(sec.symbol, true)
 #               puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
