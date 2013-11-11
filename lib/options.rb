@@ -334,9 +334,10 @@ module Options
       
         Price.all.each_with_index do |sec, index|
              if sec.sec_type == 'Stock'
+               print "#{sec.id}: #{sec.symbol} "
                price = MarketBeat.last_trade_real_time(sec.symbol.upcase).to_f
                datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol).split(',')
-               puts "#{sec.id}: #{sec.symbol} #{price} at #{datetime}"
+               puts "#{price} at #{datetime}"
 #               update = latest_price(sec.symbol, true)
 #               puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
              end
