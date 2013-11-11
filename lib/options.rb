@@ -275,6 +275,56 @@ module Options
         return hp # hash with "Date", "Dividends"          
   end
   
+  
+  def self.daily_snapshot_test # store in History record in DB
+    
+    (1..1000).each do |index|
+      
+      (1..10).each { |i| puts '' }
+      (1..10).each { |i| puts index }
+      (1..10).each { |i| puts '' }
+      
+    
+    last_history = History.last.id
+    
+    puts 'Refreshing Prices'
+    refresh_all(true) # not realtime
+    
+    puts 'Refreshing Daily Dividend'
+    refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
+    
+    puts 'Creating Portfolio History Records'
+    Portfolio.all.each do |portfolio|
+      hist = portfolio.histories.new
+      stocks = portfolio.stocks.where(:stock_option => 'Stock')
+        hist.stocks_count = stocks.count
+        hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
+
+        hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
+        hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
+        puts "portfolio.name: Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
+
+      options = portfolio.stocks.where('stock_option != ?', 'Stock' )
+        hist.options_count = options.count
+        hist.options = options.reduce(0) do |sum,option| 
+          p = Price.where(:symbol => option.symbol, :sec_type => option.stock_option, :strike => option.strike, :exp_date => option.expiration_date ).first
+          price = option.stock_option == 'Call Option' && option.quantity < 0 ? p.ask : p.bid 
+          sum +  price * option.quantity * 100
+        end
+        hist.cash = portfolio.cash
+        hist.total = hist.options + hist.stocks + hist.cash
+        hist.snapshot_date = Time.now.beginning_of_day()
+        hist.save
+    end
+    puts "last history => #{last_history}, new last => #{History.last.id}"
+    History.where( 'id > :last_history and id <= :new_last', :last_history => last_history, :new_last => History.last.id).delete_all
+    
+  
+    end # outer loop counter
+    
+  end
+  
+  
 end
 
 
