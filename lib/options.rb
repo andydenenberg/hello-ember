@@ -360,8 +360,93 @@ module Options
                  
   end
   
-  
+ 
+    def self.dtegy
+
+      (1..1000).each do |index|
+
+                 update = latest_price('dtegy', true)
+                 puts "#{index}: #{update.inspect}"
+
+      end # outer loop counter
+
+    end
+ 
+
+
+def self.get_quotes(symbols)
+  list = ''
+  symbols.each do |s|
+    s.length == 0  ? symbol = 'xyzxyz' : symbol = s.strip  # if blank stuff with dummy string
+    list += symbol + ','
+  end
+  list = list[0..-2] # delete last comma
+
+  url = "http://download.finance.yahoo.com/d/quotes.csv?s=#{list}&f=snl1d1t1c1&e=.csv"
+  sym_list = [ ]
+  begin
+    doc = open(url)     
+    got_data = doc.read
+    t = symbols.length
+    t.times do |j|
+      data = CSV.parse(got_data)[j-1]
+      current_price = { }
+      ['Symbol', 'Name', 'LastTrade', 'LastTradeDate', 'LastTradeTime', 'Change' ].each_with_index { |title, i| current_price[title] = data[i] }
+      current_price['Error'] = nil
+      sym_list.push current_price
+    end
+    return sym_list
+
+  rescue Timeout::Error
+    current_price['Error'] = "The request timed out...skipping."
+    return current_price
+  rescue => e
+    current_price['Error'] = "The request returned an error - #{e.inspect}."
+    return current_price
+  end      
+end  
+
+
+
+def self.stocks_update_last_price
+  Price.where(:sec_type => 'Stock').each_slice(100) do |stocks|
+      list = stocks.collect { |s| s.symbol.downcase }
+        result = self.get_quotes(list)
+      stocks.each do |stock|
+        update = result.select { |s| s['Symbol'].downcase == stock.symbol.downcase.strip }[0]
+        stock.last_price = update['LastTrade'].to_f
+        str = update['LastTradeDate']
+        re = /(\d{1,2})\/(\d{1,2})\/(\d{4})/
+        fields = str.match(re)        
+#        stock.last_update = Time.parse(fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']).getutc
+#        Mon, 11 Nov 2013 13:40:00 CST -06:00 
+
+        stock.last_update = fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']
+#        2013-11-11 19:40:00
+        stock.change = update['Change'].to_f
+        
+        puts stock.last_update
+        puts
+        stock.save
+      end
+  end
+  return true
 end
 
+
+
+def self.quote_dtegy
+
+  (1..1000).each do |index|
+
+             update = get_quotes(['dtegy'])
+             puts "#{index}: #{update.inspect}"
+
+  end # outer loop counter
+
+end
+
+
+end
 
 
