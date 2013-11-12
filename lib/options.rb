@@ -115,6 +115,7 @@ module Options
   end
   
   def self.refresh_all(realtime)
+    stocks_update_last_price
     Price.all.each_with_index do |sec, index|
          refresh_price(sec.id,realtime)
 #      puts "index: #{index} = #{sec.sec_type}: #{sec.symbol} #{sec.last_update}"
@@ -126,11 +127,11 @@ module Options
       security = Price.find(security_id)
       symbol = security.symbol
       if security.sec_type == 'Stock'
-        update = latest_price(symbol, real_time)
-         security.last_price = update[1]
-         security.last_update = update[0]
-         security.change = update[2]
-         security.save
+#       update = latest_price(symbol, real_time)
+#        security.last_price = update[1]
+#        security.last_update = update[0]
+#        security.change = update[2]
+#        security.save
       else
         update = option_price(symbol, security.strike, security.exp_date) 
         security.last_update = update['Time']
@@ -147,12 +148,15 @@ module Options
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
+      
+      print "Portfolio: #{hist.portfolio.name}"
+      
         hist.stocks_count = stocks.count
         hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
 
         hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
         hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
-        puts "portfolio.name: Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
+        puts " Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
 
       options = portfolio.stocks.where('stock_option != ?', 'Stock' )
         hist.options_count = options.count
