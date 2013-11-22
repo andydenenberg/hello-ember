@@ -9,7 +9,7 @@ namespace :demo do
         realtime = rt == 'true' ? true : false
         require 'options'
         start = Time.now
-        Options.refresh_all(realtime)
+        Options.refresh_all
         puts "Repo refreshed at: #{Time.now} and took #{Time.now - start} seconds using realtime: #{realtime}"        
     end
 

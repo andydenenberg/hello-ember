@@ -4,7 +4,44 @@
 module Options
   require 'csv'
   require 'open-uri'
+  
+# Get current stock price from Yahoo Finance 
+# method is optimized to pack requests in groups of up to 100 symbols
+# expects and array of symbol strings 
+  def self.stock_price(symbols) 
+    list = symbols.join(',')
+    url = "http://download.finance.yahoo.com/d/quotes.csv?s=#{list}&f=snl1d1t1c1&e=.csv"
+    sym_list = [ ]
+    begin
+      doc = open(url)     
+      got_data = doc.read
+      t = symbols.length
+      t.times do |j|
+        data = CSV.parse(got_data)[j-1]
+        current_price = { }
+        ['Symbol', 'Name', 'LastTrade', 'LastTradeDate', 'LastTradeTime', 'Change' ].each_with_index { |title, i| current_price[title] = data[i] }
+        
+        date = current_price['LastTradeDate'].match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)
+        if !date.nil?
+          # create rails compatible data format - LastUpdate
+          current_price['LastUpdate'] = date[3] + '/' + date[1] + '/' + date[2] + ' ' + current_price['LastTradeTime']
+          current_price['Error'] = nil
+        else
+          current_price['Error'] = 'Symbol not found.'
+        end
+        sym_list.push current_price
+       end
+      return sym_list
 
+    rescue Timeout::Error
+      return ["The request timed out...skipping."]
+    rescue => e
+      return ["The request returned an error - #{e.inspect}."]
+    end      
+  end  
+
+  
+# Get current Option price from CBOE
   def self.option_price(symbol,strike,date)
     require "net/http"
     require "uri"
@@ -48,52 +85,93 @@ module Options
       end
   end
   
-  def self.latest_price(symbol, real_time)
-    valid = true
-    if real_time
-      price = MarketBeat.last_trade_real_time(symbol)
-      if price
-        price = price.to_f
-      else
-        valid = false
-      end
-      
-      datetime = MarketBeat.last_trade_datetime_real_time(symbol)
-      if datetime
-        month_day = datetime.split(',').first.split(' ')
-        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
-        day = month_day.last
-        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
-        time = format_date + ' ' + datetime.last.split(' ').first
-      else
-        valid = false
-      end
-      
-      change = MarketBeat.change_real_time(symbol.upcase)
-    else
-      price = MarketBeat.last_trade(symbol.upcase).to_f
-      time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
-      change = MarketBeat.change(symbol.upcase)
-    end 
-    return time, price, change, valid  
+
+# Refresh the Price List
+  def self.refresh_all
+    refresh_stocks
+    refresh_options
+    return Price.all.count  
   end
+    
+  def self.refresh_options
+    Price.all.each do |security|
+      if security.sec_type != 'Stock'
+        update = option_price(security.symbol, security.strike, security.exp_date) 
+        security.last_update = update['Time']
+        security.bid = update['Bid']
+        security.ask = update['Ask']
+        security.last_price = update['Previous_Close']
+        security.save       
+      end
+    end
+  end
+
+  def self.refresh_stocks
+    Price.where(:sec_type => 'Stock').each_slice(100) do |stocks|
+        list = stocks.collect { |s| s.symbol.downcase }
+          result = self.stock_price(list)
+        stocks.each do |stock|
+          update = result.select { |s| s['Symbol'].downcase == stock.symbol.downcase.strip }[0]
+          stock.last_price = update['LastTrade'].to_f
+  #        stock.last_update = Time.parse(fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']).getutc
+  #        Mon, 11 Nov 2013 13:40:00 CST -06:00 
+#          stock.last_update = fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']
+          stock.last_update = update['LastUpdate']
+  #        2013-11-11 19:40:00
+          stock.change = update['Change'].to_f
+          stock.save
+        end
+    end
+    return true
+  end
+  
+  
+#  def self.latest_price(symbol, real_time)
+#    valid = true
+#    if real_time
+#      price = MarketBeat.last_trade_real_time(symbol)
+#      if price
+#        price = price.to_f
+#      else
+#        valid = false
+#      end
+#      
+#      datetime = MarketBeat.last_trade_datetime_real_time(symbol)
+#      if datetime
+#        month_day = datetime.split(',').first.split(' ')
+#        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first)
+#        day = month_day.last
+#        format_date = Time.now.strftime('%Y') + '/' + month + '/' + day 
+#        time = format_date + ' ' + datetime.last.split(' ').first
+#      else
+#        valid = false
+#      end
+#      
+#      change = MarketBeat.change_real_time(symbol.upcase)
+#    else
+#      price = MarketBeat.last_trade(symbol.upcase).to_f
+#      time = Time.now.strftime("%Y/%m/%d ") + MarketBeat.last_trade_time('aapl')
+#      change = MarketBeat.change(symbol.upcase)
+#    end 
+#    return time, price, change, valid  
+#  end
 
   def self.local_stock_price(symbol, real_time)    
     price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase )
     if price.empty? 
-      latest = latest_price(symbol, real_time)
-      latest.push price.daily_dividend
-      latest.push price.daily_dividend_date
-#      latest.push check_dividend(symbol, (Time.now - 1.day).strftime("%m/%d/%Y") )['Dividends']
-      Price.create( :sec_type => 'Stock', :symbol => symbol,
-                    :last_price => latest[1], :last_update => latest[0],
-                    :change => latest[2], :daily_dividend => latest[3] )
-      return latest
+      latest = stock_price([symbol]).last
+      #    ['Symbol', 'Name', 'LastTrade', 'LastTradeDate', 'LastTradeTime', 'Change' ]
+      price = Price.create( :sec_type => 'Stock', :symbol => symbol.upcase,
+                    :last_price => latest['LastTrade'], :last_update => latest['LastUpdate'],
+                    :change => latest['Change'], :daily_dividend => 0 )
+      return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change, price.daily_dividend, price.daily_dividend_date
     else
       price = Price.where(:sec_type => 'Stock', :symbol => symbol.upcase ).first
       return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.last_price, price.change, price.daily_dividend, price.daily_dividend_date
     end
   end  
+
+
 
   def self.local_option_price(symbol, security_type, strike, expiration_date)
     option = Price.where( :sec_type => security_type, :symbol => symbol.upcase,
@@ -104,7 +182,7 @@ module Options
                            :strike => strike, :exp_date => expiration_date,
                            :last_update => latest['Time'], :bid => latest['Bid'],
                            :ask => latest['Ask'], :last_price => latest['Previous_Close'])
-    option = [ new ]
+       option = [ new ]
     end
     price = option.first
     return price.last_update.strftime("%H:%M%p %m/%d/%Y"), price.bid, price.ask, price.last_price
@@ -114,50 +192,16 @@ module Options
     price.to_s.match(/^[-+]?[0-9]*\.?[0-9]+$/)
   end
   
-  def self.refresh_all(realtime)
-    stocks_update_last_price
-    Price.all.each_with_index do |sec, index|
-         refresh_price(sec.id,realtime)
-#      puts "index: #{index} = #{sec.sec_type}: #{sec.symbol} #{sec.last_update}"
-    end  
-    return Price.all.count  
-  end
-    
-  def self.refresh_price(security_id,real_time)
-      security = Price.find(security_id)
-      symbol = security.symbol
-      if security.sec_type == 'Stock'
-#       update = latest_price(symbol, real_time)
-#        security.last_price = update[1]
-#        security.last_update = update[0]
-#        security.change = update[2]
-#        security.save
-      else
-        update = option_price(symbol, security.strike, security.exp_date) 
-        security.last_update = update['Time']
-        security.bid = update['Bid']
-        security.ask = update['Ask']
-        security.last_price = update['Previous_Close']
-        security.save       
-      end
-  end
-
   def self.daily_snapshot # store in History record in DB
-    refresh_all(true) # not realtime
+    refresh_all 
     refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
-      
-      print "Portfolio: #{hist.portfolio.name}"
-      
         hist.stocks_count = stocks.count
         hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
-
         hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
         hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
-        puts " Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
-
       options = portfolio.stocks.where('stock_option != ?', 'Stock' )
         hist.options_count = options.count
         hist.options = options.reduce(0) do |sum,option| 
@@ -292,163 +336,101 @@ module Options
   end
   
   
-  def self.daily_snapshot_test # store in History record in DB
-    
-    (1..1000).each do |index|
-      
-      (1..10).each { |i| puts '' }
-      (1..10).each { |i| puts index }
-      (1..10).each { |i| puts '' }
-      
-    
-    last_history = History.last.id
-    
-    puts 'Refreshing Prices'
-    refresh_all(true) # not realtime
-    
-    puts 'Refreshing Daily Dividend'
-    refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
-    
-    puts 'Creating Portfolio History Records'
-    Portfolio.all.each do |portfolio|
-      hist = portfolio.histories.new
-      stocks = portfolio.stocks.where(:stock_option => 'Stock')
-        hist.stocks_count = stocks.count
-        hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
-
-        hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
-        hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
-        puts "portfolio.name: Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
-
-      options = portfolio.stocks.where('stock_option != ?', 'Stock' )
-        hist.options_count = options.count
-        hist.options = options.reduce(0) do |sum,option| 
-          p = Price.where(:symbol => option.symbol, :sec_type => option.stock_option, :strike => option.strike, :exp_date => option.expiration_date ).first
-          price = option.stock_option == 'Call Option' && option.quantity < 0 ? p.ask : p.bid 
-          sum +  price * option.quantity * 100
-        end
-        hist.cash = portfolio.cash
-        hist.total = hist.options + hist.stocks + hist.cash
-        hist.snapshot_date = Time.now.beginning_of_day()
-        hist.save
-    end
-    puts "last history => #{last_history}, new last => #{History.last.id}"
-    History.where( 'id > :last_history and id <= :new_last', :last_history => last_history, :new_last => History.last.id).delete_all
-    
+#  def self.daily_snapshot_test # store in History record in DB
+#    
+#    (1..1000).each do |index|
+#      
+#      (1..10).each { |i| puts '' }
+#      (1..10).each { |i| puts index }
+#      (1..10).each { |i| puts '' }
+#      
+#    
+#    last_history = History.last.id
+#    
+#    puts 'Refreshing Prices'
+#    refresh_all(true) # not realtime
+#    
+#    puts 'Refreshing Daily Dividend'
+#    refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
+#    
+#    puts 'Creating Portfolio History Records'
+#    Portfolio.all.each do |portfolio|
+#      hist = portfolio.histories.new
+#      stocks = portfolio.stocks.where(:stock_option => 'Stock')
+#        hist.stocks_count = stocks.count
+#        hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
+# 
+#        hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
+#        hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
+#        puts "portfolio.name: Dividend: #{hist.daily_dividend} Date: #{hist.daily_dividend_date}"
+# 
+#      options = portfolio.stocks.where('stock_option != ?', 'Stock' )
+#        hist.options_count = options.count
+#        hist.options = options.reduce(0) do |sum,option| 
+#          p = Price.where(:symbol => option.symbol, :sec_type => option.stock_option, :strike => option.strike, :exp_date => option.expiration_date ).first
+#          price = option.stock_option == 'Call Option' && option.quantity < 0 ? p.ask : p.bid 
+#          sum +  price * option.quantity * 100
+#        end
+#        hist.cash = portfolio.cash
+#        hist.total = hist.options + hist.stocks + hist.cash
+#        hist.snapshot_date = Time.now.beginning_of_day()
+#        hist.save
+#    end
+#    puts "last history => #{last_history}, new last => #{History.last.id}"
+#    History.where( 'id > :last_history and id <= :new_last', :last_history => last_history, :new_last => History.last.id).delete_all
+#    
+#  
+#    end # outer loop counter
+#    
+#  end
   
-    end # outer loop counter
-    
-  end
-  
-  def self.price_test
-    
-    (1..1000).each do |index|
-      
-      (1..10).each { |i| puts '' }
-      (1..10).each { |i| puts index }
-      (1..10).each { |i| puts '' }
-      
-        Price.all.each_with_index do |sec, index|
-             if sec.sec_type == 'Stock'
-#               print "#{sec.id}: #{sec.symbol} "
-#               price = MarketBeat.last_trade_real_time(sec.symbol.upcase).to_f
-#               datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol) # .split(',')
-#               puts "#{price} at #{datetime}"
-
-               update = latest_price(sec.symbol, true)
-               puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
-             end
-        end
-    
-    end # outer loop counter
-                 
-  end
+#    def self.price_test
+#      
+#      (1..1000).each do |index|
+#        
+#        (1..10).each { |i| puts '' }
+#        (1..10).each { |i| puts index }
+#        (1..10).each { |i| puts '' }
+#        
+#          Price.all.each_with_index do |sec, index|
+#               if sec.sec_type == 'Stock'
+#  #               print "#{sec.id}: #{sec.symbol} "
+#  #               price = MarketBeat.last_trade_real_time(sec.symbol.upcase).to_f
+#  #               datetime = MarketBeat.last_trade_datetime_real_time(sec.symbol) # .split(',')
+#  #               puts "#{price} at #{datetime}"
+#  
+#                 update = latest_price(sec.symbol, true)
+#                 puts "#{sec.id}: #{sec.symbol} #{update.inspect}"
+#               end
+#          end
+#      
+#      end # outer loop counter
+#                   
+#    end
   
  
-    def self.dtegy
-
-      (1..1000).each do |index|
-
-                 update = latest_price('dtegy', true)
-                 puts "#{index}: #{update.inspect}"
-
-      end # outer loop counter
-
-    end
- 
-
-
-def self.get_quotes(symbols)
-  list = ''
-  symbols.each do |s|
-    s.length == 0  ? symbol = 'xyzxyz' : symbol = s.strip  # if blank stuff with dummy string
-    list += symbol + ','
-  end
-  list = list[0..-2] # delete last comma
-
-  url = "http://download.finance.yahoo.com/d/quotes.csv?s=#{list}&f=snl1d1t1c1&e=.csv"
-  sym_list = [ ]
-  begin
-    doc = open(url)     
-    got_data = doc.read
-    t = symbols.length
-    t.times do |j|
-      data = CSV.parse(got_data)[j-1]
-      current_price = { }
-      ['Symbol', 'Name', 'LastTrade', 'LastTradeDate', 'LastTradeTime', 'Change' ].each_with_index { |title, i| current_price[title] = data[i] }
-      current_price['Error'] = nil
-      sym_list.push current_price
-    end
-    return sym_list
-
-  rescue Timeout::Error
-    current_price['Error'] = "The request timed out...skipping."
-    return current_price
-  rescue => e
-    current_price['Error'] = "The request returned an error - #{e.inspect}."
-    return current_price
-  end      
-end  
+#    def self.dtegy
+#
+#      (1..1000).each do |index|
+#
+#                 update = latest_price('dtegy', true)
+#                 puts "#{index}: #{update.inspect}"
+#
+#      end # outer loop counter
+#
+#    end
 
 
-
-def self.stocks_update_last_price
-  Price.where(:sec_type => 'Stock').each_slice(100) do |stocks|
-      list = stocks.collect { |s| s.symbol.downcase }
-        result = self.get_quotes(list)
-      stocks.each do |stock|
-        update = result.select { |s| s['Symbol'].downcase == stock.symbol.downcase.strip }[0]
-        stock.last_price = update['LastTrade'].to_f
-        str = update['LastTradeDate']
-        re = /(\d{1,2})\/(\d{1,2})\/(\d{4})/
-        fields = str.match(re)        
-#        stock.last_update = Time.parse(fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']).getutc
-#        Mon, 11 Nov 2013 13:40:00 CST -06:00 
-
-        stock.last_update = fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']
-#        2013-11-11 19:40:00
-        stock.change = update['Change'].to_f
-        
-        puts stock.last_update
-        puts
-        stock.save
-      end
-  end
-  return true
-end
-
-
-
-def self.quote_dtegy
-
-  (1..1000).each do |index|
-
-             update = get_quotes(['dtegy'])
-             puts "#{index}: #{update.inspect}"
-
-  end # outer loop counter
-
-end
+#  def self.quote_dtegy
+#  
+#    (1..1000).each do |index|
+#  
+#               update = stock_price(['dtegy'])
+#               puts "#{index}: #{update.inspect}"
+#  
+#    end # outer loop counter
+#  
+#  end
 
 
 end
