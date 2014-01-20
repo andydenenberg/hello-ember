@@ -111,6 +111,9 @@ module Options
         list = stocks.collect { |s| s.symbol.downcase }
           result = self.stock_price(list)
         stocks.each do |stock|
+          
+          puts stock.symbol
+          
           update = result.select { |s| s['Symbol'].downcase == stock.symbol.downcase.strip }[0]
           stock.last_price = update['LastTrade'].to_f
   #        stock.last_update = Time.parse(fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']).getutc
@@ -199,7 +202,7 @@ module Options
       hist = portfolio.histories.new
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
         hist.stocks_count = stocks.count
-        hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).last_price * stock.quantity }
+        hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.where(symbol: stock.symbol, sec_type: 'Stock' ).last_price[0] * stock.quantity }
         hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
         hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
       options = portfolio.stocks.where('stock_option != ?', 'Stock' )
