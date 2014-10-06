@@ -4,7 +4,6 @@
     <li>{{#linkTo "home"}}Home{{/linkTo}}</li>
     <li class="nav-header">Portfolios</li>
 	<li>{{#linkTo "portfolios.new"}}<i class="icon-plus-sign"></i> Create New{{/linkTo}}</li>
-	<li>{{#linkTo "portfolios.new"}}New Ideas{{/linkTo}}</li>
 		{{view HelloEmber.PortfolioHeaderView contentBinding="activePortfolioId"}}
       {{#each portfolio in controller}}
         {{view HelloEmber.PortfolioInListView contentBinding="portfolio"}}
@@ -40,7 +39,7 @@
     <ul id="myTab" class="nav nav-tabs">
       <li class="active"><a href="#daily" data-toggle="tab">Daily</a></li>
       <li class=""><a href="#gain_loss" data-toggle="tab">Gain/Loss</a></li>
-      <li class=""><a href="#plot" data-toggle="tab">Plot</a></li>
+      <li class=""><a href="#plot" data-toggle="tab">History</a></li>
     </ul>
     <div id="myTabContent" class="tab-content">
       <div class="tab-pane active fade in" id="daily">

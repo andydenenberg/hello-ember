@@ -30,10 +30,10 @@ HelloEmber = Ember.Application.create({
 
   cache_delay: 60,  // every 60 seconds
   cache_count: 20,
-  cache_auto: false,
+  cache_auto: true,
   repo_delay: 300,  // every 5 minutes
   repo_count: 25,
-  repo_auto: false,
+  repo_auto: true,
 	
   real_time: true,
 

@@ -2,7 +2,8 @@ HelloEmber::Application.routes.draw do
 
   devise_for :users
 
-  root :to => 'application#home'
+#  root :to => 'application#home'
+  root :to => 'application#index'
   match 'index' => 'application#index'
   match 'reference' => 'application#reference'
   match 'home' => 'application#home'

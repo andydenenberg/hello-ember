@@ -56,9 +56,13 @@ module Options
     beta  = 'MNOPQRSTUVWX' # puts
     format_date = date[8..9] + date[3..4] + alpha[date[0..1].to_i - 1]
 
-    strike = strike.to_i.to_s
+    # truncate the fractional part if equal zero
+    strike = strike.to_s.split('.')[1] == '0' ? strike.to_s.split('.')[0] : strike.to_s
+    
     appendix = '-E'
     url = "http://www.cboe.com/DelayedQuote/SimpleQuote.aspx?ticker=#{symbol}#{format_date}#{strike}#{appendix}"
+    
+    puts url
     
     page = @agent.get(url)
     payload = page.body
