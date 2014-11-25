@@ -69,19 +69,37 @@ module Options
       if !payload.include?('Symbol Not Found')
         doc = Nokogiri::HTML(payload)
         # Search the doc for all td elements in the delayedQuotes class
-        price = doc.xpath('//td[@class="delayedQuotes"]/text()')
-        datetime = "#{doc.xpath('//td[@class="delayedQuotes"]/text()')[0]}".strip.split('@')
-        date = datetime.first.strip.split(',')
-        year = date.last.strip
-        month_day = date.first.split(' ')
-        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first).to_s
-        day = month_day.last        
-        datetime = year + '/' + month + '/' + day + ' ' + datetime.last.strip.split(' ').first
+        price = doc.xpath('//td[@class="bold"]//span/text()')[0].to_s.strip
+
+        puts price
+
+#        price = doc.xpath('//td[@class="delayedQuotes"]/text()')
+        datetime = doc.xpath('//table//tbody//tr[2]//td[2]//span/text()').to_s.strip
+#        datetime = "#{doc.xpath('//td[@class="delayedQuotes"]/text()')[0]}".strip.split('@')
+#        date = datetime.first.strip.split(' ')
+        date = datetime.split(' ').first
+        time = datetime.split(' ').last
+        year = date[6..9]       
+        month = date[0..1]
+        day = date[3..4]
+#        year = date.last.strip
+#        month_day = date.first.split(' ')
+#        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first).to_s
+#        day = month_day.last        
+        datetime = year + '/' + month + '/' + day + ' ' + time
+        
+        puts datetime
+        
         # strip out the nokogiri stuff from the data
-        data = price.map { |elem| "#{elem}" }  
-        bid = "#{price[data.find_index('Bid')+1]}"
-        ask = "#{price[data.find_index('Ask')+1]}"  
-        previous_close = "#{price[data.find_index('Previous Close')+1]}"  
+        
+        bid = doc.xpath('//table//tbody//tr[5]//td[2]//span/text()').to_s.strip
+        ask = doc.xpath('//table//tbody//tr[6]//td[2]//span/text()').to_s.strip
+        previous_close = doc.xpath('//table//tbody//tr[2]//td[4]//span/text()').to_s.strip
+        
+#        data = price.map { |elem| "#{elem}" }  
+#        bid = "#{price[data.find_index('Bid')+1]}"
+#        ask = "#{price[data.find_index('Ask')+1]}"  
+#        previous_close = "#{price[data.find_index('Previous Close')+1]}"  
       
         return { 'Time' => datetime, 'Bid' => bid, 'Ask' => ask, 'Previous_Close' => previous_close }
       else
