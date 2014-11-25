@@ -94,7 +94,7 @@ module Options
         
         bid = doc.xpath('//table//tbody//tr[5]//td[2]//span/text()').to_s.strip
         ask = doc.xpath('//table//tbody//tr[6]//td[2]//span/text()').to_s.strip
-        previous_close = doc.xpath('//table//tbody//tr[2]//td[4]//span/text()').to_s.strip
+        previous_close = doc.xpath('//table//tbody//tr[3]//td[4]//span/text()').to_s.strip
         
 #        data = price.map { |elem| "#{elem}" }  
 #        bid = "#{price[data.find_index('Bid')+1]}"

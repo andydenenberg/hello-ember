@@ -77,6 +77,7 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.0)
+    libv8 (3.11.8.17)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -125,6 +126,7 @@ GEM
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
+    ref (1.0.5)
     sass (3.2.9)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
@@ -140,6 +142,9 @@ GEM
       actionpack (~> 3.0)
       activemodel (~> 3.0)
       railties (~> 3.0)
+    therubyracer (0.11.4)
+      libv8 (~> 3.11.8.12)
+      ref
     thor (0.18.1)
     tilt (1.4.1)
     treetop (1.4.14)
@@ -166,6 +171,7 @@ DEPENDENCIES
   devise
   ember-rails
   ember-source (= 1.0.0.rc7)
+  execjs
   handlebars-source (~> 1.0.12)
   jquery-rails
   market_beat
@@ -176,4 +182,5 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   sqlite3
   strong_parameters
+  therubyracer
   uglifier (>= 1.0.3)
