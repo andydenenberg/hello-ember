@@ -4,6 +4,8 @@
 module Options
   require 'csv'
   require 'open-uri'
+  require 'action_view'
+  include ActionView::Helpers::NumberHelper
   
 # Get current stock price from Yahoo Finance 
 # method is optimized to pack requests in groups of up to 100 symbols
