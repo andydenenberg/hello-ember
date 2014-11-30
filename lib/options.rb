@@ -67,21 +67,19 @@ module Options
 # => 01/17/2015
      format_date =  date[8..9] + date[0..1] + date[3..4]
      
-     puts format_date
-     
-     s = strike.to_s
-     s1 = s.split('.')
-     
-     fraction = s1[1]
-     whole = s1[0]
-     
-     puts "fraction = #{fraction}  whole = #{s1[0]}"
-     
-     if fraction == '0'
-        fraction = '00'
-     end
-     format_strike = "%0.5d" % whole + "%0.2d" % fraction + '0'
-     puts "format_strike = #{format_strike}"
+#     s = strike.to_s
+#     s1 = s.split('.')
+#     
+#     fraction = s1[1]
+#     whole = s1[0]
+#          
+#     if fraction == '0'
+#        fraction = '00'
+#     end
+#     format_strike = "%0.5d" % whole + "%0.2d" % fraction + '0'
+#     puts "format_strike = #{format_strike}"
+
+    format_strike = "%08d" % number_with_precision(strike, precision: 3).to_s.split('.').join
      
      url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}C#{format_strike}"
      
@@ -94,13 +92,8 @@ module Options
 #
 #    AAPL 15 01 17 C 00085 000
     
-    
-    puts url
-    
     page = @agent.get(url)
     payload = page.body
-    
-    puts payload
     
 #      if !payload.include?('Symbol Not Found')
         if !payload.include?('There are no results for the given search term.')
@@ -113,7 +106,6 @@ module Options
         ask = doc.xpath('//table[@id="table1"]//tr[4]/td[1]/span/text()').to_s
         
         date = doc.search("[text()*='EST']").first.to_s.split('">').last[5..-1].split('EST').first
-        format_date = Time.parse(date).strftime("%Y/%m/%d %H:%M")
         
 #        price = doc.xpath('//td[@class="bold"]//span/text()')[0].to_s.strip
 #        price = doc.xpath('//td[@class="delayedQuotes"]/text()')
@@ -144,8 +136,9 @@ module Options
 #        ask = "#{price[data.find_index('Ask')+1]}"  
 #        previous_close = "#{price[data.find_index('Previous Close')+1]}"  
       
-        return { 'Time' => format_date, 'Bid' => bid, 'Ask' => ask, 'Previous_Close' => previous_close }
+        return { 'Time' => Time.parse(date).strftime("%Y/%m/%d %H:%M"), 'Bid' => bid, 'Ask' => ask, 'Previous_Close' => previous_close }
       else
+        puts 'Symbol Not Found'
         return 'Symbol Not Found'
       end
   end
@@ -261,8 +254,16 @@ module Options
   end
   
   def self.daily_snapshot # store in History record in DB
-    refresh_all 
+    refresh_all
+    
+    puts 'Stocks and Options refresh complete - Hit key to continue'
+    city = gets.chomp
+     
     refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
+    
+    puts 'Daily Dividend collection complete - Hit key to continue'
+    city = gets.chomp
+    
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
@@ -281,6 +282,10 @@ module Options
         hist.total = hist.options + hist.stocks + hist.cash
         hist.snapshot_date = Time.now.beginning_of_day()
         hist.save
+        
+        puts "Portfolio #{portfolio.name} complete - Hit key to continue"
+        city = gets.chomp
+        
     end
   end
   
