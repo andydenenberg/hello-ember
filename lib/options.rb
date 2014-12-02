@@ -50,9 +50,6 @@ module Options
     require 'json'
     require 'nokogiri'
 
-    require 'action_view'
-    include ActionView::Helpers::NumberHelper
-
     @agent = Mechanize.new 
 
     #YYDDm
@@ -83,7 +80,7 @@ module Options
 #     format_strike = "%0.5d" % whole + "%0.2d" % fraction + '0'
 #     puts "format_strike = #{format_strike}"
 
-    format_strike = "%08d" % number_with_precision(strike, precision: 3).to_s.split('.').join
+    format_strike = "%08d" % ActionController::Base.helpers.number_with_precision(strike, precision: 3).to_s.split('.').join
      
      url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}C#{format_strike}"
      
