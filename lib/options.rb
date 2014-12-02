@@ -4,8 +4,6 @@
 module Options
   require 'csv'
   require 'open-uri'
-  require 'action_view'
-  include ActionView::Helpers::NumberHelper
   
 # Get current stock price from Yahoo Finance 
 # method is optimized to pack requests in groups of up to 100 symbols
@@ -51,6 +49,10 @@ module Options
     require 'mechanize'
     require 'json'
     require 'nokogiri'
+
+    require 'action_view'
+    include ActionView::Helpers::NumberHelper
+
     @agent = Mechanize.new 
 
     #YYDDm
@@ -258,13 +260,13 @@ module Options
   def self.daily_snapshot # store in History record in DB
     refresh_all
     
-    puts 'Stocks and Options refresh complete - Hit key to continue'
-    city = gets.chomp
+#    puts 'Stocks and Options refresh complete - Hit key to continue'
+#    city = gets.chomp
      
     refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
     
-    puts 'Daily Dividend collection complete - Hit key to continue'
-    city = gets.chomp
+#    puts 'Daily Dividend collection complete - Hit key to continue'
+#    city = gets.chomp
     
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
@@ -285,8 +287,8 @@ module Options
         hist.snapshot_date = Time.now.beginning_of_day()
         hist.save
         
-        puts "Portfolio #{portfolio.name} complete - Hit key to continue"
-        city = gets.chomp
+#        puts "Portfolio #{portfolio.name} complete - Hit key to continue"
+#        city = gets.chomp
         
     end
   end
