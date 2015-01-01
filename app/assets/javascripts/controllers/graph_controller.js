@@ -58,7 +58,7 @@ function startAndEndOfGraph(date) {
 	
 	// Get start of previous Year
 	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
-	var firstYear = new Date(y-1, 0, 1);
+	var firstYear = new Date(y-2, 0, 1);
 	var lastYear = new Date(y, 11, 31);
 	var Previous_Year = [ firstYear, lastYear ];
   

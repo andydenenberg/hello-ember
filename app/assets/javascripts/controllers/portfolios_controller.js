@@ -35,7 +35,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 		// set the start and end date of x-axis
 		var x_min = ranges[0] ;
 		var x_max = ranges[1] ;
-		var x_tick_interval = '3 months' ; // if index = 0
+		var x_tick_interval = '4 months' ; // if index = 0
 		var x_tick_options = '%b %#d, %Y' ; // '%I:%M %p' ;
 		if (index == 1) { x_tick_interval = '1 day' ; x_tick_options = '%b %#d, %Y' }	
 		if (index == 2) { x_tick_interval = '1 week' ; x_tick_options = '%b %#d, %Y' }	
