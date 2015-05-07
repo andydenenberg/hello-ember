@@ -69,7 +69,7 @@ HelloEmber.ApplicationController = Ember.ObjectController.extend({
 	refresh_cache: function() {
 		HelloEmber.set('refresh_cache_status', 'Updating') ;
 	    var options = HelloEmber.Stock.find().filter(function(stock) {
-				return (stock.get('stock_option') == 'Call Option' && stock.get('id') != null );
+				return (stock.get('stock_option') != 'Stock' && stock.get('id') != null );
 		});
 		var stocks = HelloEmber.Stock.find().filter(function(stock) {
 				return (stock.get('stock_option') == 'Stock' && stock.get('id') != null );
