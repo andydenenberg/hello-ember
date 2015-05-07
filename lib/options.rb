@@ -42,7 +42,7 @@ module Options
 
   
 # Get current Option price from CBOE
-  def self.option_price(symbol,strike,date)
+  def self.option_price(symbol,strike,date,stock_option)
     require "net/http"
     require "uri"
     require 'rubygems'
@@ -82,7 +82,9 @@ module Options
 
     format_strike = "%08d" % ActionController::Base.helpers.number_with_precision(strike, precision: 3).to_s.split('.').join
      
-     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}C#{format_strike}"
+     type = stock_option == 'Call Option' ? 'C' : 'P'     
+     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}#{type}#{format_strike}"
+#     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}C#{format_strike}"
      
      puts url
 
@@ -155,7 +157,7 @@ module Options
   def self.refresh_options
     Price.all.each do |security|
       if security.sec_type != 'Stock'
-        update = option_price(security.symbol, security.strike, security.exp_date) 
+        update = option_price(security.symbol, security.strike, security.exp_date, security.sec_type) 
         security.last_update = update['Time']
         security.bid = update['Bid']
         security.ask = update['Ask']
@@ -239,7 +241,7 @@ module Options
     option = Price.where( :sec_type => security_type, :symbol => symbol.upcase,
                           :strike => strike, :exp_date => expiration_date )
     if option.empty?
-      latest = self.option_price(symbol, strike, expiration_date)
+      latest = self.option_price(symbol, strike, expiration_date, security_type)
        new = Price.create( :sec_type => security_type, :symbol => symbol.upcase,
                            :strike => strike, :exp_date => expiration_date,
                            :last_update => latest['Time'], :bid => latest['Bid'],

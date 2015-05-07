@@ -4,7 +4,7 @@ desc "Update Portfolios"
   task :update_holdings => :environment do
     require 'csv'
 
-    base_dir = '/Users/andydenenberg/Desktop/Hellemb'
+    base_dir = '/Users/andydenenberg/Desktop/Hellemb_B'
     files = Dir["#{base_dir}/*"]
     
 # find the portfolios
@@ -66,12 +66,12 @@ desc "Update Portfolios"
     end # stocks
   end # portfolios
 
-  s = Stock.find_by_symbol('RDSA')
-  s.symbol = 'RDS-A'
-  s.save
-  puts "########################"
-  puts 'Added fix to change RDSA ---> RDS-A'
-  puts "########################"
+#  s = Stock.find_by_symbol('RDSA')
+#  s.symbol = 'RDS-A'
+#  s.save
+#  puts "########################"
+#  puts 'Added fix to change RDSA ---> RDS-A'
+#  puts "########################"
 
 end # update_holdings
 
