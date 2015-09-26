@@ -33,6 +33,66 @@ s = History.create!( :cash => record[1],
                  end
 end
 
+desc "Setup HSA"
+task :create_HSA => :environment do
+p = Portfolio.where(name: 'HSA')
+s = Stock.create!( :symbol => 'MGRIX',
+                   :name => 'MARSICO GROWTH FUND',
+                   :quantity => 39.143 * 2,
+                   :purchase_price => 0,
+                   :portfolio_id => p,
+                   :stock_option => 'Stock',
+                   :purchase_date => '2015/03/13' )
+
+s = Stock.create!( :symbol => 'TGVAX',
+                   :name => 'THORNBURG INTERNATIONAL VALUE',
+                   :quantity => 30.129 * 2,
+                   :purchase_price => 0,
+                   :portfolio_id => p,
+                   :stock_option => 'Stock',
+                   :purchase_date => '2015/03/13' )
+
+s = Stock.create!( :symbol => 'PEOPX',
+                   :name => 'DREYFUS S&P 500 INDEX',
+                   :quantity => 32.72 * 2,
+                   :purchase_price => 0,
+                   :portfolio_id => p,
+                   :stock_option => 'Stock',
+                   :purchase_date => '2015/03/13' )
+
+s = Stock.create!( :symbol => 'GGSAX',
+                   :name => 'GOLDMAN SACHS GROWTH STRATEGY',
+                   :quantity => 43.25 * 2,
+                   :purchase_price => 0,
+                   :portfolio_id => p,
+                   :stock_option => 'Stock',
+                   :purchase_date => '2015/03/13' )
+
+s = Stock.create!( :symbol => 'VSMAX',
+                   :name => 'VANGUARD SMALL CAP INX - ADM',
+                   :quantity => 14.982 * 2,
+                   :purchase_price => 0,
+                   :portfolio_id => p,
+                   :stock_option => 'Stock',
+                   :purchase_date => '2015/03/13' )
+
+s = Stock.create!( :symbol => 'VIMAX',
+                   :name => 'VANGUARD MID CAP INX - ADMIRAL',
+                   :quantity => 5.451 * 2,
+                   :purchase_price => 0,
+                   :portfolio_id => p,
+                   :stock_option => 'Stock',
+                   :purchase_date => '2015/03/13' )
+
+#	MARSICO GROWTH FUND	39.143	MGRIX
+#	THORNBURG INTERNATIONAL VALUE	30.129	TGVAX
+#	DREYFUS S&P 500 INDEX	32.72	PEOPX
+#	GOLDMAN SACHS GROWTH STRATEGY	43.25	GGSAX
+#	VANGUARD SMALL CAP INX - ADM	14.982	VSMAX
+#	VANGUARD MID CAP INX - ADMIRAL	5.451	VIMAX
+
+end
+
 desc "Setup R"
 task :create_R => :environment do
     stocks = [ ['COP', 400] ]

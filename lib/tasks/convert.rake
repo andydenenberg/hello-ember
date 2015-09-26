@@ -4,7 +4,7 @@ desc "Update Portfolios"
   task :update_holdings => :environment do
     require 'csv'
 
-    base_dir = '/Users/andydenenberg/Desktop/Hellemb_B'
+    base_dir = '/Users/andydenenberg/Desktop/Hellemb_A'
     files = Dir["#{base_dir}/*"]
     
 # find the portfolios

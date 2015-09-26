@@ -269,10 +269,16 @@ module Options
     
     Portfolio.all.each do |portfolio|
       hist = portfolio.histories.new
+      
+      puts portfolio.name
+      
       stocks = portfolio.stocks.where(:stock_option => 'Stock')
         hist.stocks_count = stocks.count
         hist.stocks = stocks.reduce(0) { |sum, stock| sum + Price.where(symbol: stock.symbol, sec_type: 'Stock' )[0].last_price * stock.quantity }
-        hist.daily_dividend = stocks.reduce(0) { |sum, stock| sum + Price.find_by_symbol(stock.symbol).daily_dividend * stock.quantity }
+        hist.daily_dividend = stocks.reduce(0) do |sum, stock| 
+          puts "#{stock.symbol} - #{stock.quantity} - #{Price.where(symbol: 'GOOG', sec_type: 'Stock').first.daily_dividend}"
+          sum + Price.where(symbol: 'GOOG', sec_type: 'Stock').first.daily_dividend * stock.quantity
+        end
         hist.daily_dividend_date = Price.where(:sec_type => 'Stock').last.daily_dividend_date
       options = portfolio.stocks.where('stock_option != ?', 'Stock' )
         hist.options_count = options.count
