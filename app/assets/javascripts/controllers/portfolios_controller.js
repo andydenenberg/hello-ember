@@ -14,7 +14,7 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
   	by_daily: 'portfolio_daily',
   	
 // Graph related variables and functions
-	dates: ["From Start", "Current Week", "Current Month", "Current Quarter", "Current Year"],
+	dates: ["From Start", "Current Week", "Current Month", "Current Quarter", "Current Year", "2 Years"],
 	date_range: 'Current Week',	
 	port_range: function() {
 		var names = [ 'All' ] ;
@@ -30,17 +30,19 @@ HelloEmber.PortfoliosController = Ember.ArrayController.extend({
 	}.observes('date_range','portfolio_select'),
 
 	load_graph: function(){
-		var index = this.dates.indexOf(this.date_range);
+		var index = this.dates.indexOf(this.date_range);		
 	    var ranges = startAndEndOfGraph()[index] ;
 		// set the start and end date of x-axis
 		var x_min = ranges[0] ;
 		var x_max = ranges[1] ;
-		var x_tick_interval = '4 months' ; // if index = 0
-		var x_tick_options = '%b %#d, %Y' ; // '%I:%M %p' ;
+//		var x_tick_interval = '4 months' ; // if index = 0
+//		var x_tick_options = '%b %#d, %Y' ; // '%I:%M %p' ;
+		if (index == 0) { x_tick_interval = '6 months' ; x_tick_options = '%b %#d, %Y' }	
 		if (index == 1) { x_tick_interval = '1 day' ; x_tick_options = '%b %#d, %Y' }	
 		if (index == 2) { x_tick_interval = '1 week' ; x_tick_options = '%b %#d, %Y' }	
 		if (index == 3) { x_tick_interval = '1 month' ; x_tick_options = '%b %#d, %Y'  }	
 		if (index == 4) { x_tick_interval = '2 months' ; x_tick_options = '%b %#d, %Y'  }
+		if (index == 5) { x_tick_interval = '4 months' ; x_tick_options = '%b %#d, %Y'  }
 		var data = ajaxDataRenderer("/portfolios/graph_data") ;
 			
 //		var portfolios = this.get('portfolio_names');

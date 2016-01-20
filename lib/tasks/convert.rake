@@ -10,12 +10,19 @@ desc "Update Portfolios"
 # find the portfolios
 # the histories are linked to the portfolio id's so don't delete Portfolios, just stocks
     portfolios = [ ]
+    
+    puts files
+    
     files.each do |file|
       portfolios.push( [ Portfolio.where(:name => File.basename(file).split('.').first).first, file ] )
     end
     
 # for each portfolio
     portfolios.each do |portfolio, file|
+      
+      puts portfolio
+      puts file
+      puts
 
 # first find and delete old stocks
       stocks = portfolio.stocks

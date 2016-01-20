@@ -58,13 +58,18 @@ function startAndEndOfGraph(date) {
 	
 	// Get start of previous Year
 	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
-	var firstYear = new Date(y-2, 0, 1);
+	var firstYear = new Date(y-1, 0, 1);
 	var lastYear = new Date(y, 11, 31);
 	var Previous_Year = [ firstYear, lastYear ];
-  
+
+	// Get start of Data
+	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+	var firstYear = new Date(2013, 0, 1);
+	var lastYear = new Date(y, 11, 31);
+	var Start_Data = [ firstYear, lastYear ];
 
   // Return array of date objects
-  return [ Previous_Year, Current_Week, Current_Month, Current_Quarter, Current_Year ];
+  return [ Start_Data, Current_Week, Current_Month, Current_Quarter, Current_Year, Previous_Year ];
 };
 
 var ajaxDataRenderer = function(url) {
