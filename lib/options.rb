@@ -108,7 +108,7 @@ module Options
         bid = doc.xpath('//table[@id="table1"]//tr[3]/td[1]/span/text()').to_s
         ask = doc.xpath('//table[@id="table1"]//tr[4]/td[1]/span/text()').to_s
         
-        date = doc.search("[text()*='EST']").first.to_s.split('">').last[5..-1].split('EDT').first
+        date = doc.search("[text()*='EDT']").first.to_s.split('">').last[5..-1].split('EDT').first
         
 #        price = doc.xpath('//td[@class="bold"]//span/text()')[0].to_s.strip
 #        price = doc.xpath('//td[@class="delayedQuotes"]/text()')
