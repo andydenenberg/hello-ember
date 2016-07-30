@@ -1,0 +1,32 @@
+<table class="table-responsive table-condensed table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>Symbol</th>
+			<th>Quantity</th>
+			<th>Change</th>
+			<th>Profit</th>
+		</tr>
+	</thead>
+	
+<% @latest.each do |l| %>
+	<tr>
+		<td><%= l[0] %></td>
+		<td class="text-right"><%= number_with_delimiter(l[1]) %></td>
+		<td class="text-right">$<%= number_with_precision(l[2], precision: 2, delimiter: ',') %></td>
+		<td class="text-right">$<%= number_with_precision(l[3], precision: 2, delimiter: ',') %></td>
+	</tr>
+<% end %>
+
+    <tr>
+		<td></td>
+		<td></td>
+		<th>Cash</th>
+		<td class="text-right">$<%= number_with_precision(@cash, precision: 2, delimiter: ',') %></td>
+	</tr>
+	    <tr>
+			<td></td>
+			<td></td>
+			<th>Total</th>
+			<td class="text-right">$<%= number_with_precision(@cash+@total, precision: 2, delimiter: ',') %></td>
+		</tr>
+</table>
