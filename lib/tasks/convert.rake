@@ -1,12 +1,32 @@
 namespace :convert do
 
+desc 'Calculate GRAT'
+quants = [ 80431, 31000, 18133, 20000, 28778 ]
+symbols = ['csco','crm','msft','intc','amat']
+costs = [ 2104879.27, 2168140.00, 796038.70, 554400.00, 458721.32]
+  task :grats => :environment do
+    prices = Options.stock_price(symbols)
+    total = 0
+    prices.each do |s|
+      symbol = s['Symbol']
+      index = symbols.index(symbol)
+      value = ( '%.2f' % (quants[index] * s['LastTrade'].to_d) ).to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+      profit = (quants[index] * s['LastTrade'].to_d) - costs[index]
+      total += profit   
+      puts "#{symbol.upcase} $#{( '%.2f' % profit ).to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+#      puts "#{symbol.upcase} #{value} #{( '%.2f' % profit ).to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+    end
+    puts "Tot: $#{( '%.2f' % (total  + 155000) ).to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+end
+
+
 desc "Update Portfolios"
   task :update_holdings => :environment do
     require 'csv'
 
-    base_dir = '/Users/andydenenberg/Desktop/Hellemb_A'
+    base_dir = '/Users/andydenenberg/Desktop/Hellemb_A/July_2016'
     files = Dir["#{base_dir}/*"]
-    
+  
 # find the portfolios
 # the histories are linked to the portfolio id's so don't delete Portfolios, just stocks
     portfolios = [ ]

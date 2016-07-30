@@ -83,8 +83,10 @@ module Options
     format_strike = "%08d" % ActionController::Base.helpers.number_with_precision(strike, precision: 3).to_s.split('.').join
      
      type = stock_option == 'Call Option' ? 'C' : 'P'     
-     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}#{type}#{format_strike}"
+#     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}#{type}#{format_strike}"
 #     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}C#{format_strike}"
+
+url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{format_strike}/news?p=#{symbol.upcase}#{format_date}#{type}#{format_strike}"
      
      puts url
 
@@ -95,8 +97,12 @@ module Options
 #
 #    AAPL 15 01 17 C 00085 000
     
+    
     page = @agent.get(url)
     payload = page.body
+    
+    puts payload.length
+    
     
 #      if !payload.include?('Symbol Not Found')
         if !payload.include?('There are no results for the given search term.')
@@ -115,6 +121,8 @@ module Options
         time = doc.search("[text()*='EDT']").first.to_s.split('">').last[5..-1].split('EDT').first.strip
         date = Date.today.strftime("%Y/%m/%d")
         date = date + ' ' + time
+        
+        puts "bid: #{bid} ask: #{ask} prev: #{previous_close}"
         
 #        price = doc.xpath('//td[@class="bold"]//span/text()')[0].to_s.strip
 #        price = doc.xpath('//td[@class="delayedQuotes"]/text()')
@@ -155,7 +163,9 @@ module Options
 
 # Refresh the Price List
   def self.refresh_all
+    puts "Refresh Stocks\n\n"
     refresh_stocks
+    puts "Refresh Options\n\n"
     refresh_options
     return Price.all.count  
   end
