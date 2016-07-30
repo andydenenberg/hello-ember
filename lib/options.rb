@@ -97,8 +97,12 @@ url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{for
 #
 #    AAPL 15 01 17 C 00085 000
     
-    
+    begin
     page = @agent.get(url)
+    rescue Errno::ETIMEDOUT, Timeout::Error, Net::HTTPNotFound
+      page = @agent.get(url)
+    end
+          
     payload = page.body
     
     puts payload.length
@@ -121,7 +125,7 @@ url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{for
         time = doc.search("[text()*='EDT']").first.to_s.split('">').last[5..-1].split('EDT').first.strip
         date = Date.today.strftime("%Y/%m/%d")
         date = date + ' ' + time
-        
+                
         puts "bid: #{bid} ask: #{ask} prev: #{previous_close}"
         
 #        price = doc.xpath('//td[@class="bold"]//span/text()')[0].to_s.strip
