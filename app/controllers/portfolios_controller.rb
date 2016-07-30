@@ -1,7 +1,26 @@
 class PortfoliosController < ApplicationController
   
-  before_filter :restrict_access, :except => ["graph_data"]
+  before_filter :restrict_access, :except => ["graph_data", "grats"]
   # need to move to application controlller and except the auth.json
+  
+  def grats
+    quants = [ 80431, 31000, 18133, 20000, 28778 ]
+    symbols = ['csco','crm','msft','intc','amat']
+    costs = [ 2104879.27, 2168140.00, 796038.70, 554400.00, 458721.32]
+    @cash = 155000
+    @latest = [ ]
+        prices = Options.stock_price(symbols)
+        @total = 0
+        prices.each do |s|
+          symbol = s['Symbol']
+          index = symbols.index(symbol)
+          value = quants[index] * s['LastTrade'].to_d
+          profit = (quants[index] * s['LastTrade'].to_d) - costs[index]
+          change = (quants[index] * s['Change'].to_d)
+          @total += profit   
+          @latest.push [ symbol.upcase, quants[index], change, profit ]
+        end
+  end
   
   def graph_data
     gd = Options.daily_totals('07/22/2013', days=2000, portfolios = Portfolio.all.collect { |port| port.id } )

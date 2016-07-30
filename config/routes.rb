@@ -29,6 +29,7 @@ HelloEmber::Application.routes.draw do
   resources :portfolios do
     collection do
       get 'graph_data'
+      get 'grats'
     end
   end
   
