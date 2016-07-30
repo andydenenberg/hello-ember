@@ -52,116 +52,39 @@ module Options
 
     @agent = Mechanize.new 
 
-    #YYDDm
-#    alpha = 'ABCDEFGHIJKL' # calls
-#    beta  = 'MNOPQRSTUVWX' # puts
-#    format_date = date[8..9] + date[3..4] + alpha[date[0..1].to_i - 1]
-
-    # truncate the fractional part if equal zero
-#    strike = strike.to_s.split('.')[1] == '0' ? strike.to_s.split('.')[0] : strike.to_s
-    
-#    appendix = '-E'
-#    url = "http://www.cboe.com/DelayedQuote/SimpleQuote.aspx?ticker=#{symbol}#{format_date}#{strike}#{appendix}"
-    
-#    http://www.cboe.com/DelayedQuote/SimpleQuote.aspx?ticker=AAPL1517A85-E
-
 # => 01/17/2015
-     format_date =  date[8..9] + date[0..1] + date[3..4]
-     
-#     s = strike.to_s
-#     s1 = s.split('.')
-#     
-#     fraction = s1[1]
-#     whole = s1[0]
-#          
-#     if fraction == '0'
-#        fraction = '00'
-#     end
-#     format_strike = "%0.5d" % whole + "%0.2d" % fraction + '0'
-#     puts "format_strike = #{format_strike}"
-
-    format_strike = "%08d" % ActionController::Base.helpers.number_with_precision(strike, precision: 3).to_s.split('.').join
-     
+     format_date =  date[8..9] + date[0..1] + date[3..4] 
+     format_strike = "%08d" % ActionController::Base.helpers.number_with_precision(strike, precision: 3).to_s.split('.').join
      type = stock_option == 'Call Option' ? 'C' : 'P'     
-#     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}#{type}#{format_strike}"
-#     url = "http://finance.yahoo.com/q?s=#{symbol.upcase}#{format_date}C#{format_strike}"
 
-url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{format_strike}/news?p=#{symbol.upcase}#{format_date}#{type}#{format_strike}"
-     
+     url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{format_strike}/news?p=#{symbol.upcase}#{format_date}#{type}#{format_strike}"    
      puts url
 
-#    http://finance.yahoo.com/q?s=AAPL150117C00085000
-#    http://finance.yahoo.com/q?s=AMGN150117C000001050000
-#    AAPL1517A85-E
-#    AAPL 15 17 A 85 -E
-#
-#    AAPL 15 01 17 C 00085 000
-    
-    begin
-    page = @agent.get(url)
-    rescue Errno::ETIMEDOUT, Timeout::Error, Net::HTTPNotFound
-      page = @agent.get(url)
-    end
-          
-    payload = page.body
-    
-    puts payload.length
-    
-    
-#      if !payload.include?('Symbol Not Found')
-        if !payload.include?('There are no results for the given search term.')
-
+     doc = ''
+     ask = ''
+      loop do 
+        begin
+          page = @agent.get(url)
+        rescue Errno::ETIMEDOUT, Timeout::Error, Net::HTTPNotFound, Mechanize::ResponseCodeError
+          puts '\n\n\nRetrying...\n\n\n'
+          page = @agent.get(url)
+        end  
+        payload = page.body    
         doc = Nokogiri::HTML(payload)
-        # Search the doc for all td elements in the delayedQuotes class
+        
+        ask = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[3].to_s
+      break if !ask.empty?
+      end
         
         previous_close = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[0].to_s
         bid = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[2].to_s
-        ask = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[3].to_s
-        
-#       previous_close = doc.xpath('//table[@id="table1"]//tr[1]/td[1]/text()').to_s
-#       bid = doc.xpath('//table[@id="table1"]//tr[3]/td[1]/span/text()').to_s
-#       ask = doc.xpath('//table[@id="table1"]//tr[4]/td[1]/span/text()').to_s
-        
         time = doc.search("[text()*='EDT']").first.to_s.split('">').last[5..-1].split('EDT').first.strip
         date = Date.today.strftime("%Y/%m/%d")
         date = date + ' ' + time
                 
         puts "bid: #{bid} ask: #{ask} prev: #{previous_close}"
-        
-#        price = doc.xpath('//td[@class="bold"]//span/text()')[0].to_s.strip
-#        price = doc.xpath('//td[@class="delayedQuotes"]/text()')
-#        datetime = doc.xpath('//table//tbody//tr[2]//td[2]//span/text()').to_s.strip
-#        datetime = "#{doc.xpath('//td[@class="delayedQuotes"]/text()')[0]}".strip.split('@')
-#        date = datetime.first.strip.split(' ')
-#        date = datetime.split(' ').first
-#        time = datetime.split(' ').last
-#        year = date[6..9]       
-#        month = date[0..1]
-#        day = date[3..4]
-#        year = date.last.strip
-#        month_day = date.first.split(' ')
-#        month = "%02d" % Date::ABBR_MONTHNAMES.index(month_day.first).to_s
-#        day = month_day.last        
-#        datetime = year + '/' + month + '/' + day + ' ' + time
-        
-#        puts datetime
-        
-        # strip out the nokogiri stuff from the data
-        
-#        bid = doc.xpath('//table//tbody//tr[5]//td[2]//span/text()').to_s.strip
-#        ask = doc.xpath('//table//tbody//tr[6]//td[2]//span/text()').to_s.strip
-#        previous_close = doc.xpath('//table//tbody//tr[3]//td[4]//span/text()').to_s.strip
-        
-#        data = price.map { |elem| "#{elem}" }  
-#        bid = "#{price[data.find_index('Bid')+1]}"
-#        ask = "#{price[data.find_index('Ask')+1]}"  
-#        previous_close = "#{price[data.find_index('Previous Close')+1]}"  
-      
+              
         return { 'Time' => Time.parse(date).strftime("%Y/%m/%d %H:%M"), 'Bid' => bid, 'Ask' => ask, 'Previous_Close' => previous_close }
-      else
-        puts 'Symbol Not Found'
-        return 'Symbol Not Found'
-      end
   end
   
 
@@ -178,6 +101,9 @@ url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{for
     Price.all.each do |security|
       if security.sec_type != 'Stock'
         update = option_price(security.symbol, security.strike, security.exp_date, security.sec_type) 
+        
+        puts 'after return'
+        
         security.last_update = update['Time']
         security.bid = update['Bid']
         security.ask = update['Ask']
