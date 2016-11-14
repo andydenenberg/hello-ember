@@ -31,7 +31,7 @@ http://www.railsonmaui.com/blog/2013/06/11/emberjs-rails4-tutorial/
 
 https://www.google.com/search?q=jasmine+ember+js&oq=jasmine+ember+&aqs=chrome.1.69i57j0l3.4961j0&sourceid=chrome&ie=UTF-8
 
-http://pivotal.github.io/jasmine/
+https://jasmine.github.io/
 
 
 http://www.youtube.com/watch?v=JjqKQ8ezwKQ
