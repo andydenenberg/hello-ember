@@ -8,39 +8,116 @@ module Options
 # Get current stock price from Yahoo Finance 
 # method is optimized to pack requests in groups of up to 100 symbols
 # expects and array of symbol strings 
-  def self.stock_price(symbols) 
-    list = symbols.join(',')
-    url = "http://download.finance.yahoo.com/d/quotes.csv?s=#{list}&f=snl1d1t1c1&e=.csv"
-    sym_list = [ ]
-    begin
-      doc = open(url)     
-      got_data = doc.read
-      t = symbols.length
-      t.times do |j|
-        data = CSV.parse(got_data)[j-1]
-        current_price = { }
-        ['Symbol', 'Name', 'LastTrade', 'LastTradeDate', 'LastTradeTime', 'Change' ].each_with_index { |title, i| current_price[title] = data[i] }
+
+#  def self.stock_price(symbols) 
+#    list = symbols.join(',')
+#    url = "http://download.finance.yahoo.com/d/quotes.csv?s=#{list}&f=snl1d1t1c1&e=.csv"
+#    sym_list = [ ]
+#    begin
+#      doc = open(url)     
+#      got_data = doc.read
+#      t = symbols.length
+#      t.times do |j|
+#        data = CSV.parse(got_data)[j-1]
+#        current_price = { }
+#        ['Symbol', 'Name', 'LastTrade', 'LastTradeDate', 'LastTradeTime', 'Change' ].each_with_index { |title, i| current_price[title] = data[i] }
         
-        date = current_price['LastTradeDate'].match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)
-        if !date.nil?
-          # create rails compatible data format - LastUpdate
-          current_price['LastUpdate'] = date[3] + '/' + date[1] + '/' + date[2] + ' ' + current_price['LastTradeTime']
-          current_price['Error'] = nil
-        else
-          current_price['Error'] = 'Symbol not found.'
-        end
-        sym_list.push current_price
-       end
-      return sym_list
+#        date = current_price['LastTradeDate'].match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)
+#        if !date.nil?
+#          # create rails compatible data format - LastUpdate
+#          current_price['LastUpdate'] = date[3] + '/' + date[1] + '/' + date[2] + ' ' + current_price['LastTradeTime']
+#          current_price['Error'] = nil
+#        else
+#          current_price['Error'] = 'Symbol not found.'
+#        end
+#        sym_list.push current_price
+#       end
+#      return sym_list
+#
+#    rescue Timeout::Error
+#      return ["The request timed out...skipping."]
+#    rescue => e
+#      return ["The request returned an error - #{e.inspect}."]
+#    end      
+#  end  
 
-    rescue Timeout::Error
-      return ["The request timed out...skipping."]
-    rescue => e
-      return ["The request returned an error - #{e.inspect}."]
-    end      
-  end  
+#  def self.stock_price(symbol)
+#    require "net/http"
+#    require "uri"
+#    require 'rubygems'
+#    require 'mechanize'
+#    require 'json'
+#    require 'nokogiri'
+#
+#    @agent = Mechanize.new 
+#
+#     url = "https://finance.google.com/finance?q=NYSE:#{symbol.upcase}"    
+#     puts url
+#             begin
+#               page = @agent.get(url)
+#             rescue Errno::ETIMEDOUT, Timeout::Error, Net::HTTPNotFound, Mechanize::ResponseCodeError
+#               puts '\n\n\nRetrying...\n\n\n'
+#               page = @agent.get(url)
+#             end  
+#             payload = page.body    
+#             doc = Nokogiri::HTML(payload)             
+#             last_price = doc.xpath('//span[@class="pr"]')             
+#             if !last_price.empty?
+#               last_price = last_price.children.to_s.split('">').last.gsub("</span>\n",'')
+#               change = doc.xpath('//span[@class="ch bld"]').children.first.to_s.split('">').last.gsub("</span>",'').gsub('+','')             
+#               time = Time.now.strftime("%Y/%m/%d %H:%M")
+#               ret = [symbol.upcase, last_price, change, time]
+#             else
+#               ret = [ ]
+#             end  
+#  end
+ 
+  def self.stock_price(symbol)
+    
+    url = "https://api.iextrading.com/1.0/stock/#{symbol.upcase}/quote" 
+    puts url
+    @agent = Mechanize.new
+    ret = [ ]
+      begin
+        page = @agent.get(url)
+        data = JSON.parse(page.body) 
+        last_price = data['latestPrice'].to_s
+        change = data["change"].to_s
+        time = data["latestTime"]
+        ret = [symbol.upcase, last_price, change, time]
+      rescue Errno::ETIMEDOUT, Timeout::Error, Net::HTTPNotFound, Mechanize::ResponseCodeError
+        puts 'Unknown Reponse'
+      end       
+    puts ret.inspect
+    puts 
+    return ret
+  end 
+    
+ 
+ 
+    def self.refresh_stocks      
+      dead = [ ]
+      
+      Price.where(:sec_type => 'Stock').each do |stock|
+            result = self.stock_price(stock.symbol)
+          if !result.empty?
+            stock.last_price = result[1].gsub(',','').to_f
+            stock.last_update = result[3]
+    #        2013-11-11 19:40:00
+            stock.change = !result[2].blank? ? result[2].to_f : 0.0
+            stock.save
+          else
+            dead.push stock.symbol
+          end          
+          puts dead.count
+          puts dead.inspect          
+      end
+      return true
+    end
 
-  
+
+
+ 
 # Get current Option price from CBOE
   def self.option_price(symbol,strike,date,stock_option)
     require "net/http"
@@ -57,7 +134,7 @@ module Options
      format_strike = "%08d" % ActionController::Base.helpers.number_with_precision(strike, precision: 3).to_s.split('.').join
      type = stock_option == 'Call Option' ? 'C' : 'P'     
 
-     url = "http://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{format_strike}/news?p=#{symbol.upcase}#{format_date}#{type}#{format_strike}"    
+     url = "https://finance.yahoo.com/quote/#{symbol.upcase}#{format_date}#{type}#{format_strike}/news?p=#{symbol.upcase}#{format_date}#{type}#{format_strike}"    
      puts url
 
      doc = ''
@@ -70,15 +147,20 @@ module Options
           page = @agent.get(url)
         end  
         payload = page.body    
+
+puts payload.length
+
         doc = Nokogiri::HTML(payload)
-        
-        ask = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[3].to_s
+#        ask = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[3].to_s
+        ask = doc.xpath('//td[@class="Ta(end) Fw(b) Lh(14px)"]')[3].to_s.split('data-reactid="55">').last.split('</span>').first.split('>').last.split('><').last.split('>').last
       break if !ask.empty?
       end
         
-        previous_close = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[0].to_s
-        bid = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[2].to_s
-        time = doc.search("[text()*='EDT']").first.to_s.split('">').last[5..-1].split('EDT').first.strip
+#        previous_close = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[0].to_s
+#        bid = doc.xpath('//td[@class="Ta(end) Fw(b)"]/text()')[2].to_s
+        previous_close = doc.xpath('//td[@class="Ta(end) Fw(b) Lh(14px)"]')[0].to_s.split('data-reactid="40">').last.split('</span>').first.split('>').last.split('><').last.split('>').last
+        bid = doc.xpath('//td[@class="Ta(end) Fw(b) Lh(14px)"]')[2].to_s.split('data-reactid="50">').last.split('</span>').first.split('>').last
+        time = doc.search("[text()*='EST']").first.to_s.split('">').last[5..-1].split('EST').first.strip
         date = Date.today.strftime("%Y/%m/%d")
         date = date + ' ' + time
                 
@@ -94,6 +176,8 @@ module Options
     refresh_stocks
     puts "Refresh Options\n\n"
     refresh_options
+    puts "Refresh Dividends\n\n"
+    refresh_daily_dividend(Time.now.strftime("%Y-%m-%d"))
     return Price.all.count  
   end
     
@@ -113,27 +197,30 @@ module Options
     end
   end
 
-  def self.refresh_stocks
-    Price.where(:sec_type => 'Stock').each_slice(100) do |stocks|
-        list = stocks.collect { |s| s.symbol.downcase }
-          result = self.stock_price(list)
-        stocks.each do |stock|
-          
-          puts stock.symbol
-          
-          update = result.select { |s| s['Symbol'].downcase == stock.symbol.downcase.strip }[0]
-          stock.last_price = update['LastTrade'].to_f
-  #        stock.last_update = Time.parse(fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']).getutc
-  #        Mon, 11 Nov 2013 13:40:00 CST -06:00 
-#          stock.last_update = fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']
-          stock.last_update = update['LastUpdate']
-  #        2013-11-11 19:40:00
-          stock.change = update['Change'].to_f
-          stock.save
-        end
-    end
-    return true
-  end
+#  def self.refresh_stocks
+#    Price.where(:sec_type => 'Stock').each_slice(100) do |stocks|
+#        list = stocks.collect { |s| s.symbol.downcase }
+#          result = self.stock_price(list)
+#        stocks.each do |stock|
+#          
+#          puts stock.symbol
+#
+##	puts stock.symbol.downcase.strip
+##	puts list.inspect
+#          
+#          update = result.select { |s| s['Symbol'].downcase == stock.symbol.downcase.strip }[0]
+#          stock.last_price = update['LastTrade'].to_f
+#  #        stock.last_update = Time.parse(fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']).getutc
+#  #        Mon, 11 Nov 2013 13:40:00 CST -06:00 
+##          stock.last_update = fields[3] + '/' + fields[1] + '/' + fields[2] + ' ' + update['LastTradeTime']
+#          stock.last_update = update['LastUpdate']
+#  #        2013-11-11 19:40:00
+#          stock.change = update['Change'].to_f
+#          stock.save
+#        end
+#    end
+#    return true
+#  end
   
   
 #  def self.latest_price(symbol, real_time)
@@ -208,7 +295,7 @@ module Options
 #    puts 'Stocks and Options refresh complete - Hit key to continue'
 #    city = gets.chomp
      
-    refresh_daily_dividend( (Time.now - 1.day).strftime('%Y/%m/%d')  )
+    refresh_daily_dividend( Time.now.strftime("%Y-%m-%d") ) # (Time.now - 1.day).strftime('%Y/%m/%d')  )
     
 #    puts 'Daily Dividend collection complete - Hit key to continue'
 #    city = gets.chomp
@@ -318,9 +405,10 @@ module Options
     total = 0
     divs = [ ]
     begin
-       resp = self.check_dividend(symbol, start_date.strftime("%m/%d/%Y") )
+       resp = self.check_dividend(symbol, start_date.strftime("%Y-%m-%d") )
+#       resp = self.check_dividend(symbol, start_date.strftime("%m/%d/%Y") )
        if resp['Date']
-         total += resp['Dividends']
+         total += resp[2]
          divs.push [resp['Date'], resp['Dividends']]
        end   
        start_date += 1.days
@@ -331,9 +419,9 @@ module Options
   def self.refresh_daily_dividend(date)
       Price.all.each do |security|
         if security.sec_type == 'Stock'
-#          yesterday = (Time.now - 1.day).strftime("%m/%d/%Y")
+#          today = (Time.now).strftime("%Y-%m-%d")
           div = check_dividend(security.symbol, date)
-          security.daily_dividend = div['Dividends'] ||= 0
+          security.daily_dividend = div[2] ||= 0
           security.daily_dividend_date = date
           puts div
          security.save
@@ -341,30 +429,66 @@ module Options
       end
   end
   
-  def self.check_dividend(symbol,date)
-        comps = date.split('/')
-        year = comps[0]
-        month = comps[1]
-        day = comps[2]
-        ds = "&a=#{(month.to_i-1).to_s.rjust(2, '0')}&b=#{day.rjust(2, '0')}&c=#{year}&d=#{(month.to_i-1).to_s.rjust(2, '0')}&e=#{day.rjust(2, '0')}&f=#{year}"
-        url = "http://ichart.finance.yahoo.com/table.csv?s=#{symbol}#{ds}&g=v&ignore=.csv"
-        puts url
-        hp = { }
-        begin            
-          resp = CSV.parse(open(url).read)          
-          if resp.length > 1 
-              str = resp[1][0].split('-')
-              hp['Date'] = str[1] + '/' + str[2] + '/' + str[0]
-            resp[0][1..-1].each_with_index do |title, i|
-              hp[title] = resp[1][i+1].to_f
+  def self.check_dividend(symbol,date) # "2018-02-15"
+    url = "https://api.iextrading.com/1.0/stock/#{symbol.upcase}/dividends/1m" 
+    puts url
+    # "paymentDate":"2018-02-15"
+    # "amount":0.63
+    @agent = Mechanize.new
+    ret = [ symbol.upcase, date, nil ]
+    dividends = 0
+      begin
+        page = @agent.get(url)
+        response = page.body
+        if response.length > 3 
+          data = response
+          data = JSON.parse data
+          data.each do |d| 
+            puts d
+            paymentDate = d['paymentDate']
+            if paymentDate == date
+                dividends += d["amount"]
+                puts dividends
             end
           end
-        rescue => e
-          hp['error'] = e.inspect
-        end      
-        
-        return hp # hash with "Date", "Dividends"          
+           ret = [symbol.upcase, date, dividends]
+        end
+      rescue Errno::ETIMEDOUT, Timeout::Error, Net::HTTPNotFound, Mechanize::ResponseCodeError
+        puts 'Unknown Reponse'
+      end       
+    puts ret.inspect
+    puts 
+    return ret
   end
+  
+#  def self.check_dividend(symbol,date)
+#        comps = date.split('/')
+#        year = comps[0]
+#        month = comps[1]
+#        day = comps[2]
+#        ds = "&a=#{(month.to_i-1).to_s.rjust(2, '0')}&b=#{day.rjust(2, '0')}&c=#{year}&d=#{(month.to_i-1).to_s.rjust(2, '0')}&e=#{day.rjust(2, '0')}&f=#{year}"
+#        url = "https://ichart.finance.yahoo.com/table.csv?s=#{symbol}#{ds}&g=v&ignore=.csv"
+#        puts url
+#        hp = { }
+##          raw = open(url).read
+##	  puts raw
+##	  parsed = CSV.parse(raw)
+##	  puts parsed
+##          puts 'done'
+#        begin            
+#         resp = CSV.parse(open(url).read)          
+#          if resp.length > 1 
+#              str = resp[1][0].split('-')
+#              hp['Date'] = str[1] + '/' + str[2] + '/' + str[0]
+#            resp[0][1..-1].each_with_index do |title, i|
+#              hp[title] = resp[1][i+1].to_f
+#            end
+#          end
+#        rescue => e
+#          hp['error'] = e.inspect
+#        end              
+#        return hp # hash with "Date", "Dividends"          
+#  end
   
   
 #  def self.daily_snapshot_test # store in History record in DB
@@ -465,5 +589,3 @@ module Options
 
 
 end
-
-

@@ -4,10 +4,12 @@ class PortfoliosController < ApplicationController
   # need to move to application controlller and except the auth.json
   
   def grats
-    quants = [ 80431, 31000, 18133, 20000, 28778 ]
+    quants = [ 46043, 17140, 11105, 11956, 20928, ] 
+	   # [ 80431, 31000, 18133, 20000, 28778 ]
     symbols = ['csco','crm','msft','intc','amat']
-    costs = [ 2104879.27, 2168140.00, 796038.70, 554400.00, 458721.32]
-    @cash = 155000
+    costs = [ 1076070.00, 1108836.00, 406866.00, 283692.00, 233090.00 ]
+	   # [ 2104879.27, 2168140.00, 796038.70, 554400.00, 458721.32]
+    @cash = 235782 # 155000
     @latest = [ ]
         prices = Options.stock_price(symbols)
         @total = 0
@@ -18,7 +20,7 @@ class PortfoliosController < ApplicationController
           profit = (quants[index] * s['LastTrade'].to_d) - costs[index]
           change = (quants[index] * s['Change'].to_d)
           @total += profit   
-          @latest.push [ symbol.upcase, quants[index], change, profit ]
+          @latest.push [ symbol.upcase, quants[index], change, profit, s['LastTrade'] ]
         end
   end
   

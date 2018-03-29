@@ -24,7 +24,7 @@ desc "Update Portfolios"
   task :update_holdings => :environment do
     require 'csv'
 
-    base_dir = '/Users/andydenenberg/Desktop/Hellemb_A/July_2016'
+    base_dir = '/Users/andydenenberg/Desktop/Hellemb_A/January_2018'
     files = Dir["#{base_dir}/*"]
   
 # find the portfolios
@@ -65,6 +65,8 @@ desc "Update Portfolios"
 
       strike = nil
       expiration_date = nil
+      quantity = s[2].gsub(',','').to_f
+      purchase_price = s[9].gsub('$','').gsub(',','').to_f / quantity
             
       if s[1][0..15].include?('CALL')
         stock_option = 'Call Option'
@@ -83,8 +85,8 @@ desc "Update Portfolios"
       
       s = Stock.create!( :symbol => symbol,
                          :name => s[1][0..15],
-                         :quantity => s[2].gsub(',','').to_f,
-                         :purchase_price => 0,
+                         :quantity => quantity,
+                         :purchase_price => purchase_price,
                          :portfolio_id => portfolio.id,
                          :stock_option => stock_option,
                          :strike => strike,
